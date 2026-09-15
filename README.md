@@ -47,7 +47,7 @@ O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre 
 
 O tema só renderiza esses assets empacotados e sanitizados; não habilita upload irrestrito de SVG. Cada ramo mantém seus paths e transforms originais e recebe uma oscilação independente a partir da base. A opção **Ativar animações das folhagens** permanece editável no Personalizador e `prefers-reduced-motion` sempre exibe a composição estática.
 
-A composição pública ocupa exatamente a viewport, sem rolagem. Em telas baixas, logo, espaços, títulos e controles reduzem proporcionalmente para manter todo o conteúdo e o rodapé visíveis. Os ramos usam a mesma escala e ficam ancorados nos dois cantos inferiores.
+A composição pública usa os ramos originais como moldura lateral a partir dos cantos inferiores, no mesmo espírito do rótulo. O recorte das folhas fica na camada decorativa; a página pode rolar verticalmente em telas baixas ou com texto maior. O centro permanece reservado para logo, títulos e formulário.
 
 Para gerar novamente os pacotes:
 
@@ -69,9 +69,11 @@ Acesse `http://127.0.0.1:8080`. Ela não substitui o teste do tema/plugin em Wor
 
 Capturas da implementação executada em WordPress:
 
-- [`preview/desktop.png`](preview/desktop.png) (1280 × 800)
+- [`preview/desktop.png`](preview/desktop.png) (1440 × 900)
 - [`preview/mobile.png`](preview/mobile.png) (375 × 812)
-- [`preview/viewport-low.png`](preview/viewport-low.png) (1024 × 432)
+- [`preview/viewport-320.png`](preview/viewport-320.png)
+- [`preview/viewport-430.png`](preview/viewport-430.png)
+- [`preview/viewport-768.png`](preview/viewport-768.png)
 
 ## Atualização GitHub → servidor
 

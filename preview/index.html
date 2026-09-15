@@ -2,14 +2,20 @@
 <html lang="pt-BR">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title>Casa Kotti — Prévia</title>
 	<link rel="stylesheet" href="../theme/casa-kotti/assets/css/main.css">
 </head>
 <body>
 	<div class="ck-page has-motion">
-		<div class="ck-foliage ck-foliage--left" aria-hidden="true"></div>
-		<div class="ck-foliage ck-foliage--right" aria-hidden="true"></div>
+		<div class="ck-foliage-layer" aria-hidden="true">
+			<div class="ck-foliage ck-foliage--left">
+				<div class="ck-foliage__motion"></div>
+			</div>
+			<div class="ck-foliage ck-foliage--right">
+				<div class="ck-foliage__motion"></div>
+			</div>
+		</div>
 		<main class="ck-main">
 			<div class="ck-brand">
 				<img class="ck-brand-logo" src="../theme/casa-kotti/assets/images/logo-casa-kotti.png" alt="Casa Kotti" width="1237" height="752">
@@ -45,10 +51,10 @@
 	</div>
 	<script>
 		fetch('../theme/casa-kotti/assets/images/foliage-left.svg').then((r) => r.text()).then((svg) => {
-			document.querySelector('.ck-foliage--left').innerHTML = svg;
+			document.querySelector('.ck-foliage--left .ck-foliage__motion').innerHTML = svg;
 		});
 		fetch('../theme/casa-kotti/assets/images/foliage-right.svg').then((r) => r.text()).then((svg) => {
-			document.querySelector('.ck-foliage--right').innerHTML = svg;
+			document.querySelector('.ck-foliage--right .ck-foliage__motion').innerHTML = svg;
 		});
 	</script>
 </body>

@@ -2,39 +2,27 @@
 
 Data: 15 de setembro de 2026.
 
-## Executado
+## Composição responsiva (tema 1.4.0)
 
-- Sintaxe de todos os arquivos PHP com PHP 8.3.6.
-- Sintaxe do JavaScript com Node.js 22.
-- Instalação temporária, fora do repositório, em WordPress 7.1 com SQLite Database Integration 3.0.2.
-- Ativação do tema e do plugin e criação da tabela via `dbDelta`.
-- Resposta HTTP 200 da página inicial.
-- Cadastro válido com confirmação da linha persistida.
-- E-mail inválido e ausência de consentimento rejeitados.
-- Cadastro duplicado sem segunda linha e sem revelar a existência do e-mail.
-- Falha forçada de persistência retornando erro, sem falso sucesso.
-- Bloqueio da tela administrativa para usuário com papel de assinante.
-- Exclusão administrativa com permissão e nonce.
-- Exportação CSV e neutralização de valor iniciado por `=`.
-- Callbacks nativos de exportação e exclusão de dados pessoais.
-- Integridade dos dois arquivos ZIP com `unzip -t`.
-- Revisão visual desktop (1280 × 800), mobile (375 × 812) e viewport baixo (1024 × 432).
-- Página com `overflow: hidden` e altura `100svh`: o conteúdo cabe na viewport, sem rolagem vertical nem horizontal.
-- Em 1024 × 432, logo, título, formulário e rodapé permanecem visíveis, sem corte.
-- Rodapé com política de privacidade e «© 2026 Casa Kotti» na mesma linha de base; em 375 × 812 os três itens do rodapé (contato, privacidade e copyright) compartilham a mesma linha.
-- Ramos originais ancorados nos cantos inferiores, com a mesma escala em cada viewport; no celular os dois ramos permanecem visíveis.
-- Folhagens com animações independentes de 11,4 s e 14,2 s, delays distintos e movimento restrito a `transform`.
-- Com `prefers-reduced-motion`, os ramos permanecem estáticos.
-- SVG original inspecionado e sanitizado, sem scripts, eventos ou referências externas.
-- Logo oficial verificado em desktop e celular, com símbolo e lettering completos, proporção intrínseca de 1237 × 752 e sem efeitos CSS.
-- Montserrat variável carregada localmente em WOFF2 com resposta HTTP 200; peso computado 400 no H1.
-- H1 e complemento da marca verificados em caixa alta.
-- Checkbox desmarcado, foco visível e ordem de teclado preservados.
+Verificado em WordPress local nas larguras 320, 375, 390, 430, 768 e 1440 px, mais uma janela baixa 375 × 560.
+
+- Os dois ramos originais formam moldura lateral a partir dos cantos inferiores; o ramo direito acompanha a borda direita.
+- O viewBox foi ajustado ao envelope da tinta (sem esticar paths) para eliminar o vazio que concentrava os desenhos no rodapé.
+- Posicionamento em wrappers separados da animação; recorte na camada `.ck-foliage-layer`; sem `position: fixed`.
+- Logo menor no celular; títulos em Montserrat caixa alta.
+- Campo, botão e consentimento permanecem legíveis no centro.
+- Sem `overflow` no `body` para esconder largura; rolagem vertical permitida em tela baixa.
+- Animação: rotação lenta (~0,7°) na base, desligada com `prefers-reduced-motion`.
+
+## Função (já exercitada nesta entrega)
+
+- Sintaxe PHP 8.3.6 e JavaScript.
+- Cadastro, duplicata genérica, CSV, exclusão administrativa e callbacks de dados pessoais na instalação temporária WordPress 7.1 + SQLite.
+- Integridade dos ZIP com `unzip -t`.
 
 ## Limitações reais
 
-- Não houve acesso ao WordPress ou banco do servidor de produção; nada foi publicado ou ativado nele.
-- A instalação local usou SQLite para teste isolado. Antes da produção, repita um cadastro em homologação com a versão de WordPress, PHP e banco usados pelo servidor.
-- O logo fornecido originalmente estava em JPEG sobre fundo branco. A integração remove apenas esse fundo e aplica o bege da identidade ao mesmo desenho; símbolo, lettering e proporções foram preservados.
-- O SVG fornecido contém dois grupos principais, um por ramo. Cada ramo é animado como unidade para preservar o desenho original sem deformar as folhas.
-- A prévia estática não executa persistência; as verificações funcionais acima foram feitas na instalação WordPress temporária.
+- Não houve acesso ao WordPress de produção.
+- Capturas headless do Chrome registram a viewport; em 375 × 560 o rodapé fica abaixo da dobra e exige rolagem, como previsto.
+- Não foi possível abrir o Safari do iPhone; as safe areas foram aplicadas via `viewport-fit=cover` e `env(safe-area-inset-*)`.
+- A prévia estática não executa persistência.
