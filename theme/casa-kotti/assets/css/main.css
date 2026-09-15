@@ -269,7 +269,7 @@ input:focus-visible {
 }
 
 .ck-foliage--left {
-	left: clamp(-150px, -9vw, -72px);
+	left: clamp(-36px, -2vw, -16px);
 }
 
 .ck-foliage--right {
