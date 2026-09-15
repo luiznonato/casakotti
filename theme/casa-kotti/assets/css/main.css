@@ -89,11 +89,11 @@ input:focus-visible {
 }
 
 .ck-foliage--left {
-	left: -2%;
+	left: -10%;
 }
 
 .ck-foliage--right {
-	right: -2%;
+	right: -10%;
 }
 
 .ck-foliage__motion {
@@ -363,11 +363,11 @@ input:focus-visible {
 	}
 
 	.ck-foliage--left {
-		left: -16%;
+		left: -28%;
 	}
 
 	.ck-foliage--right {
-		right: -16%;
+		right: -28%;
 	}
 
 	.ck-main {
@@ -441,11 +441,11 @@ input:focus-visible {
 	}
 
 	.ck-foliage--left {
-		left: -10%;
+		left: -16%;
 	}
 
 	.ck-foliage--right {
-		right: -10%;
+		right: -16%;
 	}
 
 	.custom-logo,
@@ -461,11 +461,11 @@ input:focus-visible {
 	}
 
 	.ck-foliage--left {
-		left: 0;
+		left: -8%;
 	}
 
 	.ck-foliage--right {
-		right: 0;
+		right: -8%;
 	}
 
 	.custom-logo,
