@@ -25,6 +25,8 @@ html {
 
 body {
 	margin: 0;
+	height: 100svh;
+	overflow: hidden;
 	background: var(--ck-bg);
 	color: var(--ck-ink);
 	font-family: "Montserrat CK", Montserrat, "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
@@ -54,12 +56,14 @@ input:focus-visible {
 	position: relative;
 	display: grid;
 	grid-template-rows: 1fr auto;
-	min-height: 100svh;
+	width: 100%;
+	height: 100svh;
+	min-height: 0;
 	overflow: hidden;
 	padding:
-		max(40px, env(safe-area-inset-top))
+		max(clamp(12px, 4svh, 40px), env(safe-area-inset-top))
 		max(32px, env(safe-area-inset-right))
-		max(24px, env(safe-area-inset-bottom))
+		max(clamp(10px, 2.5svh, 24px), env(safe-area-inset-bottom))
 		max(32px, env(safe-area-inset-left));
 	isolation: isolate;
 }
@@ -69,14 +73,16 @@ input:focus-visible {
 	display: flex;
 	width: min(100%, 720px);
 	margin: auto;
-	padding: clamp(38px, 7vh, 84px) 0 clamp(52px, 8vh, 92px);
+	min-height: 0;
+	padding: clamp(8px, 3.5svh, 38px) 0;
 	text-align: center;
 	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 }
 
 .ck-brand {
-	margin-bottom: clamp(50px, 8vh, 84px);
+	margin-bottom: clamp(16px, 5svh, 50px);
 }
 
 .custom-logo-link {
@@ -86,7 +92,7 @@ input:focus-visible {
 .custom-logo,
 .ck-brand-logo {
 	display: block;
-	width: min(40vw, 320px);
+	width: min(40vw, 320px, 45svh);
 	height: auto;
 	margin: 0 auto;
 	object-fit: contain;
@@ -122,7 +128,7 @@ input:focus-visible {
 
 .ck-interest {
 	width: min(100%, 650px);
-	margin-top: clamp(34px, 5vh, 52px);
+	margin-top: clamp(16px, 4svh, 40px);
 }
 
 .ck-form {
@@ -245,12 +251,14 @@ input:focus-visible {
 	font-size: 0.72rem;
 	line-height: 1.4;
 	justify-content: space-between;
+	align-items: baseline;
 	gap: 22px;
 }
 
 .ck-footer nav {
 	display: flex;
 	flex-wrap: wrap;
+	align-items: baseline;
 	gap: 12px 24px;
 }
 
@@ -262,7 +270,7 @@ input:focus-visible {
 .ck-foliage {
 	position: absolute;
 	z-index: 0;
-	bottom: clamp(-90px, -8vh, -48px);
+	bottom: 0;
 	width: clamp(500px, 53vw, 780px);
 	aspect-ratio: 7 / 8;
 	opacity: 0.2;
@@ -271,12 +279,12 @@ input:focus-visible {
 }
 
 .ck-foliage--left {
-	left: clamp(-36px, -2vw, -16px);
+	left: 0;
 	transform-origin: 7% 100%;
 }
 
 .ck-foliage--right {
-	right: clamp(24px, 2.5vw, 40px);
+	right: 0;
 	transform-origin: 93% 100%;
 }
 
@@ -315,23 +323,23 @@ input:focus-visible {
 @media (max-width: 700px) {
 	.ck-page {
 		padding:
-			max(30px, env(safe-area-inset-top))
+			max(clamp(16px, 3svh, 30px), env(safe-area-inset-top))
 			max(20px, env(safe-area-inset-right))
-			max(20px, env(safe-area-inset-bottom))
+			max(clamp(12px, 2svh, 20px), env(safe-area-inset-bottom))
 			max(20px, env(safe-area-inset-left));
 	}
 
 	.ck-main {
-		padding: 28px 0 60px;
+		padding: clamp(8px, 2.5svh, 20px) 0;
 	}
 
 	.ck-brand {
-		margin-bottom: 48px;
+		margin-bottom: clamp(20px, 5svh, 40px);
 	}
 
 	.custom-logo,
 	.ck-brand-logo {
-		width: min(72vw, 300px);
+		width: min(72vw, 300px, 42svh);
 	}
 
 	.ck-message > p {
@@ -347,9 +355,12 @@ input:focus-visible {
 	}
 
 	.ck-footer {
-		flex-direction: column;
+		flex-direction: row;
+		flex-wrap: wrap;
 		align-items: center;
+		justify-content: center;
 		text-align: center;
+		gap: 8px 20px;
 	}
 
 	.ck-footer nav {
@@ -357,17 +368,82 @@ input:focus-visible {
 	}
 
 	.ck-foliage {
-		bottom: -38px;
+		bottom: 0;
 		width: min(90vw, 400px);
 		opacity: 0.12;
 	}
 
 	.ck-foliage--left {
-		left: -10vw;
+		left: 0;
 	}
 
 	.ck-foliage--right {
-		right: 8vw;
+		right: 0;
+	}
+}
+
+@media (max-height: 600px) {
+	.ck-page {
+		padding-top: max(8px, env(safe-area-inset-top));
+		padding-bottom: max(8px, env(safe-area-inset-bottom));
+	}
+
+	.ck-main {
+		padding: 4px 0 8px;
+	}
+
+	.ck-brand {
+		margin-bottom: 12px;
+	}
+
+	.custom-logo,
+	.ck-brand-logo {
+		width: min(32vw, 190px, 44svh);
+	}
+
+	.ck-tagline {
+		margin-top: 7px;
+		font-size: 0.6rem;
+	}
+
+	.ck-message h1 {
+		font-size: clamp(1.15rem, 2.5vw, 1.65rem);
+		line-height: 1.22;
+	}
+
+	.ck-message > p {
+		margin-top: 8px;
+		font-size: 0.78rem;
+	}
+
+	.ck-interest {
+		margin-top: 12px;
+	}
+
+	.ck-form input[type="email"],
+	.ck-form button,
+	.ck-contact-fallback {
+		min-height: 40px;
+		padding-top: 7px;
+		padding-bottom: 7px;
+	}
+
+	.ck-form__consent {
+		margin-top: 7px;
+		font-size: 0.62rem;
+	}
+
+	.ck-form__status {
+		min-height: 0;
+		margin-top: 5px;
+	}
+
+	.ck-footer {
+		font-size: 0.62rem;
+	}
+
+	.ck-foliage {
+		width: min(45vw, 460px);
 	}
 }
 

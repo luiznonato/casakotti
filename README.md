@@ -47,6 +47,8 @@ O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre 
 
 O tema só renderiza esses assets empacotados e sanitizados; não habilita upload irrestrito de SVG. Cada ramo mantém seus paths e transforms originais e recebe uma oscilação independente a partir da base. A opção **Ativar animações das folhagens** permanece editável no Personalizador e `prefers-reduced-motion` sempre exibe a composição estática.
 
+A composição pública ocupa exatamente a viewport, sem rolagem. Em telas baixas, logo, espaços, títulos e controles reduzem proporcionalmente para manter todo o conteúdo e o rodapé visíveis. Os ramos usam a mesma escala e ficam ancorados nos dois cantos inferiores.
+
 Para gerar novamente os pacotes:
 
 ```bash
