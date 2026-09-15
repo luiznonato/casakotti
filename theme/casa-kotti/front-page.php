@@ -20,10 +20,14 @@ $motion_class  = casa_kotti_setting( 'animations_enabled', true ) ? ' has-motion
 ?>
 <div class="ck-page<?php echo esc_attr( $motion_class ); ?>">
 	<?php if ( file_exists( $foliage_left ) ) : ?>
-		<img class="ck-foliage ck-foliage--left" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/foliage-left.svg' ) ); ?>" alt="" aria-hidden="true" width="560" height="980">
+		<div class="ck-foliage ck-foliage--left" aria-hidden="true">
+			<?php echo file_get_contents( $foliage_left ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Sanitized, trusted theme asset. ?>
+		</div>
 	<?php endif; ?>
 	<?php if ( file_exists( $foliage_right ) ) : ?>
-		<img class="ck-foliage ck-foliage--right" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/foliage-right.svg' ) ); ?>" alt="" aria-hidden="true" width="560" height="980">
+		<div class="ck-foliage ck-foliage--right" aria-hidden="true">
+			<?php echo file_get_contents( $foliage_right ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Sanitized, trusted theme asset. ?>
+		</div>
 	<?php endif; ?>
 
 	<main class="ck-main" id="conteudo">

@@ -1,8 +1,5 @@
-# Assets originais pendentes
+# Folhagens Casa Kotti
 
-Inclua aqui somente os SVGs originais, confiáveis e sanitizados:
+Os dois arquivos desta pasta derivam diretamente dos grupos `ramo-esquerda` e `ramo-direita` do SVG original fornecido. O processo de integração removeu a possibilidade de elementos, atributos e referências externas não esperadas, sem alterar os paths ou transforms do desenho.
 
-- `foliage-left.svg`
-- `foliage-right.svg`
-
-O tema detecta esses nomes automaticamente. Não substitua as folhagens por ilustrações genéricas.
+O tema os inclui inline para que cada grupo possa girar independentemente a partir da base do caule. Não substitua esses assets por SVGs não sanitizados.

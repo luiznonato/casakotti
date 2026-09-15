@@ -38,18 +38,16 @@ Administradores podem listar, exportar CSV e excluir registros em **Ferramentas 
 
 O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre os dados técnicos coletados. Ele deve ser revisado e incorporado à política jurídica aprovada; o projeto não inventa informações jurídicas.
 
-## Logo e folhagens pendentes
+## Logo e folhagens
 
-Os arquivos originais não estavam neste repositório:
+- **Logo pendente:** até ser enviado em **Aparência > Personalizar > Identidade do site**, aparece um wordmark textual provisório, sem pretensão de reproduzir o logo.
+- **Folhagens integradas:** o SVG original fornecido foi sanitizado e separado nos dois grupos de ramo existentes:
+  - `theme/casa-kotti/assets/images/foliage-left.svg`;
+  - `theme/casa-kotti/assets/images/foliage-right.svg`.
 
-- **Logo:** até ser enviado em **Aparência > Personalizar > Identidade do site**, aparece um wordmark textual provisório, sem pretensão de reproduzir o logo.
-- **Folhagens:** adicione os SVGs confiáveis e já sanitizados como:
-  - `theme/casa-kotti/assets/images/foliage-left.svg`
-  - `theme/casa-kotti/assets/images/foliage-right.svg`
+O tema só renderiza esses assets empacotados e sanitizados; não habilita upload irrestrito de SVG. Cada ramo mantém seus paths e transforms originais e recebe uma oscilação independente a partir da base. A opção **Ativar animações das folhagens** permanece editável no Personalizador e `prefers-reduced-motion` sempre exibe a composição estática.
 
-O tema só renderiza esses dois assets empacotados. Não habilita upload irrestrito de SVG e não injeta SVG arbitrário inline. Com os arquivos atuais, o ramo inteiro recebe uma oscilação sutil a partir da base; animação individual de grupos internos exigirá avaliar a estrutura dos SVGs originais. `prefers-reduced-motion` sempre desativa o movimento.
-
-Após incluir os assets, gere novamente os pacotes:
+Para gerar novamente os pacotes:
 
 ```bash
 rm -f dist/casa-kotti.zip dist/casa-kotti-interesses.zip

@@ -260,44 +260,58 @@ input:focus-visible {
 .ck-foliage {
 	position: absolute;
 	z-index: 0;
-	top: 50%;
-	width: min(32vw, 510px);
-	height: auto;
-	max-height: 88%;
-	opacity: 0.12;
+	bottom: clamp(-90px, -8vh, -48px);
+	width: clamp(500px, 53vw, 780px);
+	aspect-ratio: 7 / 8;
+	opacity: 0.2;
 	pointer-events: none;
 	user-select: none;
-	transform-origin: 50% 100%;
 }
 
 .ck-foliage--left {
-	left: 0;
-	transform: translate(-43%, -50%) rotate(1deg);
-	transform-origin: 18% 88%;
+	left: clamp(-150px, -9vw, -72px);
 }
 
 .ck-foliage--right {
-	right: 0;
-	transform: translate(43%, -50%) scaleX(-1) rotate(-1deg);
-	transform-origin: 82% 88%;
+	right: clamp(-150px, -9vw, -72px);
 }
 
-.has-motion .ck-foliage--left {
-	animation: ck-breeze-left 11s ease-in-out -2s infinite alternate;
+.ck-foliage-art {
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: visible;
 }
 
-.has-motion .ck-foliage--right {
-	animation: ck-breeze-right 13s ease-in-out -6s infinite alternate;
+.ck-branch {
+	transform-box: fill-box;
+	will-change: transform;
+}
+
+.ck-branch--left {
+	transform-origin: 7% 100%;
+}
+
+.ck-branch--right {
+	transform-origin: 93% 100%;
+}
+
+.has-motion .ck-foliage--left .ck-branch {
+	animation: ck-breeze-left 11.4s ease-in-out -2.1s infinite alternate;
+}
+
+.has-motion .ck-foliage--right .ck-branch {
+	animation: ck-breeze-right 14.2s ease-in-out -6.4s infinite alternate;
 }
 
 @keyframes ck-breeze-left {
-	from { transform: translate(-43%, -50%) rotate(-1.2deg); }
-	to { transform: translate(-43%, -50%) rotate(1.5deg); }
+	from { transform: translate(-1px, 1px) rotate(-2deg); }
+	to { transform: translate(1px, -1px) rotate(2deg); }
 }
 
 @keyframes ck-breeze-right {
-	from { transform: translate(43%, -50%) scaleX(-1) rotate(-1.4deg); }
-	to { transform: translate(43%, -50%) scaleX(-1) rotate(1deg); }
+	from { transform: translate(1px, 1px) rotate(1.8deg); }
+	to { transform: translate(-1px, -1px) rotate(-2deg); }
 }
 
 .ck-content {
@@ -353,27 +367,26 @@ input:focus-visible {
 	}
 
 	.ck-foliage {
-		top: 21%;
-		width: 70vw;
-		max-height: 48%;
-		opacity: 0.08;
+		bottom: -22px;
+		width: min(105vw, 460px);
+		opacity: 0.14;
 	}
 
 	.ck-foliage--left {
-		transform: translate(-72%, -50%) rotate(1deg);
+		left: -18vw;
 	}
 
 	.ck-foliage--right {
-		transform: translate(72%, -50%) scaleX(-1) rotate(-1deg);
-	}
-
-	.has-motion .ck-foliage--left,
-	.has-motion .ck-foliage--right {
-		animation: none;
+		display: none;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
+	.has-motion .ck-branch {
+		animation: none !important;
+		transform: none !important;
+	}
+
 	* {
 		scroll-behavior: auto !important;
 		animation-duration: 0.01ms !important;
