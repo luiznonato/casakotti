@@ -74,10 +74,9 @@ input:focus-visible {
 	display: flex;
 	flex-direction: column;
 	width: min(100%, 42rem);
-	aspect-ratio: 2 / 3;
+	aspect-ratio: 6 / 9;
 	max-height: calc(100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-	max-width: min(100%, calc((100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 2 / 3));
-	overflow: hidden;
+	max-width: min(100%, calc((100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 6 / 9));
 }
 
 .ck-foliage-layer {
@@ -91,12 +90,12 @@ input:focus-visible {
 .ck-foliage {
 	position: absolute;
 	bottom: 0;
-	width: 42%;
+	width: 34%;
 	height: auto;
 	aspect-ratio: 30 / 44;
 	overflow: visible;
 	color: var(--ck-foliage);
-	opacity: 0.2;
+	opacity: 0.22;
 	pointer-events: none;
 	user-select: none;
 }
@@ -140,8 +139,8 @@ input:focus-visible {
 	display: flex;
 	width: min(100%, 36rem);
 	margin: 0 auto;
-	flex: 1 0 auto;
-	padding: 8% 8% 6%;
+	flex: 1 1 auto;
+	padding: 9% 18% 4%;
 	text-align: center;
 	flex-direction: column;
 	align-items: center;
@@ -315,7 +314,7 @@ input:focus-visible {
 	display: flex;
 	width: min(100%, 40rem);
 	margin: 0 auto;
-	padding: 0 8% 6%;
+	padding: 0 10% 5%;
 	color: var(--ck-muted);
 	font-size: 0.72rem;
 	line-height: 1.4;
@@ -359,7 +358,7 @@ input:focus-visible {
 	to { transform: rotate(-1.8deg); }
 }
 
-/* Mobile: taller side frame, smaller logo, readable center column. */
+/* Same 6×9 frame on phones: keep the open center, compact the copy. */
 @media (max-width: 700px) {
 	:root {
 		--ck-gutter: 1.15rem;
@@ -371,43 +370,42 @@ input:focus-visible {
 	}
 
 	.ck-foliage {
-		width: 44%;
+		width: 34%;
 	}
 
 	.ck-main {
 		width: 100%;
-		padding: 0.25rem 0.35rem 1.25rem;
-		justify-content: flex-start;
+		padding: 6% 16% 3%;
 	}
 
 	.ck-brand {
-		margin-bottom: 1.15rem;
+		margin-bottom: 0.85rem;
 	}
 
 	.custom-logo,
 	.ck-brand-logo {
-		width: min(58vw, 198px);
+		width: min(42%, 168px);
 	}
 
 	.ck-tagline {
-		margin-top: 0.45rem;
-		font-size: 0.62rem;
+		margin-top: 0.4rem;
+		font-size: 0.58rem;
 		letter-spacing: 0.16em;
 	}
 
 	.ck-message h1 {
-		font-size: 1.28rem;
+		font-size: 1.05rem;
 		line-height: 1.26;
 		letter-spacing: 0.04em;
 	}
 
 	.ck-message > p {
-		margin-top: 0.75rem;
-		font-size: 0.9rem;
+		margin-top: 0.55rem;
+		font-size: 0.8rem;
 	}
 
 	.ck-interest {
-		margin-top: 1.2rem;
+		margin-top: 0.9rem;
 	}
 
 	.ck-form__row {
@@ -417,20 +415,21 @@ input:focus-visible {
 	.ck-form button,
 	.ck-contact-fallback {
 		width: 100%;
-		min-height: 48px;
+		min-height: 44px;
+		padding: 10px 16px;
 	}
 
 	.ck-form input[type="email"] {
-		min-height: 48px;
+		min-height: 44px;
 	}
 
 	.ck-footer {
 		width: 100%;
 		flex-wrap: wrap;
 		justify-content: space-between;
-		font-size: 0.68rem;
+		font-size: 0.62rem;
 		gap: 8px 16px;
-		padding: 0.35rem 0.15rem 0;
+		padding: 0 8% 4%;
 	}
 
 	.ck-footer nav {
@@ -439,24 +438,16 @@ input:focus-visible {
 }
 
 @media (min-width: 701px) and (max-width: 1100px) {
-	.ck-foliage {
-		width: 42%;
-	}
-
 	.custom-logo,
 	.ck-brand-logo {
-		width: min(34vw, 260px);
+		width: min(34vw, 240px);
 	}
 }
 
 @media (min-width: 1101px) {
-	.ck-foliage {
-		width: 42%;
-	}
-
 	.custom-logo,
 	.ck-brand-logo {
-		width: min(22vw, 300px);
+		width: min(22vw, 280px);
 	}
 }
 

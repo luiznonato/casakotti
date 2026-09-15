@@ -2,6 +2,10 @@
 
 Data: 15 de setembro de 2026.
 
+## Composição 6×9 (tema 1.4.7)
+
+A página pública centra um palco 6×9 (1024×1536 e equivalentes). Os ramos originais ocupam cerca de um terço da largura em cada canto inferior, com o centro aberto. Sem `overflow` no palco de conteúdo; a camada `.ck-foliage-layer` recorta só a borda do quadro.
+
 ## Composição responsiva (tema 1.4.0)
 
 Verificado em WordPress local nas larguras 320, 375, 390, 430, 768 e 1440 px, mais uma janela baixa 375 × 560.
@@ -12,7 +16,7 @@ Verificado em WordPress local nas larguras 320, 375, 390, 430, 768 e 1440 px, ma
 - Logo menor no celular; títulos em Montserrat caixa alta.
 - Campo, botão e consentimento permanecem legíveis no centro.
 - Sem `overflow` no `body` para esconder largura; rolagem vertical permitida em tela baixa.
-- Animação: rotação lenta (~0,7°) na base, desligada com `prefers-reduced-motion`.
+- Animação: rotação lenta na base, desligada com `prefers-reduced-motion`.
 
 ## Função (já exercitada nesta entrega)
 

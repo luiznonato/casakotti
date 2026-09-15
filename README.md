@@ -47,7 +47,7 @@ O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre 
 
 O tema só renderiza esses assets empacotados e sanitizados; não habilita upload irrestrito de SVG. Cada ramo mantém seus paths e transforms originais e recebe uma oscilação independente a partir da base. A opção **Ativar animações das folhagens** permanece editável no Personalizador e `prefers-reduced-motion` sempre exibe a composição estática.
 
-A composição pública usa os ramos originais como moldura lateral a partir dos cantos inferiores, no mesmo espírito do rótulo. O recorte das folhas fica na camada decorativa; a página pode rolar verticalmente em telas baixas ou com texto maior. O centro permanece reservado para logo, títulos e formulário.
+A composição pública replica o quadro 6×9 da referência (mesmo espírito do rótulo): palco `.ck-stage` com `aspect-ratio: 6 / 9`, ramos inteiros nos cantos inferiores sem se encontrarem no centro, e recorte só na borda do quadro. O centro permanece reservado para logo, títulos e formulário. Em telas baixas a página pode rolar.
 
 Para gerar novamente os pacotes:
 
