@@ -83,7 +83,7 @@ input:focus-visible {
 	height: 58svh;
 	overflow: hidden;
 	color: var(--ck-foliage);
-	opacity: 0.4;
+	opacity: 0.2;
 	pointer-events: none;
 	user-select: none;
 }
