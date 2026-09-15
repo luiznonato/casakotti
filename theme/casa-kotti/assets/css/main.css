@@ -87,7 +87,7 @@ input:focus-visible {
 	height: 60%;
 	overflow: hidden;
 	color: var(--ck-foliage);
-	opacity: 0.48;
+	opacity: 0.55;
 }
 
 .ck-foliage--left {
