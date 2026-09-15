@@ -79,9 +79,10 @@ input:focus-visible {
 .ck-foliage {
 	position: absolute;
 	bottom: 0;
-	width: 28vw;
-	height: 58svh;
-	overflow: hidden;
+	width: min(32vw, 19rem);
+	height: auto;
+	aspect-ratio: 30 / 44;
+	overflow: visible;
 	color: var(--ck-foliage);
 	opacity: 0.2;
 	pointer-events: none;
@@ -97,27 +98,20 @@ input:focus-visible {
 }
 
 .ck-foliage__motion {
-	position: absolute;
-	bottom: 0;
+	width: 100%;
 	height: 100%;
-	width: calc(58svh * 30 / 44);
-	transform-origin: 14% 100%;
-}
-
-.ck-foliage--left .ck-foliage__motion {
-	left: -6%;
+	transform-origin: 18% 100%;
 }
 
 .ck-foliage--right .ck-foliage__motion {
-	right: -6%;
-	left: auto;
-	transform-origin: 86% 100%;
+	transform-origin: 82% 100%;
 }
 
 .ck-foliage-art {
 	display: block;
 	width: 100%;
 	height: 100%;
+	overflow: visible;
 }
 
 .ck-foliage-art path {
@@ -365,12 +359,7 @@ input:focus-visible {
 	}
 
 	.ck-foliage {
-		width: 34vw;
-		height: 52svh;
-	}
-
-	.ck-foliage__motion {
-		width: calc(52svh * 30 / 44);
+		width: 36vw;
 	}
 
 	.ck-main {
@@ -440,11 +429,6 @@ input:focus-visible {
 @media (min-width: 701px) and (max-width: 1100px) {
 	.ck-foliage {
 		width: 30vw;
-		height: 56svh;
-	}
-
-	.ck-foliage__motion {
-		width: calc(56svh * 30 / 44);
 	}
 
 	.custom-logo,
@@ -455,12 +439,7 @@ input:focus-visible {
 
 @media (min-width: 1101px) {
 	.ck-foliage {
-		width: 26vw;
-		height: 62svh;
-	}
-
-	.ck-foliage__motion {
-		width: calc(62svh * 30 / 44);
+		width: min(24vw, 20rem);
 	}
 
 	.custom-logo,
