@@ -25,11 +25,16 @@ Data: 15 de setembro de 2026.
 - Folhagens verificadas em desktop (1280 × 800): dois ramos com animações independentes de 11,4 s e 14,2 s, delays distintos e movimento restrito a `transform`.
 - Folhagens verificadas em mobile (375 × 812): apenas um ramo menor, sem interferência no conteúdo e sem rolagem horizontal.
 - Com `prefers-reduced-motion`, os ramos permanecem estáticos.
+- Logo oficial verificado em desktop e celular, com símbolo e lettering completos, proporção intrínseca de 1237 × 752 e sem efeitos CSS.
+- Montserrat variável carregada localmente em WOFF2 com resposta HTTP 200; peso computado 400 no H1.
+- H1 e complemento da marca verificados em caixa alta.
+- Ramo direito verificado com `display: block` e folhas reconhecíveis no celular, mantendo margem durante o movimento.
+- No viewport móvel de 375 px, `scrollWidth` e `clientWidth` permaneceram em 375 px, com `window.scrollX` igual a zero.
 
 ## Limitações reais
 
 - Não houve acesso ao WordPress ou banco do servidor de produção; nada foi publicado ou ativado nele.
 - A instalação local usou SQLite para teste isolado. Antes da produção, repita um cadastro em homologação com a versão de WordPress, PHP e banco usados pelo servidor.
-- O logo original ainda não foi fornecido. As capturas mostram o wordmark provisório.
+- O logo fornecido originalmente estava em JPEG sobre fundo branco. A integração remove apenas esse fundo e aplica o bege da identidade ao mesmo desenho; símbolo, lettering e proporções foram preservados.
 - O SVG fornecido contém dois grupos principais, um por ramo. Cada ramo é animado como unidade para preservar o desenho original sem deformar as folhas.
 - A prévia estática não executa persistência; as verificações funcionais acima foram feitas na instalação WordPress temporária.
