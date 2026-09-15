@@ -7,6 +7,7 @@
 
 get_header();
 ?>
+<div class="ck-page">
 <main class="ck-content">
 	<?php
 	while ( have_posts() ) {
@@ -16,5 +17,6 @@ get_header();
 	}
 	?>
 </main>
+</div>
 <?php
 get_footer();

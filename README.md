@@ -41,13 +41,11 @@ O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre 
 ## Logo e folhagens
 
 - **Logo integrado:** o símbolo e o lettering originais foram preservados em `assets/images/logo-casa-kotti.png`, com fundo transparente e proporções originais. O painel continua permitindo substituí-lo sem alterar o tema.
-- **Folhagens integradas:** o SVG original fornecido foi sanitizado e separado nos dois grupos de ramo existentes:
-  - `theme/casa-kotti/assets/images/foliage-left.svg`;
-  - `theme/casa-kotti/assets/images/foliage-right.svg`.
+- **Fundo integrado:** a folhagem de referência está em `assets/images/foliage-frame.jpg` (JPEG original, 1024×1536, 2:3). O tema aplica essa imagem como fundo estático de `.ck-page`, sem SVG, sem recorte `cover` e sem deformar o desenho.
 
-O tema só renderiza esses assets empacotados e sanitizados; não habilita upload irrestrito de SVG. Cada ramo mantém seus paths e transforms originais e recebe uma oscilação independente a partir da base. A opção **Ativar animações das folhagens** permanece editável no Personalizador e `prefers-reduced-motion` sempre exibe a composição estática.
+O tema só renderiza esses assets empacotados; não habilita upload irrestrito de SVG.
 
-A composição pública replica o quadro 6×9 da referência (mesmo espírito do rótulo): palco `.ck-stage` com `aspect-ratio: 6 / 9`, ramos inteiros nos cantos inferiores sem se encontrarem no centro, e recorte só na borda do quadro. O centro permanece reservado para logo, títulos e formulário. Em telas baixas a página pode rolar.
+No celular a imagem ocupa 100% da largura visível, altura automática, centralizada na horizontal e alinhada à base. O contêiner cresce no mínimo até a altura 2:3 da largura (ou até 100svh, o que for maior) e completa o topo com `#252726`. No desktop a mesma imagem aparece inteira com `contain`, sem repetição e sem forçar uma página extra-alta.
 
 Para gerar novamente os pacotes:
 
@@ -62,10 +60,10 @@ rm -f dist/casa-kotti.zip dist/casa-kotti-interesses.zip
 A prévia estática ilustra a composição sem WordPress, persistência ou comportamento AJAX:
 
 ```bash
-php -S 127.0.0.1:8080 -t preview
+php -S 127.0.0.1:8080 -t .
 ```
 
-Acesse `http://127.0.0.1:8080`. Ela não substitui o teste do tema/plugin em WordPress.
+Acesse `http://127.0.0.1:8080/preview/`. Ela não substitui o teste do tema/plugin em WordPress.
 
 Capturas da implementação executada em WordPress:
 

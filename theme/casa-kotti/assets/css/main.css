@@ -4,8 +4,8 @@
 	--ck-muted: #bdb7ac;
 	--ck-line: rgba(229, 222, 209, 0.42);
 	--ck-error: #ffd0c8;
-	--ck-foliage: #e5ded1;
 	--ck-gutter: clamp(1.25rem, 8vw, 5.5rem);
+	--ck-frame: url("../images/foliage-frame.jpg");
 }
 
 @font-face {
@@ -22,6 +22,7 @@
 
 html {
 	background: var(--ck-bg);
+	overflow-x: hidden;
 }
 
 body {
@@ -34,6 +35,7 @@ body {
 	font-size: 16px;
 	font-weight: 400;
 	line-height: 1.6;
+	overflow-x: hidden;
 }
 
 a {
@@ -55,80 +57,20 @@ input:focus-visible {
 
 .ck-page {
 	position: relative;
+	z-index: 0;
 	display: flex;
-	align-items: center;
-	justify-content: center;
+	flex-direction: column;
 	width: 100%;
 	min-height: 100svh;
 	min-height: 100dvh;
+	min-height: max(100svh, calc(100vw * 3 / 2));
+	min-height: max(100dvh, calc(100vw * 3 / 2));
 	isolation: isolate;
-	padding:
-		max(12px, env(safe-area-inset-top))
-		max(12px, env(safe-area-inset-right))
-		max(12px, env(safe-area-inset-bottom))
-		max(12px, env(safe-area-inset-left));
-}
-
-.ck-stage {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	width: min(100%, 42rem);
-	aspect-ratio: 6 / 9;
-	max-height: calc(100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-	max-width: min(100%, calc((100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 6 / 9));
-	container-type: inline-size;
-	container-name: ck-stage;
-}
-
-.ck-foliage-layer {
-	position: absolute;
-	inset: 0;
-	z-index: 0;
-	overflow: hidden;
-	pointer-events: none;
-}
-
-.ck-foliage {
-	position: absolute;
-	bottom: 0;
-	width: 40%;
-	height: auto;
-	aspect-ratio: 30 / 44;
-	overflow: visible;
-	color: var(--ck-foliage);
-	opacity: 0.22;
-	pointer-events: none;
-	user-select: none;
-}
-
-.ck-foliage--left {
-	left: 0;
-}
-
-.ck-foliage--right {
-	right: 0;
-}
-
-.ck-foliage__motion {
-	width: 100%;
-	height: 100%;
-	transform-origin: 18% 100%;
-}
-
-.ck-foliage--right .ck-foliage__motion {
-	transform-origin: 82% 100%;
-}
-
-.ck-foliage-art {
-	display: block;
-	width: 100%;
-	height: 100%;
-	overflow: visible;
-}
-
-.ck-foliage-art path {
-	fill: currentColor;
+	background-color: var(--ck-bg);
+	background-image: var(--ck-frame);
+	background-repeat: no-repeat;
+	background-size: 100% auto;
+	background-position: center bottom;
 }
 
 .ck-main,
@@ -142,7 +84,11 @@ input:focus-visible {
 	width: min(100%, 36rem);
 	margin: 0 auto;
 	flex: 1 1 auto;
-	padding: 8% 12% 4%;
+	padding:
+		max(2.5rem, env(safe-area-inset-top))
+		max(1.25rem, env(safe-area-inset-right))
+		1.5rem
+		max(1.25rem, env(safe-area-inset-left));
 	text-align: center;
 	flex-direction: column;
 	align-items: center;
@@ -209,17 +155,6 @@ input:focus-visible {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) auto;
 	gap: 12px;
-}
-
-@container ck-stage (max-width: 1080px) {
-	.ck-form__row {
-		grid-template-columns: 1fr;
-	}
-
-	.ck-form button,
-	.ck-contact-fallback {
-		width: 100%;
-	}
 }
 
 .ck-form label {
@@ -325,9 +260,14 @@ input:focus-visible {
 
 .ck-footer {
 	display: flex;
-	width: min(100%, 40rem);
+	width: 100%;
+	max-width: 40rem;
 	margin: 0 auto;
-	padding: 0 10% 5%;
+	padding:
+		0
+		max(1.25rem, env(safe-area-inset-right))
+		max(1.25rem, env(safe-area-inset-bottom))
+		max(1.25rem, env(safe-area-inset-left));
 	color: var(--ck-muted);
 	font-size: 0.72rem;
 	line-height: 1.4;
@@ -353,72 +293,43 @@ input:focus-visible {
 	margin: 80px auto;
 }
 
-.has-motion .ck-foliage--left .ck-foliage__motion {
-	animation: ck-breeze-left 9.5s ease-in-out -1.4s infinite alternate;
-}
-
-.has-motion .ck-foliage--right .ck-foliage__motion {
-	animation: ck-breeze-right 11.8s ease-in-out -4.6s infinite alternate;
-}
-
-@keyframes ck-breeze-left {
-	from { transform: rotate(-1.8deg); }
-	to { transform: rotate(1.6deg); }
-}
-
-@keyframes ck-breeze-right {
-	from { transform: rotate(1.5deg); }
-	to { transform: rotate(-1.8deg); }
-}
-
-/* Same 6×9 frame on phones: keep the open center, compact the copy. */
 @media (max-width: 700px) {
 	:root {
 		--ck-gutter: 1.15rem;
 	}
 
-	.ck-page {
-		padding-top: max(8px, env(safe-area-inset-top));
-		padding-bottom: max(8px, env(safe-area-inset-bottom));
-	}
-
-	.ck-foliage {
-		width: 40%;
-	}
-
 	.ck-main {
 		width: 100%;
-		padding: 5% 12% 3%;
 	}
 
 	.ck-brand {
-		margin-bottom: 0.85rem;
+		margin-bottom: 1.15rem;
 	}
 
 	.custom-logo,
 	.ck-brand-logo {
-		width: min(42%, 168px);
+		width: min(58vw, 198px);
 	}
 
 	.ck-tagline {
-		margin-top: 0.4rem;
-		font-size: 0.58rem;
+		margin-top: 0.45rem;
+		font-size: 0.62rem;
 		letter-spacing: 0.16em;
 	}
 
 	.ck-message h1 {
-		font-size: 1.05rem;
+		font-size: 1.28rem;
 		line-height: 1.26;
 		letter-spacing: 0.04em;
 	}
 
 	.ck-message > p {
-		margin-top: 0.55rem;
-		font-size: 0.8rem;
+		margin-top: 0.75rem;
+		font-size: 0.9rem;
 	}
 
 	.ck-interest {
-		margin-top: 0.9rem;
+		margin-top: 1.2rem;
 	}
 
 	.ck-form__row {
@@ -428,48 +339,35 @@ input:focus-visible {
 	.ck-form button,
 	.ck-contact-fallback {
 		width: 100%;
-		min-height: 44px;
-		padding: 10px 16px;
+		min-height: 48px;
 	}
 
 	.ck-form input[type="email"] {
-		min-height: 44px;
+		min-height: 48px;
 	}
 
 	.ck-footer {
-		width: 100%;
 		flex-wrap: wrap;
-		justify-content: space-between;
-		font-size: 0.62rem;
+		font-size: 0.68rem;
 		gap: 8px 16px;
-		padding: 0 8% 4%;
-	}
-
-	.ck-footer nav {
-		flex-wrap: wrap;
 	}
 }
 
-@media (min-width: 701px) and (max-width: 1100px) {
-	.custom-logo,
-	.ck-brand-logo {
-		width: min(34vw, 240px);
+@media (min-width: 701px) {
+	.ck-page {
+		min-height: 100svh;
+		min-height: 100dvh;
+		background-size: contain;
+		background-position: center;
 	}
-}
 
-@media (min-width: 1101px) {
 	.custom-logo,
 	.ck-brand-logo {
-		width: min(22vw, 280px);
+		width: min(34vw, 280px);
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.has-motion .ck-foliage__motion {
-		animation: none !important;
-		transform: none !important;
-	}
-
 	* {
 		scroll-behavior: auto !important;
 		animation-duration: 0.01ms !important;

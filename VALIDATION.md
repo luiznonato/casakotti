@@ -2,21 +2,18 @@
 
 Data: 15 de setembro de 2026.
 
-## Composição 6×9 (tema 1.4.8)
+## Composição de fundo (tema 1.4.9)
 
-A página pública centra um palco 6×9 (1024×1536 e equivalentes). Os ramos originais ocupam cerca de um terço da largura em cada canto inferior, com o centro aberto. Sem `overflow` no palco de conteúdo; a camada `.ck-foliage-layer` recorta só a borda do quadro.
+O JPEG original 1024×1536 é o fundo de `.ck-page`. Mobile: `background-size: 100% auto; background-position: center bottom`. Desktop: `contain` centralizado. Sem `cover`, sem `100% 100%`, sem opacidade extra e sem ramos SVG.
 
 ## Composição responsiva (tema 1.4.0)
 
-Verificado em WordPress local nas larguras 320, 375, 390, 430, 768 e 1440 px, mais uma janela baixa 375 × 560.
+Capturas da prévia estática nas larguras 360, 390, 430 e 1440 px.
 
-- Os dois ramos originais formam moldura lateral a partir dos cantos inferiores; o ramo direito acompanha a borda direita.
-- O viewBox foi ajustado ao envelope da tinta (sem esticar paths) para eliminar o vazio que concentrava os desenhos no rodapé.
-- Posicionamento em wrappers separados da animação; recorte na camada `.ck-foliage-layer`; sem `position: fixed`.
-- Logo menor no celular; títulos em Montserrat caixa alta.
-- Campo, botão e consentimento permanecem legíveis no centro.
-- Sem `overflow` no `body` para esconder largura; rolagem vertical permitida em tela baixa.
-- Animação: rotação lenta na base, desligada com `prefers-reduced-motion`.
+- Fundo JPEG original, inteiro, sem distorção e sem duplicar folhas.
+- Folhas nos cantos inferiores, subindo pelas laterais, como no arquivo.
+- Sem rolagem horizontal.
+- Logo, textos, formulário e rodapé acima do fundo, clicáveis.
 
 ## Função (já exercitada nesta entrega)
 
