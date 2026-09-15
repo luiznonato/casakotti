@@ -19,6 +19,7 @@ $foliage_right = get_theme_file_path( 'assets/images/foliage-right.svg' );
 $motion_class  = casa_kotti_setting( 'animations_enabled', true ) ? ' has-motion' : '';
 ?>
 <div class="ck-page<?php echo esc_attr( $motion_class ); ?>">
+	<div class="ck-stage">
 	<div class="ck-foliage-layer" aria-hidden="true">
 		<?php if ( file_exists( $foliage_left ) ) : ?>
 			<div class="ck-foliage ck-foliage--left">
@@ -83,6 +84,7 @@ $motion_class  = casa_kotti_setting( 'animations_enabled', true ) ? ' has-motion
 		</nav>
 		<p>&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?> Casa Kotti</p>
 	</footer>
+	</div>
 </div>
 <?php
 get_footer();
