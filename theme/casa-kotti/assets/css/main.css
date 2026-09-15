@@ -276,7 +276,7 @@ input:focus-visible {
 }
 
 .ck-foliage--right {
-	right: clamp(-36px, -2vw, -16px);
+	right: clamp(24px, 2.5vw, 40px);
 	transform-origin: 93% 100%;
 }
 
@@ -367,7 +367,7 @@ input:focus-visible {
 	}
 
 	.ck-foliage--right {
-		right: -10vw;
+		right: 8vw;
 	}
 }
 
