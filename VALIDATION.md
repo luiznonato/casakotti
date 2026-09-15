@@ -21,11 +21,15 @@ Data: 15 de setembro de 2026.
 - Revisão visual desktop (1280 × 800), mobile (375 × 812) e viewport baixo (400 × 500).
 - Ausência de rolagem horizontal, rolagem vertical natural, ordem de teclado, foco visível, checkbox desmarcado e mensagens de validação.
 - Emulação de `prefers-reduced-motion`.
+- SVG original inspecionado e sanitizado, sem scripts, eventos ou referências externas.
+- Folhagens verificadas em desktop (1280 × 800): dois ramos com animações independentes de 11,4 s e 14,2 s, delays distintos e movimento restrito a `transform`.
+- Folhagens verificadas em mobile (375 × 812): apenas um ramo menor, sem interferência no conteúdo e sem rolagem horizontal.
+- Com `prefers-reduced-motion`, os ramos permanecem estáticos.
 
 ## Limitações reais
 
 - Não houve acesso ao WordPress ou banco do servidor de produção; nada foi publicado ou ativado nele.
 - A instalação local usou SQLite para teste isolado. Antes da produção, repita um cadastro em homologação com a versão de WordPress, PHP e banco usados pelo servidor.
-- Logo e folhagens originais não foram fornecidos. As capturas mostram o wordmark provisório e nenhuma folhagem.
-- O comportamento com grupos internos dos SVGs só pode ser refinado após receber os arquivos originais e inspecionar sua estrutura.
+- O logo original ainda não foi fornecido. As capturas mostram o wordmark provisório.
+- O SVG fornecido contém dois grupos principais, um por ramo. Cada ramo é animado como unidade para preservar o desenho original sem deformar as folhas.
 - A prévia estática não executa persistência; as verificações funcionais acima foram feitas na instalação WordPress temporária.
