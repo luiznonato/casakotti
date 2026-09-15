@@ -69,6 +69,7 @@ Acesse `http://127.0.0.1:8080`. Ela não substitui o teste do tema/plugin em Wor
 
 Capturas da implementação executada em WordPress:
 
+- [`preview/frame-6x9.png`](preview/frame-6x9.png) (1024 × 1536, quadro 6×9)
 - [`preview/desktop.png`](preview/desktop.png) (1440 × 900)
 - [`preview/mobile.png`](preview/mobile.png) (375 × 812)
 - [`preview/viewport-320.png`](preview/viewport-320.png)

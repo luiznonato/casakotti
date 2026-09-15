@@ -77,6 +77,8 @@ input:focus-visible {
 	aspect-ratio: 6 / 9;
 	max-height: calc(100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 	max-width: min(100%, calc((100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 6 / 9));
+	container-type: inline-size;
+	container-name: ck-stage;
 }
 
 .ck-foliage-layer {
@@ -90,7 +92,7 @@ input:focus-visible {
 .ck-foliage {
 	position: absolute;
 	bottom: 0;
-	width: 34%;
+	width: 40%;
 	height: auto;
 	aspect-ratio: 30 / 44;
 	overflow: visible;
@@ -140,7 +142,7 @@ input:focus-visible {
 	width: min(100%, 36rem);
 	margin: 0 auto;
 	flex: 1 1 auto;
-	padding: 9% 18% 4%;
+	padding: 8% 12% 4%;
 	text-align: center;
 	flex-direction: column;
 	align-items: center;
@@ -207,6 +209,17 @@ input:focus-visible {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) auto;
 	gap: 12px;
+}
+
+@container ck-stage (max-width: 1080px) {
+	.ck-form__row {
+		grid-template-columns: 1fr;
+	}
+
+	.ck-form button,
+	.ck-contact-fallback {
+		width: 100%;
+	}
 }
 
 .ck-form label {
@@ -370,12 +383,12 @@ input:focus-visible {
 	}
 
 	.ck-foliage {
-		width: 34%;
+		width: 40%;
 	}
 
 	.ck-main {
 		width: 100%;
-		padding: 6% 16% 3%;
+		padding: 5% 12% 3%;
 	}
 
 	.ck-brand {

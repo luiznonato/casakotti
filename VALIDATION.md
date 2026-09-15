@@ -2,7 +2,7 @@
 
 Data: 15 de setembro de 2026.
 
-## Composição 6×9 (tema 1.4.7)
+## Composição 6×9 (tema 1.4.8)
 
 A página pública centra um palco 6×9 (1024×1536 e equivalentes). Os ramos originais ocupam cerca de um terço da largura em cada canto inferior, com o centro aberto. Sem `overflow` no palco de conteúdo; a camada `.ck-foliage-layer` recorta só a borda do quadro.
 
