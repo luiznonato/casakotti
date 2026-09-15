@@ -270,10 +270,12 @@ input:focus-visible {
 
 .ck-foliage--left {
 	left: clamp(-36px, -2vw, -16px);
+	transform-origin: 7% 100%;
 }
 
 .ck-foliage--right {
 	right: clamp(-150px, -9vw, -72px);
+	transform-origin: 93% 100%;
 }
 
 .ck-foliage-art {
@@ -283,25 +285,14 @@ input:focus-visible {
 	overflow: visible;
 }
 
-.ck-branch {
-	transform-box: fill-box;
+.has-motion .ck-foliage--left {
+	animation: ck-breeze-left 11.4s ease-in-out -2.1s infinite alternate;
 	will-change: transform;
 }
 
-.ck-branch--left {
-	transform-origin: 7% 100%;
-}
-
-.ck-branch--right {
-	transform-origin: 93% 100%;
-}
-
-.has-motion .ck-foliage--left .ck-branch {
-	animation: ck-breeze-left 11.4s ease-in-out -2.1s infinite alternate;
-}
-
-.has-motion .ck-foliage--right .ck-branch {
+.has-motion .ck-foliage--right {
 	animation: ck-breeze-right 14.2s ease-in-out -6.4s infinite alternate;
+	will-change: transform;
 }
 
 @keyframes ck-breeze-left {
@@ -382,9 +373,10 @@ input:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.has-motion .ck-branch {
+	.has-motion .ck-foliage {
 		animation: none !important;
 		transform: none !important;
+		will-change: auto;
 	}
 
 	* {
