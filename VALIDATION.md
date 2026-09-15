@@ -18,18 +18,18 @@ Data: 15 de setembro de 2026.
 - Exportação CSV e neutralização de valor iniciado por `=`.
 - Callbacks nativos de exportação e exclusão de dados pessoais.
 - Integridade dos dois arquivos ZIP com `unzip -t`.
-- Revisão visual desktop (1280 × 800), mobile (375 × 812) e viewport baixo (400 × 500).
-- Ausência de rolagem horizontal, rolagem vertical natural, ordem de teclado, foco visível, checkbox desmarcado e mensagens de validação.
-- Emulação de `prefers-reduced-motion`.
-- SVG original inspecionado e sanitizado, sem scripts, eventos ou referências externas.
-- Folhagens verificadas em desktop (1280 × 800): dois ramos com animações independentes de 11,4 s e 14,2 s, delays distintos e movimento restrito a `transform`.
-- Folhagens verificadas em mobile (375 × 812): apenas um ramo menor, sem interferência no conteúdo e sem rolagem horizontal.
+- Revisão visual desktop (1280 × 800), mobile (375 × 812) e viewport baixo (1024 × 432).
+- Página com `overflow: hidden` e altura `100svh`: o conteúdo cabe na viewport, sem rolagem vertical nem horizontal.
+- Em 1024 × 432, logo, título, formulário e rodapé permanecem visíveis, sem corte.
+- Rodapé com política de privacidade e «© 2026 Casa Kotti» na mesma linha de base; em 375 × 812 os três itens do rodapé (contato, privacidade e copyright) compartilham a mesma linha.
+- Ramos originais ancorados nos cantos inferiores, com a mesma escala em cada viewport; no celular os dois ramos permanecem visíveis.
+- Folhagens com animações independentes de 11,4 s e 14,2 s, delays distintos e movimento restrito a `transform`.
 - Com `prefers-reduced-motion`, os ramos permanecem estáticos.
+- SVG original inspecionado e sanitizado, sem scripts, eventos ou referências externas.
 - Logo oficial verificado em desktop e celular, com símbolo e lettering completos, proporção intrínseca de 1237 × 752 e sem efeitos CSS.
 - Montserrat variável carregada localmente em WOFF2 com resposta HTTP 200; peso computado 400 no H1.
 - H1 e complemento da marca verificados em caixa alta.
-- Ramo direito verificado com `display: block` e folhas reconhecíveis no celular, mantendo margem durante o movimento.
-- No viewport móvel de 375 px, `scrollWidth` e `clientWidth` permaneceram em 375 px, com `window.scrollX` igual a zero.
+- Checkbox desmarcado, foco visível e ordem de teclado preservados.
 
 ## Limitações reais
 

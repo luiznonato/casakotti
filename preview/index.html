@@ -7,10 +7,12 @@
 	<link rel="stylesheet" href="../theme/casa-kotti/assets/css/main.css">
 </head>
 <body>
-	<div class="ck-page">
+	<div class="ck-page has-motion">
+		<div class="ck-foliage ck-foliage--left" aria-hidden="true"></div>
+		<div class="ck-foliage ck-foliage--right" aria-hidden="true"></div>
 		<main class="ck-main">
 			<div class="ck-brand">
-				<p class="ck-wordmark" aria-label="Casa Kotti">Casa Kotti</p>
+				<img class="ck-brand-logo" src="../theme/casa-kotti/assets/images/logo-casa-kotti.png" alt="Casa Kotti" width="1237" height="752">
 				<p class="ck-tagline">Perfumaria para ambientes</p>
 			</div>
 			<div class="ck-message">
@@ -34,9 +36,20 @@
 			</div>
 		</main>
 		<footer class="ck-footer">
-			<nav aria-label="Links institucionais"></nav>
+			<nav aria-label="Links institucionais">
+				<a href="#">Fale com a Casa Kotti</a>
+				<a href="#">Política de privacidade</a>
+			</nav>
 			<p>&copy; 2026 Casa Kotti</p>
 		</footer>
 	</div>
+	<script>
+		fetch('../theme/casa-kotti/assets/images/foliage-left.svg').then((r) => r.text()).then((svg) => {
+			document.querySelector('.ck-foliage--left').innerHTML = svg;
+		});
+		fetch('../theme/casa-kotti/assets/images/foliage-right.svg').then((r) => r.text()).then((svg) => {
+			document.querySelector('.ck-foliage--right').innerHTML = svg;
+		});
+	</script>
 </body>
 </html>

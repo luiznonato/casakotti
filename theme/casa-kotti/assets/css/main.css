@@ -355,22 +355,27 @@ input:focus-visible {
 	}
 
 	.ck-footer {
-		flex-direction: row;
-		flex-wrap: wrap;
-		align-items: center;
-		justify-content: center;
-		text-align: center;
-		gap: 8px 20px;
+		flex-wrap: nowrap;
+		align-items: baseline;
+		justify-content: space-between;
+		font-size: 0.58rem;
+		gap: 8px;
+	}
+
+	.ck-footer a,
+	.ck-footer p {
+		white-space: nowrap;
 	}
 
 	.ck-footer nav {
-		justify-content: center;
+		flex-wrap: nowrap;
+		gap: 8px 10px;
 	}
 
 	.ck-foliage {
 		bottom: 0;
-		width: min(90vw, 400px);
-		opacity: 0.12;
+		width: min(52vw, 240px);
+		opacity: 0.2;
 	}
 
 	.ck-foliage--left {
