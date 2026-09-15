@@ -2,18 +2,9 @@
 
 Data: 15 de setembro de 2026.
 
-## Composição de fundo (tema 1.4.9)
+## Composição SVG 2:3 (tema 1.5.0)
 
-O JPEG original 1024×1536 é o fundo de `.ck-page`. Mobile: `background-size: 100% auto; background-position: center bottom`. Desktop: `contain` centralizado. Sem `cover`, sem `100% 100%`, sem opacidade extra e sem ramos SVG.
-
-## Composição responsiva (tema 1.4.0)
-
-Capturas da prévia estática nas larguras 360, 390, 430 e 1440 px.
-
-- Fundo JPEG original, inteiro, sem distorção e sem duplicar folhas.
-- Folhas nos cantos inferiores, subindo pelas laterais, como no arquivo.
-- Sem rolagem horizontal.
-- Logo, textos, formulário e rodapé acima do fundo, clicáveis.
+Camada `.ck-foliage-layer` com `aspect-ratio: 2 / 3`, 100% da largura no mobile, alinhada à base. Ramos dimensionados em 35% × 60% da camada, `slice` sem distorção, animação só no wrapper interno. Sem JPEG de fundo.
 
 ## Função (já exercitada nesta entrega)
 

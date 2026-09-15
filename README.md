@@ -41,11 +41,7 @@ O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre 
 ## Logo e folhagens
 
 - **Logo integrado:** o símbolo e o lettering originais foram preservados em `assets/images/logo-casa-kotti.png`, com fundo transparente e proporções originais. O painel continua permitindo substituí-lo sem alterar o tema.
-- **Fundo integrado:** a folhagem de referência está em `assets/images/foliage-frame.jpg` (JPEG original, 1024×1536, 2:3). O tema aplica essa imagem como fundo estático de `.ck-page`, sem SVG, sem recorte `cover` e sem deformar o desenho.
-
-O tema só renderiza esses assets empacotados; não habilita upload irrestrito de SVG.
-
-No celular a imagem ocupa 100% da largura visível, altura automática, centralizada na horizontal e alinhada à base. O contêiner cresce no mínimo até a altura 2:3 da largura (ou até 100svh, o que for maior) e completa o topo com `#252726`. No desktop a mesma imagem aparece inteira com `contain`, sem repetição e sem forçar uma página extra-alta.
+- **Folhagens integradas:** os ramos originais estão em `assets/images/foliage-left.svg` e `assets/images/foliage-right.svg`. Uma camada `.ck-foliage-layer` com `aspect-ratio: 2 / 3` ancora a composição na base; cada ramo ocupa cerca de 35% da largura e 60% da altura dessa camada, com balanço suave na base do caule.
 
 Para gerar novamente os pacotes:
 

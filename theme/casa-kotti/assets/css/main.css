@@ -4,8 +4,8 @@
 	--ck-muted: #bdb7ac;
 	--ck-line: rgba(229, 222, 209, 0.42);
 	--ck-error: #ffd0c8;
+	--ck-foliage: #e5ded1;
 	--ck-gutter: clamp(1.25rem, 8vw, 5.5rem);
-	--ck-frame: url("../images/foliage-frame.jpg");
 }
 
 @font-face {
@@ -63,14 +63,59 @@ input:focus-visible {
 	width: 100%;
 	min-height: 100svh;
 	min-height: 100dvh;
-	min-height: max(100svh, calc(100vw * 3 / 2));
-	min-height: max(100dvh, calc(100vw * 3 / 2));
 	isolation: isolate;
-	background-color: var(--ck-bg);
-	background-image: var(--ck-frame);
-	background-repeat: no-repeat;
-	background-size: 100% auto;
-	background-position: center bottom;
+	background: var(--ck-bg);
+}
+
+.ck-foliage-layer {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	z-index: 0;
+	width: 100%;
+	max-width: min(42rem, calc(100svh * 2 / 3));
+	aspect-ratio: 2 / 3;
+	overflow: hidden;
+	pointer-events: none;
+	transform: translateX(-50%);
+}
+
+.ck-foliage {
+	position: absolute;
+	bottom: 0;
+	width: 35%;
+	height: 60%;
+	overflow: hidden;
+	color: var(--ck-foliage);
+	opacity: 0.48;
+}
+
+.ck-foliage--left {
+	left: 0;
+}
+
+.ck-foliage--right {
+	right: 0;
+}
+
+.ck-foliage__motion {
+	width: 100%;
+	height: 100%;
+	transform-origin: 0 100%;
+}
+
+.ck-foliage--right .ck-foliage__motion {
+	transform-origin: 100% 100%;
+}
+
+.ck-foliage-art {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.ck-foliage-art path {
+	fill: currentColor;
 }
 
 .ck-main,
@@ -354,20 +399,36 @@ input:focus-visible {
 }
 
 @media (min-width: 701px) {
-	.ck-page {
-		min-height: 100svh;
-		min-height: 100dvh;
-		background-size: contain;
-		background-position: center;
-	}
-
 	.custom-logo,
 	.ck-brand-logo {
 		width: min(34vw, 280px);
 	}
 }
 
+.has-motion .ck-foliage--left .ck-foliage__motion {
+	animation: ck-breeze-left 9.5s ease-in-out -1.4s infinite alternate;
+}
+
+.has-motion .ck-foliage--right .ck-foliage__motion {
+	animation: ck-breeze-right 11.8s ease-in-out -4.6s infinite alternate;
+}
+
+@keyframes ck-breeze-left {
+	from { transform: rotate(-1.2deg); }
+	to { transform: rotate(1.1deg); }
+}
+
+@keyframes ck-breeze-right {
+	from { transform: rotate(1.1deg); }
+	to { transform: rotate(-1.2deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
+	.has-motion .ck-foliage__motion {
+		animation: none !important;
+		transform: none !important;
+	}
+
 	* {
 		scroll-behavior: auto !important;
 		animation-duration: 0.01ms !important;

@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CASA_KOTTI_THEME_VERSION', '1.4.9' );
+define( 'CASA_KOTTI_THEME_VERSION', '1.5.0' );
 
 function casa_kotti_setup() {
 	add_theme_support( 'title-tag' );
@@ -113,7 +113,8 @@ function casa_kotti_customize_register( $wp_customize ) {
 	) );
 
 	foreach ( array(
-		'form_enabled' => array( 'Exibir formulário', true ),
+		'form_enabled'       => array( 'Exibir formulário', true ),
+		'animations_enabled' => array( 'Ativar animações das folhagens', true ),
 	) as $key => $config ) {
 		$setting_id = 'casa_kotti_' . $key;
 		$wp_customize->add_setting( $setting_id, array(
