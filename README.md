@@ -67,6 +67,11 @@ php -S 127.0.0.1:8080 -t preview
 
 Acesse `http://127.0.0.1:8080`. Ela não substitui o teste do tema/plugin em WordPress.
 
+Capturas da implementação executada em WordPress:
+
+- [`preview/desktop.webp`](preview/desktop.webp)
+- [`preview/mobile.webp`](preview/mobile.webp)
+
 ## Atualização GitHub → servidor
 
 1. Revise e integre a alteração no GitHub.
