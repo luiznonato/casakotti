@@ -2,9 +2,9 @@
 
 Data: 15 de setembro de 2026.
 
-## Composição SVG 2:3 (tema 1.5.0)
+## Composição SVG (tema 1.5.1)
 
-Camada `.ck-foliage-layer` com `aspect-ratio: 2 / 3`, 100% da largura no mobile, alinhada à base. Ramos dimensionados em 35% × 60% da camada, `slice` sem distorção, animação só no wrapper interno. Sem JPEG de fundo.
+Camada `.ck-foliage-layer` com `inset: 0` no `.ck-page` (`min-height: 100svh`). Ramos com altura 60% do contêiner, escala uniforme, excesso lateral recortado, opacidade 0,25. Sem quadro 2:3.
 
 ## Função (já exercitada nesta entrega)
 

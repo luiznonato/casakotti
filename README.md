@@ -41,7 +41,7 @@ O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre 
 ## Logo e folhagens
 
 - **Logo integrado:** o símbolo e o lettering originais foram preservados em `assets/images/logo-casa-kotti.png`, com fundo transparente e proporções originais. O painel continua permitindo substituí-lo sem alterar o tema.
-- **Folhagens integradas:** os ramos originais estão em `assets/images/foliage-left.svg` e `assets/images/foliage-right.svg`. Uma camada `.ck-foliage-layer` com `aspect-ratio: 2 / 3` ancora a composição na base; cada ramo ocupa cerca de 35% da largura e 60% da altura dessa camada, com balanço suave na base do caule.
+- **Folhagens integradas:** os ramos originais estão em `assets/images/foliage-left.svg` e `assets/images/foliage-right.svg`. Os ramos originais ficam numa camada `inset: 0` atrás do conteúdo. Cada um é escalado à ~60% da altura do contêiner, com recorte lateral; o balanço continua na base do caule.
 
 Para gerar novamente os pacotes:
 

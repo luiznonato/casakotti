@@ -69,25 +69,19 @@ input:focus-visible {
 
 .ck-foliage-layer {
 	position: absolute;
-	left: 50%;
-	bottom: 0;
+	inset: 0;
 	z-index: 0;
-	width: 100%;
-	max-width: min(42rem, calc(100svh * 2 / 3));
-	aspect-ratio: 2 / 3;
 	overflow: hidden;
 	pointer-events: none;
-	transform: translateX(-50%);
 }
 
 .ck-foliage {
 	position: absolute;
+	top: 40%;
 	bottom: 0;
-	width: 35%;
-	height: 60%;
+	width: 36%;
 	overflow: hidden;
-	color: var(--ck-foliage);
-	opacity: 0.55;
+	color: #e5ded1;
 }
 
 .ck-foliage--left {
@@ -99,23 +93,28 @@ input:focus-visible {
 }
 
 .ck-foliage__motion {
-	width: 100%;
 	height: 100%;
-	transform-origin: 0 100%;
+	width: auto;
+	aspect-ratio: 27.2 / 41.8;
+	transform-origin: 18% 100%;
+}
+
+.ck-foliage--left .ck-foliage__motion {
+	translate: -12% 0;
 }
 
 .ck-foliage--right .ck-foliage__motion {
-	transform-origin: 100% 100%;
+	margin-left: auto;
+	aspect-ratio: 24.8 / 41.8;
+	translate: 12% 0;
+	transform-origin: 82% 100%;
 }
 
 .ck-foliage-art {
 	display: block;
-	width: 100%;
 	height: 100%;
-}
-
-.ck-foliage-art path {
-	fill: currentColor;
+	width: auto;
+	max-width: none;
 }
 
 .ck-main,
