@@ -6,6 +6,14 @@
 	--ck-error: #ffd0c8;
 }
 
+@font-face {
+	font-family: "Montserrat CK";
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url("../fonts/montserrat-latin.woff2") format("woff2");
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -19,7 +27,7 @@ body {
 	margin: 0;
 	background: var(--ck-bg);
 	color: var(--ck-ink);
-	font-family: Montserrat, "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+	font-family: "Montserrat CK", Montserrat, "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
 	font-size: 16px;
 	font-weight: 400;
 	line-height: 1.6;
@@ -75,20 +83,13 @@ input:focus-visible {
 	display: inline-block;
 }
 
-.custom-logo {
+.custom-logo,
+.ck-brand-logo {
 	display: block;
-	width: min(48vw, 340px);
+	width: min(40vw, 320px);
 	height: auto;
-	max-height: 160px;
+	margin: 0 auto;
 	object-fit: contain;
-}
-
-.ck-wordmark {
-	margin: 0;
-	font-size: clamp(3.25rem, 7vw, 5.8rem);
-	font-weight: 500;
-	line-height: 0.95;
-	letter-spacing: -0.065em;
 }
 
 .ck-tagline {
@@ -103,10 +104,11 @@ input:focus-visible {
 .ck-message h1 {
 	max-width: 650px;
 	margin: 0 auto;
-	font-size: clamp(1.8rem, 3.2vw, 2.75rem);
+	font-size: clamp(1.5rem, 2.7vw, 2.25rem);
 	font-weight: 400;
-	line-height: 1.22;
-	letter-spacing: -0.025em;
+	line-height: 1.3;
+	letter-spacing: 0.045em;
+	text-transform: uppercase;
 	text-wrap: balance;
 }
 
@@ -274,7 +276,7 @@ input:focus-visible {
 }
 
 .ck-foliage--right {
-	right: clamp(-150px, -9vw, -72px);
+	right: clamp(-36px, -2vw, -16px);
 	transform-origin: 93% 100%;
 }
 
@@ -327,12 +329,9 @@ input:focus-visible {
 		margin-bottom: 48px;
 	}
 
-	.custom-logo {
-		width: min(70vw, 290px);
-	}
-
-	.ck-wordmark {
-		font-size: clamp(3.2rem, 18vw, 4.8rem);
+	.custom-logo,
+	.ck-brand-logo {
+		width: min(72vw, 300px);
 	}
 
 	.ck-message > p {
@@ -358,17 +357,17 @@ input:focus-visible {
 	}
 
 	.ck-foliage {
-		bottom: -22px;
-		width: min(105vw, 460px);
-		opacity: 0.14;
+		bottom: -38px;
+		width: min(90vw, 400px);
+		opacity: 0.12;
 	}
 
 	.ck-foliage--left {
-		left: -18vw;
+		left: -10vw;
 	}
 
 	.ck-foliage--right {
-		display: none;
+		right: -10vw;
 	}
 }
 

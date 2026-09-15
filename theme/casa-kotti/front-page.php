@@ -35,7 +35,7 @@ $motion_class  = casa_kotti_setting( 'animations_enabled', true ) ? ' has-motion
 			<?php if ( has_custom_logo() ) : ?>
 				<?php the_custom_logo(); ?>
 			<?php else : ?>
-				<p class="ck-wordmark" aria-label="<?php esc_attr_e( 'Casa Kotti', 'casa-kotti' ); ?>">Casa Kotti</p>
+				<img class="ck-brand-logo" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/logo-casa-kotti.png' ) ); ?>" alt="<?php esc_attr_e( 'Casa Kotti', 'casa-kotti' ); ?>" width="1237" height="752" decoding="async" fetchpriority="high">
 			<?php endif; ?>
 			<p class="ck-tagline"><?php echo esc_html( casa_kotti_setting( 'tagline', 'Perfumaria para ambientes' ) ); ?></p>
 		</div>

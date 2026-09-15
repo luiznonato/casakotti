@@ -19,7 +19,7 @@ WordPress core, banco, uploads, credenciais e configurações do servidor não f
 4. Crie e publique a política de privacidade aprovada. Selecione a mesma página:
    - em **Configurações > Privacidade**; e
    - em **Aparência > Personalizar > Casa Kotti — Pré-lançamento**.
-5. Em **Aparência > Personalizar**, carregue o logo original e configure textos, links, contato, formulário e animações.
+5. Em **Aparência > Personalizar**, confirme o logo e configure textos, links, contato, formulário e animações. O logo oficial já acompanha o tema; um logo configurado no WordPress continua tendo prioridade.
 
 O formulário permanece oculto e não aceita cadastros até que uma página de privacidade publicada esteja corretamente selecionada. Se houver e-mail de contato, ele aparece como alternativa. Instagram e demais links opcionais ficam ocultos enquanto estiverem vazios.
 
@@ -40,7 +40,7 @@ O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre 
 
 ## Logo e folhagens
 
-- **Logo pendente:** até ser enviado em **Aparência > Personalizar > Identidade do site**, aparece um wordmark textual provisório, sem pretensão de reproduzir o logo.
+- **Logo integrado:** o símbolo e o lettering originais foram preservados em `assets/images/logo-casa-kotti.png`, com fundo transparente e proporções originais. O painel continua permitindo substituí-lo sem alterar o tema.
 - **Folhagens integradas:** o SVG original fornecido foi sanitizado e separado nos dois grupos de ramo existentes:
   - `theme/casa-kotti/assets/images/foliage-left.svg`;
   - `theme/casa-kotti/assets/images/foliage-right.svg`.
@@ -84,5 +84,6 @@ Atualizar ou trocar o tema não apaga os cadastros. O plugin deliberadamente pre
 
 - WordPress 6.2 ou superior.
 - PHP 7.4 ou superior.
-- Sem page builder, bibliotecas JavaScript, fontes ou requisições externas.
+- Sem page builder, bibliotecas JavaScript ou requisições externas.
+- Montserrat variável local em WOFF2, acompanhada da licença SIL Open Font License.
 - CSS e JavaScript carregados pelas APIs nativas do WordPress.
