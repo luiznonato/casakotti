@@ -63,24 +63,30 @@ input:focus-visible {
 	width: 100%;
 	min-height: 100svh;
 	min-height: 100dvh;
-	isolation: isolate;
-	background: var(--ck-bg);
+	background: transparent;
 }
 
 .ck-foliage-layer {
 	position: absolute;
 	inset: 0;
 	z-index: 0;
-	overflow: hidden;
+	overflow: visible;
+	background: transparent;
 	pointer-events: none;
+}
+
+.ck-foliage,
+.ck-foliage__motion,
+.ck-foliage-art {
+	overflow: visible;
+	background: transparent;
 }
 
 .ck-foliage {
 	position: absolute;
 	top: 40%;
 	bottom: 0;
-	width: 36%;
-	overflow: hidden;
+	width: auto;
 	color: #e5ded1;
 }
 
@@ -115,6 +121,15 @@ input:focus-visible {
 	height: 100%;
 	width: auto;
 	max-width: none;
+}
+
+.ck-main,
+.ck-footer,
+.ck-brand,
+.ck-message,
+.ck-interest,
+.ck-form {
+	background: transparent;
 }
 
 .ck-main,
@@ -222,7 +237,7 @@ input:focus-visible {
 	min-height: 48px;
 	border: 1px solid var(--ck-line);
 	border-radius: 0;
-	background: var(--ck-bg);
+	background: transparent;
 	color: var(--ck-ink);
 	padding: 12px 16px;
 	font: inherit;
@@ -406,7 +421,7 @@ input:focus-visible {
 	.ck-foliage {
 		top: 30%;
 		bottom: 0;
-		width: min(24vw, 20rem);
+		width: auto;
 	}
 
 	.ck-foliage--left .ck-foliage__motion {
@@ -421,7 +436,6 @@ input:focus-visible {
 @media (min-width: 1200px) {
 	.ck-foliage {
 		top: 26%;
-		width: min(22vw, 22rem);
 	}
 }
 
