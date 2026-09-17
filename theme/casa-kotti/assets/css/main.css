@@ -402,6 +402,27 @@ input:focus-visible {
 	.ck-brand-logo {
 		width: min(34vw, 280px);
 	}
+
+	.ck-foliage {
+		top: 30%;
+		bottom: 0;
+		width: min(24vw, 20rem);
+	}
+
+	.ck-foliage--left .ck-foliage__motion {
+		translate: -20% 0;
+	}
+
+	.ck-foliage--right .ck-foliage__motion {
+		translate: 20% 0;
+	}
+}
+
+@media (min-width: 1200px) {
+	.ck-foliage {
+		top: 26%;
+		width: min(22vw, 22rem);
+	}
 }
 
 .has-motion .ck-foliage--left .ck-foliage__motion {

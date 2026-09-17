@@ -4,7 +4,7 @@ Data: 15 de setembro de 2026.
 
 ## Composição SVG (tema 1.5.1)
 
-Camada `.ck-foliage-layer` com `inset: 0` no `.ck-page` (`min-height: 100svh`). Ramos com altura 60% do contêiner, escala uniforme, excesso lateral recortado, opacidade 0,25. Sem quadro 2:3.
+No desktop os ramos ficam nos cantos da viewport larga (`24vw`, no máximo `20rem`), não num cartão 2:3 central.
 
 ## Função (já exercitada nesta entrega)
 
