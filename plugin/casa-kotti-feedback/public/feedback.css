@@ -103,6 +103,8 @@
 .ck-feedback textarea::placeholder {
 	font-family: "Montserrat CK", "Montserrat", sans-serif;
 	font-weight: 400;
+	color: var(--ck-muted);
+	opacity: 1;
 }
 
 .ck-feedback__kicker {
@@ -200,7 +202,7 @@
 
 .ck-feedback__count {
 	display: block;
-	margin-top: 4px;
+	margin-top: 8px;
 	color: var(--ck-muted, #bdb7ac);
 	font-family: "Montserrat CK", "Montserrat", sans-serif;
 	font-size: 0.72rem;
@@ -533,8 +535,17 @@
 
 .ck-feedback__field textarea,
 .ck-feedback textarea.ck-feedback__input {
-	min-height: 8rem;
+	min-height: 9rem;
+	padding: 16px 18px;
+	line-height: 1.45;
 	resize: vertical;
+}
+
+.ck-feedback__field textarea::placeholder,
+.ck-feedback textarea.ck-feedback__input::placeholder {
+	line-height: 1.45;
+	color: var(--ck-muted);
+	opacity: 1;
 }
 
 .ck-feedback__input:focus,
