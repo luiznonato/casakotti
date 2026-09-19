@@ -68,6 +68,28 @@ input:focus-visible {
 	background: transparent;
 }
 
+.ck-site-header {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	justify-content: center;
+	padding:
+		max(1.5rem, env(safe-area-inset-top))
+		max(1.25rem, env(safe-area-inset-right))
+		0.35rem
+		max(1.25rem, env(safe-area-inset-left));
+}
+
+.ck-site-header .custom-logo-link {
+	display: inline-block;
+}
+
+.ck-site-header .custom-logo,
+.ck-site-header .ck-brand-logo {
+	width: min(42vw, 156px);
+	margin: 0 auto;
+}
+
 .ck-main,
 .ck-footer,
 .ck-brand,
@@ -298,11 +320,15 @@ input:focus-visible {
 	width: min(100% - 40px, 720px);
 	margin: 0 auto;
 	padding:
-		max(2.5rem, env(safe-area-inset-top))
+		max(1.5rem, env(safe-area-inset-top))
 		max(1.25rem, env(safe-area-inset-right))
 		max(2.5rem, env(safe-area-inset-bottom))
 		max(1.25rem, env(safe-area-inset-left));
 	background: transparent;
+}
+
+.ck-page:has(.ck-site-header) .ck-content {
+	padding-top: 1rem;
 }
 
 .ck-content > h1 {

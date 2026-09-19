@@ -45,6 +45,11 @@ $config     = array(
 ?>
 <div class="ck-feedback kotti-questionnaire" data-ck-feedback data-survey="<?php echo esc_attr( $ckf_survey->slug ); ?>"<?php echo $ckf_preview ? ' data-preview="1"' : ''; ?>>
 	<script type="application/json" data-ck-config><?php echo wp_json_encode( $config, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
+	<header class="ck-feedback__brand">
+		<a class="ck-feedback__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<img src="<?php echo esc_url( CKF_Shortcode::logo_url() ); ?>" alt="<?php esc_attr_e( 'Casa Kotti', 'casa-kotti-feedback' ); ?>" width="1237" height="752" decoding="async">
+		</a>
+	</header>
 	<section class="ck-feedback__panel is-active" data-panel="intro">
 		<p class="ck-feedback__kicker"><?php echo esc_html( $ckf_survey->title ); ?></p>
 		<h2 class="ck-feedback__title"><?php echo esc_html( $copy['intro_title'] ); ?></h2>

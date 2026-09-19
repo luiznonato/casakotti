@@ -8,6 +8,7 @@
 get_header();
 ?>
 <div class="ck-page">
+	<?php get_template_part( 'template-parts/site-header' ); ?>
 	<main class="ck-content" id="conteudo">
 		<?php
 		while ( have_posts() ) {

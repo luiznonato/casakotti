@@ -130,6 +130,24 @@ class CKF_Shortcode {
 	}
 
 	/**
+	 * URL of the Casa Kotti logo for the questionnaire header.
+	 *
+	 * @return string
+	 */
+	public static function logo_url() {
+		if ( function_exists( 'has_custom_logo' ) && has_custom_logo() ) {
+			$url = wp_get_attachment_image_url( (int) get_theme_mod( 'custom_logo' ), 'full' );
+			if ( $url ) {
+				return $url;
+			}
+		}
+		if ( function_exists( 'get_theme_file_path' ) && file_exists( get_theme_file_path( 'assets/images/logo-casa-kotti.png' ) ) ) {
+			return get_theme_file_uri( 'assets/images/logo-casa-kotti.png' );
+		}
+		return CKF_URL . 'public/images/logo-casa-kotti.png';
+	}
+
+	/**
 	 * Render the questionnaire.
 	 *
 	 * @param array $atts Shortcode attributes.

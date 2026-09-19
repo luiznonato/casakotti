@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CASA_KOTTI_THEME_VERSION', '1.5.8' );
+define( 'CASA_KOTTI_THEME_VERSION', '1.5.9' );
 
 function casa_kotti_setup() {
 	add_theme_support( 'title-tag' );
@@ -32,6 +32,22 @@ function casa_kotti_enqueue_assets() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'casa_kotti_enqueue_assets' );
+
+/**
+ * Compact header logo used on inner pages.
+ */
+function casa_kotti_header_logo() {
+	if ( function_exists( 'has_custom_logo' ) && has_custom_logo() ) {
+		the_custom_logo();
+		return;
+	}
+	printf(
+		'<a class="custom-logo-link" href="%1$s"><img class="ck-brand-logo" src="%2$s" alt="%3$s" width="1237" height="752" decoding="async"></a>',
+		esc_url( home_url( '/' ) ),
+		esc_url( get_theme_file_uri( 'assets/images/logo-casa-kotti.png' ) ),
+		esc_attr__( 'Casa Kotti', 'casa-kotti' )
+	);
+}
 
 /**
  * Return a sanitized checkbox value.

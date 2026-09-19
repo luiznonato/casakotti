@@ -66,6 +66,27 @@
 	box-sizing: border-box;
 }
 
+.ck-feedback__brand {
+	display: flex;
+	justify-content: center;
+	margin: 0 0 var(--ck-space-5);
+}
+
+.ck-feedback__logo {
+	display: inline-block;
+	line-height: 0;
+}
+
+.ck-feedback__logo img {
+	display: block;
+	width: min(42vw, 156px);
+	height: auto;
+}
+
+.ck-page:has(.ck-site-header) .ck-feedback__brand {
+	display: none;
+}
+
 .ck-feedback *,
 .ck-feedback *::before,
 .ck-feedback *::after {
