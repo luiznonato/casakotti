@@ -52,7 +52,10 @@ class CKF_Shortcode {
 		if ( ! self::on_feedback_page() ) {
 			return;
 		}
+		self::enqueue_public_assets();
+	}
 
+	public static function enqueue_public_assets() {
 		$style_deps = wp_style_is( 'casa-kotti-main', 'registered' ) ? array( 'casa-kotti-main' ) : array();
 		wp_enqueue_style(
 			'casa-kotti-feedback',
@@ -60,14 +63,12 @@ class CKF_Shortcode {
 			$style_deps,
 			CKF_VERSION
 		);
-		$font = get_template_directory() . '/assets/fonts/montserrat-latin.woff2';
-		if ( file_exists( $font ) ) {
-			$font_url = get_template_directory_uri() . '/assets/fonts/montserrat-latin.woff2';
-			wp_add_inline_style(
-				'casa-kotti-feedback',
-				'@font-face{font-family:"Montserrat CK";font-style:normal;font-weight:100 900;font-display:swap;src:url("' . esc_url( $font_url ) . '") format("woff2");}'
-			);
-		}
+		$font_url = CKF_URL . 'public/fonts/montserrat-latin.woff2';
+		wp_add_inline_style(
+			'casa-kotti-feedback',
+			'@font-face{font-family:"Montserrat CK";font-style:normal;font-weight:100 900;font-display:swap;src:url("' . esc_url( $font_url ) . '") format("woff2");}'
+			. '@font-face{font-family:"Montserrat";font-style:normal;font-weight:100 900;font-display:swap;src:url("' . esc_url( $font_url ) . '") format("woff2");}'
+		);
 		wp_enqueue_script(
 			'casa-kotti-feedback-validate',
 			CKF_URL . 'public/ckf-validate.js',

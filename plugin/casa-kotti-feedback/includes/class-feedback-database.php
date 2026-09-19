@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class CKF_Database {
-	const DB_VERSION = '1.2.0';
+	const DB_VERSION = '1.3.0';
 
 	/**
 	 * Create tables on activation.
@@ -69,6 +69,7 @@ class CKF_Database {
 			campaign varchar(190) NOT NULL DEFAULT '',
 			product_code varchar(190) NOT NULL DEFAULT '',
 			batch varchar(190) NOT NULL DEFAULT '',
+			schema_version varchar(20) NOT NULL DEFAULT '',
 			created_at datetime NOT NULL,
 			ip_hash varchar(64) NOT NULL DEFAULT '',
 			user_agent varchar(255) NOT NULL DEFAULT '',
@@ -152,6 +153,7 @@ class CKF_Database {
 			question_slug varchar(80) NOT NULL,
 			answer_value varchar(190) NOT NULL DEFAULT '',
 			answer_text text NULL,
+			field_type varchar(40) NOT NULL DEFAULT '',
 			created_at datetime NOT NULL,
 			PRIMARY KEY  (id),
 			KEY feedback_id (feedback_id),

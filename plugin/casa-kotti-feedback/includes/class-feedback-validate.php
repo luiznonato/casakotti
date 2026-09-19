@@ -25,6 +25,8 @@ class CKF_Validate {
 			'minSelect'     => __( 'Selecione pelo menos %s opções.', 'casa-kotti-feedback' ),
 			'maxSelect'     => __( 'Selecione no máximo %s opções.', 'casa-kotti-feedback' ),
 			'invalidNumber' => __( 'Digite um número válido.', 'casa-kotti-feedback' ),
+			'invalidPhone'  => __( 'Digite um telefone válido.', 'casa-kotti-feedback' ),
+			'invalidDate'   => __( 'Digite uma data válida.', 'casa-kotti-feedback' ),
 			'serverError'   => __( 'Não foi possível enviar sua avaliação. Tente novamente.', 'casa-kotti-feedback' ),
 			'sending'       => __( 'Enviando...', 'casa-kotti-feedback' ),
 			'continue'      => __( 'Continuar', 'casa-kotti-feedback' ),
@@ -39,7 +41,7 @@ class CKF_Validate {
 	 * @return array{ok:bool,values:array,error:string}
 	 */
 	public static function answer( $question, $raw ) {
-		$type     = $question['type'];
+		$type     = CKF_Questions::canonical_type( isset( $question['type'] ) ? $question['type'] : 'text' );
 		$settings = isset( $question['settings'] ) ? $question['settings'] : array();
 		$options  = isset( $question['options'] ) ? $question['options'] : array();
 		$allowed  = wp_list_pluck( $options, 'value' );
@@ -48,6 +50,19 @@ class CKF_Validate {
 
 		if ( 'info' === $type ) {
 			return array( 'ok' => true, 'values' => array(), 'error' => '' );
+		}
+
+		if ( 'hidden' === $type ) {
+			$text = sanitize_text_field( is_array( $raw ) ? (string) reset( $raw ) : (string) $raw );
+			return array( 'ok' => true, 'values' => '' === $text ? array() : array( $text ), 'error' => '' );
+		}
+
+		if ( in_array( $type, array( 'checkbox', 'consent' ), true ) ) {
+			$question['type']           = 'yes_no';
+			$settings['ui']             = 'checkbox';
+			$question['settings']       = $settings;
+			$result                     = self::answer( $question, $raw );
+			return $result;
 		}
 
 		if ( 'multi_choice' === $type ) {
@@ -135,6 +150,33 @@ class CKF_Validate {
 				}
 			}
 			return array( 'ok' => true, 'values' => array( (string) $num ), 'error' => '' );
+		}
+
+		if ( 'tel' === $type ) {
+			$text = trim( (string) $raw );
+			if ( '' === $text ) {
+				return $required
+					? array( 'ok' => false, 'values' => array(), 'error' => $msg['required'] )
+					: array( 'ok' => true, 'values' => array(), 'error' => '' );
+			}
+			$digits = preg_replace( '/\D+/', '', $text );
+			if ( strlen( $digits ) < 8 || strlen( $digits ) > 15 ) {
+				return array( 'ok' => false, 'values' => array(), 'error' => $msg['invalidPhone'] );
+			}
+			return array( 'ok' => true, 'values' => array( sanitize_text_field( $text ) ), 'error' => '' );
+		}
+
+		if ( 'date' === $type ) {
+			$text = trim( (string) $raw );
+			if ( '' === $text ) {
+				return $required
+					? array( 'ok' => false, 'values' => array(), 'error' => $msg['required'] )
+					: array( 'ok' => true, 'values' => array(), 'error' => '' );
+			}
+			if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $text ) || ! strtotime( $text ) ) {
+				return array( 'ok' => false, 'values' => array(), 'error' => $msg['invalidDate'] );
+			}
+			return array( 'ok' => true, 'values' => array( $text ), 'error' => '' );
 		}
 
 		if ( 'email' === $type ) {

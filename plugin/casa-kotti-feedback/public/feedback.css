@@ -1,4 +1,21 @@
-.ck-feedback {
+@font-face {
+	font-family: "Montserrat CK";
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url("./fonts/montserrat-latin.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Montserrat";
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url("./fonts/montserrat-latin.woff2") format("woff2");
+}
+
+.ck-feedback,
+.kotti-questionnaire {
 	--ck-copper: #b57a54;
 	--ck-copper-soft: rgba(181, 122, 84, 0.12);
 	--ck-copper-medium: rgba(181, 122, 84, 0.35);
@@ -22,6 +39,18 @@
 .ck-feedback *::before,
 .ck-feedback *::after {
 	font-family: "Montserrat CK", "Montserrat", sans-serif;
+	font-weight: 400;
+}
+
+.ck-feedback__title {
+	font-weight: 600;
+}
+
+.ck-feedback__question,
+.ck-feedback__question--sub,
+.ck-feedback__kicker,
+.ck-feedback__btn {
+	font-weight: 500;
 }
 
 .ck-feedback input,
@@ -72,8 +101,30 @@
 	color: var(--ck-ink, #e5ded1);
 }
 
+.ck-feedback__grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 16px;
+}
+
 .ck-feedback__block {
 	margin: 0 0 1.35rem;
+	width: 100%;
+}
+
+.ck-feedback__block--w50 {
+	width: calc(50% - 8px);
+}
+
+.ck-feedback__block--w33 {
+	width: calc(33.333% - 11px);
+}
+
+@media (max-width: 700px) {
+	.ck-feedback__block--w50,
+	.ck-feedback__block--w33 {
+		width: 100%;
+	}
 }
 
 .ck-feedback__count {
@@ -345,6 +396,12 @@
 	background: transparent;
 	color: var(--ck-ink, #e5ded1);
 	padding: 14px 0;
+}
+
+.ck-feedback__input:not(:placeholder-shown),
+.ck-feedback__field input:not(:placeholder-shown),
+.ck-feedback__field textarea:not(:placeholder-shown) {
+	border-bottom-color: var(--ck-copper-medium);
 	font-family: inherit;
 	font-size: 16px;
 	font-weight: 400;

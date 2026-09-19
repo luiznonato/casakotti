@@ -22,6 +22,8 @@ class CKF_Admin_Questions {
 		add_action( 'admin_post_ckf_reorder_step', array( __CLASS__, 'reorder_step' ) );
 		add_action( 'admin_post_ckf_duplicate_step', array( __CLASS__, 'duplicate_step' ) );
 		add_action( 'admin_post_ckf_move_question', array( __CLASS__, 'move_question' ) );
+		add_action( 'admin_post_ckf_delete_step', array( __CLASS__, 'delete_step' ) );
+		add_action( 'admin_post_ckf_save_order', array( __CLASS__, 'save_order' ) );
 		add_action( 'wp_ajax_ckf_preview_question', array( __CLASS__, 'ajax_preview' ) );
 	}
 
@@ -73,9 +75,7 @@ class CKF_Admin_Questions {
 		$existing = $id ? CKF_Questions::get( $id ) : null;
 		$title    = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
 		$type     = isset( $_POST['type'] ) ? sanitize_key( wp_unslash( $_POST['type'] ) ) : 'text';
-		if ( ! isset( CKF_Questions::TYPES[ $type ] ) ) {
-			$type = 'text';
-		}
+		$type = CKF_Questions::canonical_type( $type );
 		if ( '' === $title ) {
 			wp_safe_redirect( admin_url( 'admin.php?page=casa-kotti-question-edit&error=1&id=' . $id ) );
 			exit;
@@ -142,6 +142,11 @@ class CKF_Admin_Questions {
 		$settings['min_selections'] = isset( $_POST['min_selections'] ) ? absint( $_POST['min_selections'] ) : 0;
 		$settings['max_selections'] = isset( $_POST['max_selections'] ) ? absint( $_POST['max_selections'] ) : 0;
 		$settings['checkbox_label'] = isset( $_POST['checkbox_label'] ) ? sanitize_text_field( wp_unslash( $_POST['checkbox_label'] ) ) : '';
+		$settings['help_text']      = isset( $_POST['help_text'] ) ? sanitize_text_field( wp_unslash( $_POST['help_text'] ) ) : '';
+		$settings['default_value']  = isset( $_POST['default_value'] ) ? sanitize_text_field( wp_unslash( $_POST['default_value'] ) ) : '';
+		$settings['error_message']  = isset( $_POST['error_message'] ) ? sanitize_text_field( wp_unslash( $_POST['error_message'] ) ) : '';
+		$settings['width']          = isset( $_POST['width'] ) && in_array( $_POST['width'], array( '100', '50', '33' ), true ) ? $_POST['width'] : '100';
+		$settings['cond_action']    = isset( $_POST['cond_action'] ) ? sanitize_key( wp_unslash( $_POST['cond_action'] ) ) : 'show';
 		if ( isset( $_POST['ui'] ) ) {
 			$settings['ui'] = sanitize_key( wp_unslash( $_POST['ui'] ) );
 		}
@@ -291,9 +296,7 @@ class CKF_Admin_Questions {
 			),
 			'options'     => array(),
 		);
-		if ( ! isset( CKF_Questions::TYPES[ $fake['type'] ] ) ) {
-			$fake['type'] = 'text';
-		}
+		$fake['type'] = CKF_Questions::canonical_type( $fake['type'] );
 		$labels = isset( $_POST['opt_label'] ) ? wp_unslash( $_POST['opt_label'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$values = isset( $_POST['opt_value'] ) ? wp_unslash( $_POST['opt_value'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		foreach ( (array) $labels as $i => $label ) {
@@ -387,5 +390,48 @@ class CKF_Admin_Questions {
 		}
 		wp_safe_redirect( admin_url( 'admin.php?page=casa-kotti-questions' ) );
 		exit;
+	}
+
+	public static function delete_step() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Acesso negado.', 'casa-kotti-feedback' ), '', array( 'response' => 403 ) );
+		}
+		$id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+		check_admin_referer( 'ckf_delete_step_' . $id );
+		CKF_Steps::delete( $id );
+		wp_safe_redirect( admin_url( 'admin.php?page=casa-kotti-questions&deleted=1' ) );
+		exit;
+	}
+
+	public static function save_order() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Acesso negado.', 'casa-kotti-feedback' ), '', array( 'response' => 403 ) );
+		}
+		check_admin_referer( 'ckf_save_order' );
+		$pages = isset( $_POST['page_order'] ) ? array_map( 'absint', (array) wp_unslash( $_POST['page_order'] ) ) : array();
+		$order = 10;
+		foreach ( $pages as $id ) {
+			if ( $id ) {
+				CKF_Steps::update( $id, array( 'sort_order' => $order ) );
+				$order += 10;
+			}
+		}
+		$questions = isset( $_POST['question_order'] ) ? array_map( 'absint', (array) wp_unslash( $_POST['question_order'] ) ) : array();
+		$qorder    = 10;
+		foreach ( $questions as $id ) {
+			if ( $id ) {
+				CKF_Questions::update( $id, array( 'sort_order' => $qorder ) );
+				$qorder += 10;
+			}
+		}
+		wp_safe_redirect( admin_url( 'admin.php?page=casa-kotti-questions&updated=1' ) );
+		exit;
+	}
+
+	public static function page_preview() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Acesso negado.', 'casa-kotti-feedback' ), '', array( 'response' => 403 ) );
+		}
+		include CKF_DIR . 'admin/admin-preview.php';
 	}
 }

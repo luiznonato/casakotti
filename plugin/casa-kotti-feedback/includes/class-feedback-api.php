@@ -123,7 +123,7 @@ class CKF_API {
 		$definition = CKF_Questions::public_definition();
 		$collected  = array();
 		foreach ( $definition as $question ) {
-			if ( 'info' === $question['type'] ) {
+			if ( in_array( $question['type'], array( 'info' ), true ) ) {
 				continue;
 			}
 			$slug = $question['slug'];
@@ -132,6 +132,9 @@ class CKF_API {
 			}
 			$raw    = isset( $incoming[ $slug ] ) ? $incoming[ $slug ] : '';
 			$parsed = CKF_Validate::answer( $question, $raw );
+			if ( ! $parsed['ok'] && ! empty( $question['settings']['error_message'] ) ) {
+				$parsed['error'] = $question['settings']['error_message'];
+			}
 			if ( ! $parsed['ok'] ) {
 				return new WP_Error(
 					'ckf_invalid',
@@ -168,6 +171,7 @@ class CKF_API {
 			'campaign'                => CKF_Security::sanitize_token( (string) $request->get_param( 'campaign' ) ),
 			'product_code'            => CKF_Security::sanitize_token( (string) $request->get_param( 'product_code' ) ),
 			'batch'                   => CKF_Security::sanitize_token( (string) $request->get_param( 'batch' ) ),
+			'schema_version'          => CKF_VERSION,
 		);
 
 		$answer_rows = array();
@@ -179,6 +183,7 @@ class CKF_API {
 					'question_slug' => $slug,
 					'answer_value'  => is_string( $value ) ? $value : (string) $value,
 					'answer_text'   => is_string( $value ) ? $value : (string) $value,
+					'field_type'    => $question['type'],
 				);
 			}
 			$first = isset( $item['values'][0] ) ? $item['values'][0] : '';

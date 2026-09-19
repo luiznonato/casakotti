@@ -28,7 +28,7 @@ foreach ( $questions as $question ) {
 }
 $thanks_url = $copy['thanks_url'] ? $copy['thanks_url'] : home_url( '/' );
 ?>
-<div class="ck-feedback" data-ck-feedback>
+<div class="ck-feedback kotti-questionnaire" data-ck-feedback>
 	<section class="ck-feedback__panel is-active" data-panel="intro">
 		<p class="ck-feedback__kicker"><?php esc_html_e( 'Experiência', 'casa-kotti-feedback' ); ?></p>
 		<h2 class="ck-feedback__title"><?php echo esc_html( $copy['intro_title'] ); ?></h2>
@@ -77,7 +77,7 @@ $thanks_url = $copy['thanks_url'] ? $copy['thanks_url'] : home_url( '/' );
 		<input type="hidden" name="product_code" value="">
 		<div class="ck-feedback__nav" data-nav hidden>
 			<button type="button" class="ck-feedback__btn ck-feedback__btn--ghost" data-back><?php esc_html_e( 'Voltar', 'casa-kotti-feedback' ); ?></button>
-			<button type="button" class="ck-feedback__btn" data-next><?php esc_html_e( 'Próximo', 'casa-kotti-feedback' ); ?> <span aria-hidden="true">→</span></button>
+			<button type="button" class="ck-feedback__btn" data-next><?php esc_html_e( 'Continuar', 'casa-kotti-feedback' ); ?></button>
 			<button type="submit" class="ck-feedback__btn" data-submit hidden><?php esc_html_e( 'Enviar', 'casa-kotti-feedback' ); ?></button>
 		</div>
 	</form>

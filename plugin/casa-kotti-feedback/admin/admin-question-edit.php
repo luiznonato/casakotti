@@ -63,6 +63,29 @@ $step_id    = $question && isset( $question->step_id ) ? (int) $question->step_i
 				<td><label><input type="checkbox" name="required" value="1" <?php checked( $question ? $question->required : 0, 1 ); ?>> <?php esc_html_e( 'Resposta obrigatória', 'casa-kotti-feedback' ); ?></label></td>
 			</tr>
 			<tr>
+				<th><?php esc_html_e( 'Largura', 'casa-kotti-feedback' ); ?></th>
+				<td>
+					<select name="width">
+						<option value="100" <?php selected( isset( $settings['width'] ) ? $settings['width'] : '100', '100' ); ?>>100%</option>
+						<option value="50" <?php selected( isset( $settings['width'] ) ? $settings['width'] : '', '50' ); ?>>50%</option>
+						<option value="33" <?php selected( isset( $settings['width'] ) ? $settings['width'] : '', '33' ); ?>>33%</option>
+					</select>
+					<p class="description"><?php esc_html_e( 'No celular os campos ocupam 100%.', 'casa-kotti-feedback' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="ckf-help"><?php esc_html_e( 'Texto de ajuda', 'casa-kotti-feedback' ); ?></label></th>
+				<td><input class="large-text" id="ckf-help" name="help_text" value="<?php echo esc_attr( isset( $settings['help_text'] ) ? $settings['help_text'] : '' ); ?>"></td>
+			</tr>
+			<tr>
+				<th><label for="ckf-default"><?php esc_html_e( 'Valor padrão', 'casa-kotti-feedback' ); ?></label></th>
+				<td><input class="regular-text" id="ckf-default" name="default_value" value="<?php echo esc_attr( isset( $settings['default_value'] ) ? $settings['default_value'] : '' ); ?>"></td>
+			</tr>
+			<tr>
+				<th><label for="ckf-error-msg"><?php esc_html_e( 'Mensagem de erro personalizada', 'casa-kotti-feedback' ); ?></label></th>
+				<td><input class="large-text" id="ckf-error-msg" name="error_message" value="<?php echo esc_attr( isset( $settings['error_message'] ) ? $settings['error_message'] : '' ); ?>"></td>
+			</tr>
+			<tr>
 				<th><?php esc_html_e( 'Status', 'casa-kotti-feedback' ); ?></th>
 				<td>
 					<select name="status">
@@ -71,7 +94,7 @@ $step_id    = $question && isset( $question->step_id ) ? (int) $question->step_i
 					</select>
 				</td>
 			</tr>
-			<tr class="ckf-type-field" data-types="text,textarea,email">
+			<tr class="ckf-type-field" data-types="text,textarea,email,tel,date,number">
 				<th><label for="ckf-placeholder"><?php esc_html_e( 'Placeholder', 'casa-kotti-feedback' ); ?></label></th>
 				<td><input class="regular-text" id="ckf-placeholder" name="placeholder" value="<?php echo esc_attr( isset( $settings['placeholder'] ) ? $settings['placeholder'] : '' ); ?>"></td>
 			</tr>
@@ -90,7 +113,7 @@ $step_id    = $question && isset( $question->step_id ) ? (int) $question->step_i
 					<input type="number" name="max_selections" value="<?php echo esc_attr( isset( $settings['max_selections'] ) ? (string) $settings['max_selections'] : '' ); ?>">
 				</td>
 			</tr>
-			<tr class="ckf-type-field" data-types="yes_no">
+			<tr class="ckf-type-field" data-types="yes_no,checkbox,consent">
 				<th><?php esc_html_e( 'Checkbox (opcional)', 'casa-kotti-feedback' ); ?></th>
 				<td>
 					<label><input type="checkbox" name="ui" value="checkbox" <?php checked( isset( $settings['ui'] ) ? $settings['ui'] : '', 'checkbox' ); ?>> <?php esc_html_e( 'Exibir como checkbox simples', 'casa-kotti-feedback' ); ?></label>
@@ -163,6 +186,14 @@ $step_id    = $question && isset( $question->step_id ) ? (int) $question->step_i
 						<?php endforeach; ?>
 					</select>
 					<input class="regular-text" name="cond_value" value="<?php echo esc_attr( isset( $cond['value'] ) ? $cond['value'] : '' ); ?>" placeholder="value">
+					<p>
+						<label><?php esc_html_e( 'Quando a condição for verdadeira', 'casa-kotti-feedback' ); ?>
+							<select name="cond_action">
+								<option value="show" <?php selected( isset( $settings['cond_action'] ) ? $settings['cond_action'] : 'show', 'show' ); ?>><?php esc_html_e( 'Mostrar esta pergunta', 'casa-kotti-feedback' ); ?></option>
+								<option value="hide" <?php selected( isset( $settings['cond_action'] ) ? $settings['cond_action'] : '', 'hide' ); ?>><?php esc_html_e( 'Ocultar esta pergunta', 'casa-kotti-feedback' ); ?></option>
+							</select>
+						</label>
+					</p>
 				</td>
 			</tr>
 		</table>

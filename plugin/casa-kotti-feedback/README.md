@@ -30,7 +30,7 @@ Com o tema Casa Kotti, a página reutiliza o fundo grafite, Montserrat, tokens `
 
 Em **Casa Kotti > Questionário** é possível criar páginas e, dentro delas, criar, editar, mover, reordenar, ativar/desativar e (quando seguro) excluir perguntas. Uma página pode ter várias perguntas. O progresso do cliente conta páginas.
 
-Tipos: texto, textarea, seleção única, radio, multiseleção, select, estrelas, escala, sim/não, e-mail, número, informativo.
+Tipos: texto curto, texto longo, e-mail, telefone, número, data, radio, checkbox, seleção única, multiseleção, select, escala, estrelas, sim/não, consentimento, informativo e campo oculto. Novos tipos podem ser registrados via filtro `ckf_field_types`.
 
 Perguntas de sistema (`product`, `fragrance`, `overall_rating`, `nps_score`, etc.) têm slug protegido. A fragrância continua vindo de **Casa Kotti > Fragrâncias**, não de alternativas estáticas.
 

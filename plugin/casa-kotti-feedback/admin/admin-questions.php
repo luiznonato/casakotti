@@ -52,13 +52,21 @@ if ( isset( $_GET['step'] ) ) { // phpcs:ignore WordPress.Security.NonceVerifica
 		<?php submit_button( $edit_step ? __( 'Salvar página', 'casa-kotti-feedback' ) : __( 'Criar página', 'casa-kotti-feedback' ), 'secondary', 'submit', false ); ?>
 	</form>
 
+	<form id="ckf-order-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<?php wp_nonce_field( 'ckf_save_order' ); ?>
+		<input type="hidden" name="action" value="ckf_save_order">
+		<p><button class="button"><?php esc_html_e( 'Salvar ordem (após arrastar)', 'casa-kotti-feedback' ); ?></button>
+			<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=casa-kotti-preview' ) ); ?>"><?php esc_html_e( 'Pré-visualizar', 'casa-kotti-feedback' ); ?></a>
+		</p>
+	<div id="ckf-pages">
 	<?php
 	$index = 0;
 	foreach ( $steps as $step ) :
 		$index++;
 		$qs = isset( $by_step[ (int) $step->id ] ) ? $by_step[ (int) $step->id ] : array();
 		?>
-		<section class="ckf-page-card">
+		<section class="ckf-page-card" draggable="true" data-step-id="<?php echo esc_attr( (string) $step->id ); ?>">
+			<input type="hidden" name="page_order[]" value="<?php echo esc_attr( (string) $step->id ); ?>">
 			<header>
 				<strong><?php echo esc_html( sprintf( __( 'PÁGINA %s', 'casa-kotti-feedback' ), str_pad( (string) $index, 2, '0', STR_PAD_LEFT ) ) ); ?></strong>
 				<h2><?php echo esc_html( $step->title ); ?></h2>
@@ -73,6 +81,8 @@ if ( isset( $_GET['step'] ) ) { // phpcs:ignore WordPress.Security.NonceVerifica
 					|
 					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ckf_toggle_step&id=' . absint( $step->id ) ), 'ckf_toggle_step_' . absint( $step->id ) ) ); ?>"><?php echo esc_html( 'active' === $step->status ? __( 'Desativar', 'casa-kotti-feedback' ) : __( 'Ativar', 'casa-kotti-feedback' ) ); ?></a>
 					|
+					<a class="button-link-delete" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ckf_delete_step&id=' . absint( $step->id ) ), 'ckf_delete_step_' . absint( $step->id ) ) ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Excluir esta página? As perguntas ficarão sem página.', 'casa-kotti-feedback' ) ); ?>');"><?php esc_html_e( 'Excluir página', 'casa-kotti-feedback' ); ?></a>
+					|
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=casa-kotti-question-edit&step_id=' . absint( $step->id ) ) ); ?>"><?php esc_html_e( 'Adicionar pergunta', 'casa-kotti-feedback' ); ?></a>
 				</p>
 			</header>
@@ -81,7 +91,8 @@ if ( isset( $_GET['step'] ) ) { // phpcs:ignore WordPress.Security.NonceVerifica
 			<?php else : ?>
 				<ul class="ckf-q-list">
 					<?php foreach ( $qs as $row ) : ?>
-						<li>
+						<li draggable="true" data-question-id="<?php echo esc_attr( (string) $row->id ); ?>">
+							<input type="hidden" name="question_order[]" value="<?php echo esc_attr( (string) $row->id ); ?>">
 							<div>
 								<strong><?php echo esc_html( $row->title ); ?></strong>
 								<div><?php echo esc_html( isset( $types[ $row->type ] ) ? $types[ $row->type ] : $row->type ); ?> · <code><?php echo esc_html( $row->slug ); ?></code></div>
@@ -91,19 +102,20 @@ if ( isset( $_GET['step'] ) ) { // phpcs:ignore WordPress.Security.NonceVerifica
 								|
 								<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ckf_reorder_question&id=' . absint( $row->id ) . '&dir=up' ), 'ckf_reorder_question_' . absint( $row->id ) ) ); ?>">↑</a>
 								<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ckf_reorder_question&id=' . absint( $row->id ) . '&dir=down' ), 'ckf_reorder_question_' . absint( $row->id ) ) ); ?>">↓</a>
-								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="ckf-move">
-									<?php wp_nonce_field( 'ckf_move_question' ); ?>
-									<input type="hidden" name="action" value="ckf_move_question">
-									<input type="hidden" name="id" value="<?php echo esc_attr( (string) $row->id ); ?>">
-									<label>
-										<?php esc_html_e( 'Mover para', 'casa-kotti-feedback' ); ?>
-										<select name="step_id" onchange="this.form.submit()">
-											<?php foreach ( $steps as $opt_step ) : ?>
-												<option value="<?php echo esc_attr( (string) $opt_step->id ); ?>" <?php selected( (int) $row->step_id, (int) $opt_step->id ); ?>><?php echo esc_html( $opt_step->title ); ?></option>
-											<?php endforeach; ?>
-										</select>
-									</label>
-								</form>
+								|
+								<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ckf_duplicate_question&id=' . absint( $row->id ) ), 'ckf_duplicate_question_' . absint( $row->id ) ) ); ?>"><?php esc_html_e( 'Duplicar', 'casa-kotti-feedback' ); ?></a>
+								<?php if ( ! $row->is_system && ! CKF_Answers::question_has_answers( (int) $row->id ) ) : ?>
+									|
+									<a class="button-link-delete" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ckf_delete_question&id=' . absint( $row->id ) ), 'ckf_delete_question_' . absint( $row->id ) ) ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Excluir esta pergunta?', 'casa-kotti-feedback' ) ); ?>');"><?php esc_html_e( 'Excluir', 'casa-kotti-feedback' ); ?></a>
+								<?php endif; ?>
+								<label class="ckf-move">
+									<?php esc_html_e( 'Mover para', 'casa-kotti-feedback' ); ?>
+									<select class="ckf-jump-step" data-id="<?php echo esc_attr( (string) $row->id ); ?>">
+										<?php foreach ( $steps as $opt_step ) : ?>
+											<option value="<?php echo esc_attr( (string) $opt_step->id ); ?>" <?php selected( (int) $row->step_id, (int) $opt_step->id ); ?>><?php echo esc_html( $opt_step->title ); ?></option>
+										<?php endforeach; ?>
+									</select>
+								</label>
 							</div>
 						</li>
 					<?php endforeach; ?>
@@ -111,6 +123,8 @@ if ( isset( $_GET['step'] ) ) { // phpcs:ignore WordPress.Security.NonceVerifica
 			<?php endif; ?>
 		</section>
 	<?php endforeach; ?>
+	</div>
+	</form>
 
 	<?php if ( $unassigned ) : ?>
 		<section class="ckf-page-card">

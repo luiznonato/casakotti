@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Casa Kotti — Avaliações
  * Description: Questionário de experiência do cliente, dashboard e fragrâncias da Casa Kotti.
- * Version: 1.2.1
+ * Version: 1.3.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Casa Kotti
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CKF_VERSION', '1.2.1' );
+define( 'CKF_VERSION', '1.3.0' );
 define( 'CKF_FILE', __FILE__ );
 define( 'CKF_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CKF_URL', plugin_dir_url( __FILE__ ) );

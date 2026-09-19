@@ -67,9 +67,27 @@
 		return { empty: one === '', value: one, values: one ? [one] : [] };
 	}
 
+	function canonicalType(type) {
+		if (type === 'phone' || type === 'telefone') {
+			return 'tel';
+		}
+		return type;
+	}
+
 	function validateAnswer(question, raw, i18n) {
 		var msg = messages(i18n);
-		var type = question.type;
+		var type = canonicalType(question.type);
+		if (type === 'checkbox' || type === 'consent') {
+			question = Object.assign({}, question, { type: 'yes_no', settings: Object.assign({}, question.settings || {}, { ui: 'checkbox' }) });
+			var boxed = validateAnswer(question, raw, i18n);
+			if (!boxed.ok && question.settings && question.settings.error_message) {
+				boxed.error = question.settings.error_message;
+			}
+			return boxed;
+		}
+		if (type === 'hidden') {
+			return { ok: true, values: raw ? [String(raw)] : [], error: '' };
+		}
 		var settings = question.settings || {};
 		var required = !!question.required;
 		var allowed = allowedValues(question);
@@ -157,6 +175,29 @@
 				}
 			}
 			return { ok: true, values: [String(num)], error: '' };
+		}
+
+		if (type === 'tel') {
+			var phone = String(raw == null ? '' : (Array.isArray(raw) ? raw[0] : raw)).replace(/^\s+|\s+$/g, '');
+			if (phone === '') {
+				return required ? { ok: false, values: [], error: msg.required } : { ok: true, values: [], error: '' };
+			}
+			var digits = phone.replace(/\D+/g, '');
+			if (digits.length < 8 || digits.length > 15) {
+				return { ok: false, values: [], error: msg.invalidPhone || msg.required };
+			}
+			return { ok: true, values: [phone], error: '' };
+		}
+
+		if (type === 'date') {
+			var day = String(raw == null ? '' : (Array.isArray(raw) ? raw[0] : raw)).replace(/^\s+|\s+$/g, '');
+			if (day === '') {
+				return required ? { ok: false, values: [], error: msg.required } : { ok: true, values: [], error: '' };
+			}
+			if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || Number.isNaN(Date.parse(day))) {
+				return { ok: false, values: [], error: msg.invalidDate || msg.required };
+			}
+			return { ok: true, values: [day], error: '' };
 		}
 
 		if (type === 'email') {

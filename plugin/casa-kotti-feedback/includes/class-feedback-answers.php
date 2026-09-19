@@ -47,9 +47,10 @@ class CKF_Answers {
 					'question_slug' => $row['question_slug'],
 					'answer_value'  => substr( (string) $row['answer_value'], 0, 190 ),
 					'answer_text'   => $row['answer_text'],
+					'field_type'    => isset( $row['field_type'] ) ? $row['field_type'] : '',
 					'created_at'    => $now,
 				),
-				array( '%d', '%d', '%s', '%s', '%s', '%s' )
+				array( '%d', '%d', '%s', '%s', '%s', '%s', '%s' )
 			);
 		}
 	}

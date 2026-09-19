@@ -22,7 +22,9 @@ class CKF_Conditions {
 		if ( empty( $settings['conditions'] ) || empty( $settings['conditions']['rules'] ) ) {
 			return true;
 		}
-		return self::eval_group( $settings['conditions'], $answers );
+		$match  = self::eval_group( $settings['conditions'], $answers );
+		$action = isset( $settings['cond_action'] ) ? $settings['cond_action'] : 'show';
+		return 'hide' === $action ? ! $match : $match;
 	}
 
 	public static function eval_group( $group, $answers ) {

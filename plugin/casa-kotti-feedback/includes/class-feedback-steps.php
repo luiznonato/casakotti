@@ -193,6 +193,17 @@ class CKF_Steps {
 		CKF_Questions::bust_cache();
 	}
 
+	public static function delete( $id ) {
+		global $wpdb;
+		$id = absint( $id );
+		if ( ! $id ) {
+			return;
+		}
+		$wpdb->update( CKF_Database::questions_table(), array( 'step_id' => 0 ), array( 'step_id' => $id ), array( '%d' ), array( '%d' ) );
+		$wpdb->delete( CKF_Database::steps_table(), array( 'id' => $id ), array( '%d' ) );
+		CKF_Questions::bust_cache();
+	}
+
 	public static function toggle( $id ) {
 		$row = self::get( $id );
 		if ( ! $row ) {

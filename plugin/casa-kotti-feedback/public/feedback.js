@@ -62,6 +62,9 @@
 		if (q.type === 'yes_no' && q.settings && q.settings.ui === 'checkbox') {
 			return out.length ? '1' : '';
 		}
+		if (q.type === 'checkbox' || q.type === 'consent') {
+			return out.length ? '1' : '';
+		}
 		return out[0] || '';
 	}
 
@@ -138,10 +141,17 @@
 	}
 
 	function applies(question, answers) {
+		if (question.type === 'hidden') {
+			return false;
+		}
 		if (!question.settings || !question.settings.conditions) {
 			return true;
 		}
-		return evalGroup(question.settings.conditions, answers);
+		var match = evalGroup(question.settings.conditions, answers);
+		if (question.settings.cond_action === 'hide') {
+			return !match;
+		}
+		return match;
 	}
 
 	function questionsForStep(step) {
@@ -228,6 +238,9 @@
 			}
 			var node = controlEl(slugs[i]);
 			if (node) {
+				if (node.scrollIntoView) {
+					node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				}
 				node.focus();
 				return;
 			}
@@ -240,6 +253,9 @@
 			return true;
 		}
 		var result = CKFValidate.validateAnswer(question, state.answers[question.slug], i18n);
+		if (!result.ok && question.settings && question.settings.error_message) {
+			result.error = question.settings.error_message;
+		}
 		if (show) {
 			showFieldError(question.slug, result.ok ? '' : result.error);
 		} else if (result.ok) {
@@ -419,6 +435,14 @@
 		syncAnswersFromDom();
 		recalculate();
 		var answers = {};
+		questions.forEach(function (q) {
+			if (q.type === 'hidden') {
+				var hiddenVal = state.answers[q.slug] || (q.settings && q.settings.default_value) || '';
+				if (hiddenVal) {
+					answers[q.slug] = hiddenVal;
+				}
+			}
+		});
 		state.visibleSteps.forEach(function (step) {
 			applicableQuestions(step, state.answers).forEach(function (q) {
 				if (q.type === 'info') {
@@ -430,7 +454,7 @@
 				}
 				if (q.type === 'multi_choice') {
 					answers[q.slug] = result.values;
-				} else if (q.type === 'yes_no' && q.settings && q.settings.ui === 'checkbox') {
+				} else if ((q.type === 'yes_no' && q.settings && q.settings.ui === 'checkbox') || q.type === 'checkbox' || q.type === 'consent') {
 					answers[q.slug] = result.values.length ? '1' : '';
 				} else {
 					answers[q.slug] = result.values[0] || '';

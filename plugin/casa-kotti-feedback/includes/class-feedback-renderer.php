@@ -17,9 +17,11 @@ class CKF_Renderer {
 		if ( ! empty( $step['description'] ) ) {
 			echo '<p class="ck-feedback__helper">' . esc_html( $step['description'] ) . '</p>';
 		}
+		echo '<div class="ck-feedback__grid">';
 		foreach ( $questions as $question ) {
 			echo self::field( $question ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
+		echo '</div>';
 		$show_privacy = false;
 		foreach ( $questions as $question ) {
 			if ( in_array( $question['slug'], array( 'customer_name', 'customer_email', 'marketing_consent' ), true ) ) {
@@ -41,22 +43,32 @@ class CKF_Renderer {
 	}
 
 	public static function field( $question ) {
-		$type  = $question['type'];
+		$type  = CKF_Questions::canonical_type( $question['type'] );
 		$slug  = $question['slug'];
 		$error = 'ckf-err-' . $slug;
+		$width = isset( $question['settings']['width'] ) ? $question['settings']['width'] : '100';
+		if ( ! in_array( (string) $width, array( '100', '50', '33' ), true ) ) {
+			$width = '100';
+		}
 		ob_start();
-		echo '<div class="ck-feedback__block" data-field="' . esc_attr( $slug ) . '" data-type="' . esc_attr( $type ) . '">';
+		echo '<div class="ck-feedback__block ck-feedback__block--w' . esc_attr( $width ) . '" data-field="' . esc_attr( $slug ) . '" data-type="' . esc_attr( $type ) . '"' . ( 'hidden' === $type ? ' hidden' : '' ) . '>';
 		if ( 'info' === $type ) {
 			echo '<p class="ck-feedback__question ck-feedback__question--sub">' . esc_html( $question['title'] ) . '</p>';
 			if ( $question['description'] ) {
 				echo '<p class="ck-feedback__helper">' . esc_html( $question['description'] ) . '</p>';
 			}
+		} elseif ( 'hidden' === $type ) {
+			$val = isset( $question['settings']['default_value'] ) ? $question['settings']['default_value'] : '';
+			echo '<input type="hidden" name="' . esc_attr( $slug ) . '" value="' . esc_attr( $val ) . '">';
 		} else {
-			$ui_checkbox = ( 'yes_no' === $type && ! empty( $question['settings']['ui'] ) && 'checkbox' === $question['settings']['ui'] );
+			$ui_checkbox = in_array( $type, array( 'checkbox', 'consent' ), true ) || ( 'yes_no' === $type && ! empty( $question['settings']['ui'] ) && 'checkbox' === $question['settings']['ui'] );
 			if ( ! $ui_checkbox ) {
-				echo '<p class="ck-feedback__question ck-feedback__question--sub" id="ckf-lbl-' . esc_attr( $slug ) . '">' . esc_html( $question['title'] ) . '</p>';
+				echo '<label class="ck-feedback__question ck-feedback__question--sub" id="ckf-lbl-' . esc_attr( $slug ) . '" for="ckf-in-' . esc_attr( $slug ) . '">' . esc_html( $question['title'] ) . '</label>';
 				if ( $question['description'] ) {
 					echo '<p class="ck-feedback__helper">' . esc_html( $question['description'] ) . '</p>';
+				}
+				if ( ! empty( $question['settings']['help_text'] ) ) {
+					echo '<p class="ck-feedback__helper">' . esc_html( $question['settings']['help_text'] ) . '</p>';
 				}
 			}
 			self::control( $question, $error );
@@ -84,12 +96,18 @@ class CKF_Renderer {
 		$slug     = $question['slug'];
 		$options  = isset( $question['options'] ) ? $question['options'] : array();
 
-		switch ( $question['type'] ) {
+		switch ( CKF_Questions::canonical_type( $question['type'] ) ) {
 			case 'textarea':
 				self::textarea( $slug, $settings, $error );
 				break;
 			case 'email':
 				self::input( $slug, 'email', $settings, $error );
+				break;
+			case 'tel':
+				self::input( $slug, 'tel', $settings, $error );
+				break;
+			case 'date':
+				self::input( $slug, 'date', $settings, $error );
 				break;
 			case 'number':
 				self::input( $slug, 'number', $settings, $error );
@@ -102,6 +120,10 @@ class CKF_Renderer {
 				break;
 			case 'scale':
 				self::scale( $slug, $settings, $error );
+				break;
+			case 'checkbox':
+			case 'consent':
+				self::consent( $slug, $settings, $error );
 				break;
 			case 'yes_no':
 				if ( ! empty( $settings['ui'] ) && 'checkbox' === $settings['ui'] ) {
@@ -153,7 +175,13 @@ class CKF_Renderer {
 		if ( $placeholder ) {
 			echo ' placeholder="' . esc_attr( $placeholder ) . '"';
 		}
-		if ( $max && 'number' !== $type ) {
+		if ( ! empty( $settings['default_value'] ) ) {
+			echo ' value="' . esc_attr( $settings['default_value'] ) . '"';
+		}
+		if ( 'tel' === $type ) {
+			echo ' inputmode="tel" autocomplete="tel"';
+		}
+		if ( $max && ! in_array( $type, array( 'number', 'date', 'tel' ), true ) ) {
 			echo ' maxlength="' . esc_attr( (string) $max ) . '"';
 		}
 		if ( 'number' === $type ) {
@@ -175,7 +203,8 @@ class CKF_Renderer {
 		$max         = isset( $settings['max_length'] ) ? absint( $settings['max_length'] ) : 4000;
 		echo '<label class="ck-feedback__field">';
 		echo '<span class="ck-feedback__sr">' . esc_html( $slug ) . '</span>';
-		echo '<textarea class="ck-feedback__input" id="ckf-in-' . esc_attr( $slug ) . '" name="' . esc_attr( $slug ) . '" rows="5" maxlength="' . esc_attr( (string) $max ) . '" placeholder="' . esc_attr( $placeholder ) . '"' . self::described( $error ) . '></textarea>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$default = isset( $settings['default_value'] ) ? $settings['default_value'] : '';
+		echo '<textarea class="ck-feedback__input" id="ckf-in-' . esc_attr( $slug ) . '" name="' . esc_attr( $slug ) . '" rows="5" maxlength="' . esc_attr( (string) $max ) . '" placeholder="' . esc_attr( $placeholder ) . '"' . self::described( $error ) . '>' . esc_textarea( $default ) . '</textarea>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '<span class="ck-feedback__count" data-count-for="' . esc_attr( $slug ) . '" data-max="' . esc_attr( (string) $max ) . '">0 / ' . esc_html( (string) $max ) . '</span>';
 		echo '</label>';
 	}

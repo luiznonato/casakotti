@@ -74,6 +74,14 @@ class CKF_Admin {
 		);
 		add_submenu_page(
 			'casa-kotti-feedback',
+			__( 'Pré-visualizar', 'casa-kotti-feedback' ),
+			__( 'Pré-visualizar', 'casa-kotti-feedback' ),
+			'manage_options',
+			'casa-kotti-preview',
+			array( 'CKF_Admin_Questions', 'page_preview' )
+		);
+		add_submenu_page(
+			'casa-kotti-feedback',
 			__( 'Configurações', 'casa-kotti-feedback' ),
 			__( 'Configurações', 'casa-kotti-feedback' ),
 			'manage_options',
@@ -92,6 +100,9 @@ class CKF_Admin {
 			return;
 		}
 		wp_enqueue_style( 'casa-kotti-feedback', CKF_URL . 'public/feedback.css', array(), CKF_VERSION );
+		if ( false !== strpos( $hook, 'casa-kotti-preview' ) ) {
+			CKF_Shortcode::enqueue_public_assets();
+		}
 		wp_enqueue_style( 'casa-kotti-feedback-admin', CKF_URL . 'admin/admin.css', array( 'casa-kotti-feedback' ), CKF_VERSION );
 		wp_enqueue_script( 'casa-kotti-feedback-admin', CKF_URL . 'admin/admin.js', array(), CKF_VERSION, true );
 		wp_localize_script(
@@ -99,7 +110,9 @@ class CKF_Admin {
 			'ckfAdmin',
 			array(
 				'previewNonce' => wp_create_nonce( 'ckf_preview_question' ),
+				'moveNonce'    => wp_create_nonce( 'ckf_move_question' ),
 				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'adminPost'    => admin_url( 'admin-post.php' ),
 			)
 		);
 	}

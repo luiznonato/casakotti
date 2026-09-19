@@ -11,7 +11,9 @@ const i18n = {
 	maxLength: 'Digite no máximo %s caracteres.',
 	minSelect: 'Selecione pelo menos %s opções.',
 	maxSelect: 'Selecione no máximo %s opções.',
-	invalidNumber: 'Digite um número válido.'
+	invalidNumber: 'Digite um número válido.',
+	invalidPhone: 'Digite um telefone válido.',
+	invalidDate: 'Digite uma data válida.'
 };
 
 function q(partial) {
@@ -104,6 +106,15 @@ check('contact page optional', function () {
 	assert(CKFValidate.validateAnswer(q({ type: 'email', slug: 'customer_email' }), '', i18n).ok, 'email');
 	assert(CKFValidate.validateAnswer(q({ type: 'yes_no', slug: 'marketing_consent', settings: { ui: 'checkbox' } }), '', i18n).ok, 'consent');
 	assert(!CKFValidate.validateAnswer(q({ type: 'email' }), 'maria@', i18n).ok, 'bad email');
+});
+
+check('tel and date', function () {
+	assert(CKFValidate.validateAnswer(q({ type: 'tel' }), '', i18n).ok, 'tel empty');
+	assert(!CKFValidate.validateAnswer(q({ type: 'tel', required: 1 }), '12', i18n).ok, 'tel short');
+	assert(CKFValidate.validateAnswer(q({ type: 'tel' }), '11987654321', i18n).ok, 'tel ok');
+	assert(CKFValidate.validateAnswer(q({ type: 'date' }), '', i18n).ok, 'date empty');
+	assert(!CKFValidate.validateAnswer(q({ type: 'date', required: 1 }), '32/13/2020', i18n).ok, 'date bad');
+	assert(CKFValidate.validateAnswer(q({ type: 'date' }), '2024-03-10', i18n).ok, 'date ok');
 });
 
 check('info skipped', function () {

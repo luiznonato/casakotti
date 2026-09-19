@@ -14,18 +14,28 @@ class CKF_Questions {
 	const SEED_KEY  = 'ckf_questions_seeded';
 
 	const TYPES = array(
-		'text'          => 'Texto',
-		'textarea'      => 'Textarea',
-		'single_choice' => 'Seleção única',
+		'text'          => 'Texto curto',
+		'textarea'      => 'Texto longo',
+		'email'         => 'E-mail',
+		'tel'           => 'Telefone',
+		'number'        => 'Número',
+		'date'          => 'Data',
 		'radio'         => 'Radio',
+		'checkbox'      => 'Checkbox',
+		'single_choice' => 'Seleção única',
 		'multi_choice'  => 'Multiseleção',
 		'select'        => 'Select',
+		'scale'         => 'Escala numérica',
 		'stars'         => 'Estrelas',
-		'scale'         => 'Escala',
 		'yes_no'        => 'Sim/Não',
-		'email'         => 'E-mail',
-		'number'        => 'Número',
-		'info'          => 'Informativo',
+		'consent'       => 'Consentimento / aceite',
+		'info'          => 'Texto informativo',
+		'hidden'        => 'Campo oculto',
+	);
+
+	const TYPE_ALIASES = array(
+		'phone'    => 'tel',
+		'telefone' => 'tel',
 	);
 
 	const SYSTEM_SLUGS = array(
@@ -71,7 +81,17 @@ class CKF_Questions {
 	}
 
 	public static function types() {
-		return self::TYPES;
+		return apply_filters( 'ckf_field_types', self::TYPES );
+	}
+
+	public static function canonical_type( $type ) {
+		$type = sanitize_key( (string) $type );
+		$aliases = apply_filters( 'ckf_field_type_aliases', self::TYPE_ALIASES );
+		if ( isset( $aliases[ $type ] ) ) {
+			$type = $aliases[ $type ];
+		}
+		$types = self::types();
+		return isset( $types[ $type ] ) ? $type : 'text';
 	}
 
 	public static function all() {
