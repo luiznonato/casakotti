@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Casa Kotti — Avaliações
  * Description: Questionário de experiência do cliente, dashboard e fragrâncias da Casa Kotti.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Casa Kotti
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CKF_VERSION', '1.1.0' );
+define( 'CKF_VERSION', '1.2.0' );
 define( 'CKF_FILE', __FILE__ );
 define( 'CKF_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CKF_URL', plugin_dir_url( __FILE__ ) );
@@ -26,6 +26,8 @@ require_once CKF_DIR . 'includes/class-feedback-questions.php';
 require_once CKF_DIR . 'includes/class-feedback-question-options.php';
 require_once CKF_DIR . 'includes/class-feedback-answers.php';
 require_once CKF_DIR . 'includes/class-feedback-conditions.php';
+require_once CKF_DIR . 'includes/class-feedback-steps.php';
+require_once CKF_DIR . 'includes/class-feedback-validate.php';
 require_once CKF_DIR . 'includes/class-feedback-renderer.php';
 require_once CKF_DIR . 'includes/class-feedback-api.php';
 require_once CKF_DIR . 'includes/class-feedback-shortcode.php';

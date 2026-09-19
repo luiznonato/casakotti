@@ -2,7 +2,7 @@
 	'use strict';
 
 	var root = document.querySelector('[data-ck-feedback]');
-	if (!root || typeof ckfForm === 'undefined') {
+	if (!root || typeof ckfForm === 'undefined' || typeof CKFValidate === 'undefined') {
 		return;
 	}
 
@@ -17,22 +17,31 @@
 	var backBtn = root.querySelector('[data-back]');
 	var submitBtn = root.querySelector('[data-submit]');
 	var prefillEl = root.querySelector('[data-prefill]');
+	var formError = root.querySelector('[data-form-error]');
 	var questions = ckfForm.questions || [];
+	var steps = ckfForm.steps || [];
+	var i18n = ckfForm.i18n || {};
 	var bySlug = {};
 	questions.forEach(function (q) {
 		bySlug[q.slug] = q;
 	});
 
-	var sequence = [];
-	var index = 0;
-	var lock = false;
-	var productLocked = false;
+	var state = {
+		answers: {},
+		currentStep: 0,
+		visibleSteps: [],
+		errors: {},
+		isSubmitting: false,
+		attempted: {},
+		productLocked: false
+	};
 
 	function pad(n) {
 		return n < 10 ? '0' + n : String(n);
 	}
 
-	function valuesOf(slug) {
+	function readDomValue(slug) {
+		var q = bySlug[slug];
 		var nodes = form.querySelectorAll('[name="' + slug + '"], [name="' + slug + '[]"]');
 		var out = [];
 		nodes.forEach(function (node) {
@@ -40,20 +49,29 @@
 				if (node.checked) {
 					out.push(node.value);
 				}
-			} else if (node.value) {
+			} else {
 				out.push(node.value);
 			}
 		});
-		return out;
+		if (!q) {
+			return out.length > 1 ? out : (out[0] || '');
+		}
+		if (q.type === 'multi_choice') {
+			return out;
+		}
+		if (q.type === 'yes_no' && q.settings && q.settings.ui === 'checkbox') {
+			return out.length ? '1' : '';
+		}
+		return out[0] || '';
 	}
 
-	function answersMap() {
-		var map = {};
+	function syncAnswersFromDom() {
 		questions.forEach(function (q) {
-			var vals = valuesOf(q.slug);
-			map[q.slug] = vals.length > 1 ? vals : (vals[0] || '');
+			if (q.type === 'info') {
+				return;
+			}
+			state.answers[q.slug] = readDomValue(q.slug);
 		});
-		return map;
 	}
 
 	function evalRule(rule, answers) {
@@ -126,102 +144,231 @@
 		return evalGroup(question.settings.conditions, answers);
 	}
 
-	function visibleSequence() {
-		var answers = answersMap();
+	function questionsForStep(step) {
 		return questions.filter(function (q) {
-			if (productLocked && q.slug === 'product' && answers.product) {
+			if (step.id) {
+				return Number(q.step_id) === Number(step.id);
+			}
+			return q.slug === step.slug;
+		});
+	}
+
+	function applicableQuestions(step, answers) {
+		return questionsForStep(step).filter(function (q) {
+			if (state.productLocked && q.slug === 'product' && answers.product) {
 				return false;
 			}
 			return applies(q, answers);
-		}).map(function (q) {
-			return q.slug;
 		});
 	}
 
-	function currentQuestion() {
-		return bySlug[sequence[index]];
-	}
-
-	function showStep() {
-		sequence = visibleSequence();
-		if (index >= sequence.length) {
-			index = Math.max(0, sequence.length - 1);
-		}
-		form.querySelectorAll('[data-step]').forEach(function (step) {
-			var on = step.getAttribute('data-step') === sequence[index];
-			step.hidden = !on;
-			step.classList.toggle('is-active', on);
-		});
-		var last = index === sequence.length - 1;
-		var q = currentQuestion();
-		nextBtn.hidden = last;
-		submitBtn.hidden = !last;
-		backBtn.hidden = index === 0;
-		progress.hidden = false;
-		nav.hidden = false;
-		counter.textContent = pad(index + 1) + ' / ' + pad(sequence.length);
-		fill.style.width = sequence.length ? ((index + 1) / sequence.length) * 100 + '%' : '0';
-		var first = form.querySelector('[data-step]:not([hidden]) input, [data-step]:not([hidden]) textarea, [data-step]:not([hidden]) select');
-		if (first) {
-			first.focus();
-		}
-		if (q && q.type === 'info') {
-			nextBtn.hidden = last;
-		}
-	}
-
-	function currentError() {
-		var step = form.querySelector('[data-step]:not([hidden])');
-		return step ? step.querySelector('[data-error]') : null;
-	}
-
-	function setError(message) {
-		var node = currentError();
-		if (!node) {
-			return;
-		}
-		node.hidden = !message;
-		node.textContent = message || '';
-	}
-
-	function validateStep() {
-		var q = currentQuestion();
-		if (!q || q.type === 'info' || !q.required) {
-			if (q && q.type === 'email') {
-				var email = valuesOf(q.slug)[0];
-				if (email) {
-					var input = form.querySelector('[name="' + q.slug + '"]');
-					if (input && !input.checkValidity()) {
-						setError(ckfForm.i18n.invalidEmail);
-						input.focus();
-						return false;
-					}
-				}
+	function visibleSteps() {
+		var answers = state.answers;
+		var out = [];
+		steps.forEach(function (step) {
+			if (applicableQuestions(step, answers).length) {
+				out.push(step);
 			}
+		});
+		questions.forEach(function (q) {
+			if (q.step_id) {
+				return;
+			}
+			if (state.productLocked && q.slug === 'product' && answers.product) {
+				return;
+			}
+			if (applies(q, answers)) {
+				out.push({ id: 0, slug: q.slug, title: q.title, description: '' });
+			}
+		});
+		return out;
+	}
+
+	function fieldEl(slug) {
+		return form.querySelector('[data-field="' + slug + '"]');
+	}
+
+	function controlEl(slug) {
+		return form.querySelector('[name="' + slug + '"], [name="' + slug + '[]"]');
+	}
+
+	function showFieldError(slug, message) {
+		var block = fieldEl(slug);
+		var err = block ? block.querySelector('[data-error]') : null;
+		if (block) {
+			block.classList.toggle('ck-feedback__field--error', !!message);
+		}
+		if (err) {
+			err.hidden = !message;
+			err.textContent = message || '';
+		}
+		form.querySelectorAll('[name="' + slug + '"], [name="' + slug + '[]"]').forEach(function (node) {
+			if (message) {
+				node.setAttribute('aria-invalid', 'true');
+			} else {
+				node.removeAttribute('aria-invalid');
+			}
+		});
+		if (message) {
+			state.errors[slug] = message;
+		} else {
+			delete state.errors[slug];
+		}
+	}
+
+	function clearFieldError(slug) {
+		showFieldError(slug, '');
+	}
+
+	function focusFirstInvalidField(slugs) {
+		var i;
+		for (i = 0; i < slugs.length; i++) {
+			if (!state.errors[slugs[i]]) {
+				continue;
+			}
+			var node = controlEl(slugs[i]);
+			if (node) {
+				node.focus();
+				return;
+			}
+		}
+	}
+
+	function validateField(question, show) {
+		if (question.type === 'info' || !applies(question, state.answers)) {
+			clearFieldError(question.slug);
 			return true;
 		}
-		if (q.type === 'email') {
-			var field = form.querySelector('[name="' + q.slug + '"]');
-			var val = valuesOf(q.slug)[0];
-			if (val && field && !field.checkValidity()) {
-				setError(ckfForm.i18n.invalidEmail);
-				field.focus();
-				return false;
+		var result = CKFValidate.validateAnswer(question, state.answers[question.slug], i18n);
+		if (show) {
+			showFieldError(question.slug, result.ok ? '' : result.error);
+		} else if (result.ok) {
+			clearFieldError(question.slug);
+		}
+		return result.ok;
+	}
+
+	function validateStep(step, show) {
+		var qs = applicableQuestions(step, state.answers);
+		var ok = true;
+		var slugs = [];
+		qs.forEach(function (q) {
+			slugs.push(q.slug);
+			if (!validateField(q, show)) {
+				ok = false;
 			}
+		});
+		if (show && !ok) {
+			focusFirstInvalidField(slugs);
 		}
-		if (!valuesOf(q.slug).length) {
-			setError(ckfForm.i18n.selectOption);
-			return false;
+		return ok;
+	}
+
+	function validateAll() {
+		syncAnswersFromDom();
+		recalculate();
+		var ok = true;
+		var firstSlugs = [];
+		state.visibleSteps.forEach(function (step, i) {
+			var qs = applicableQuestions(step, state.answers);
+			qs.forEach(function (q) {
+				if (i === 0) {
+					firstSlugs.push(q.slug);
+				}
+				if (!validateField(q, true)) {
+					ok = false;
+				}
+			});
+		});
+		if (!ok) {
+			var found = false;
+			state.visibleSteps.forEach(function (step, i) {
+				if (found) {
+					return;
+				}
+				var slugs = applicableQuestions(step, state.answers).map(function (q) {
+					return q.slug;
+				});
+				var has = slugs.some(function (s) {
+					return state.errors[s];
+				});
+				if (has) {
+					state.currentStep = i;
+					renderStep();
+					focusFirstInvalidField(slugs);
+					found = true;
+				}
+			});
 		}
-		return true;
+		return ok;
+	}
+
+	function recalculate() {
+		var current = state.visibleSteps[state.currentStep];
+		state.visibleSteps = visibleSteps();
+		if (current) {
+			var nextIndex = -1;
+			state.visibleSteps.forEach(function (step, i) {
+				if (step.slug === current.slug) {
+					nextIndex = i;
+				}
+			});
+			state.currentStep = nextIndex === -1 ? Math.min(state.currentStep, Math.max(0, state.visibleSteps.length - 1)) : nextIndex;
+		}
+		if (state.currentStep >= state.visibleSteps.length) {
+			state.currentStep = Math.max(0, state.visibleSteps.length - 1);
+		}
+	}
+
+	function renderStep() {
+		recalculate();
+		var current = state.visibleSteps[state.currentStep];
+		form.querySelectorAll('[data-step]').forEach(function (el) {
+			var on = current && el.getAttribute('data-step') === current.slug;
+			el.hidden = !on;
+			el.classList.toggle('is-active', on);
+			var sid = Number(el.getAttribute('data-step-id') || 0);
+			questionsForStep(current || { id: 0, slug: '' }).forEach(function () {});
+		});
+		if (current) {
+			questionsForStep(current).forEach(function (q) {
+				var block = fieldEl(q.slug);
+				if (!block) {
+					return;
+				}
+				var vis = applies(q, state.answers) && !(state.productLocked && q.slug === 'product' && state.answers.product);
+				block.hidden = !vis;
+			});
+		}
+		var last = state.currentStep === state.visibleSteps.length - 1;
+		nextBtn.hidden = last;
+		submitBtn.hidden = !last;
+		backBtn.hidden = state.currentStep === 0;
+		progress.hidden = false;
+		nav.hidden = false;
+		counter.textContent = pad(state.currentStep + 1) + ' / ' + pad(state.visibleSteps.length || 1);
+		fill.style.width = state.visibleSteps.length ? ((state.currentStep + 1) / state.visibleSteps.length) * 100 + '%' : '0';
+		var first = form.querySelector('[data-step]:not([hidden]) input:not([type="hidden"]):not([tabindex="-1"]), [data-step]:not([hidden]) textarea, [data-step]:not([hidden]) select');
+		if (first && !state.isSubmitting) {
+			first.focus();
+		}
+	}
+
+	function setFormError(message) {
+		if (!formError) {
+			return;
+		}
+		formError.hidden = !message;
+		formError.textContent = message || '';
 	}
 
 	function startForm() {
 		intro.hidden = true;
 		intro.classList.remove('is-active');
 		form.hidden = false;
-		index = 0;
-		showStep();
+		state.currentStep = 0;
+		syncAnswersFromDom();
+		renderStep();
 	}
 
 	function applyPrefill() {
@@ -236,21 +383,23 @@
 			var radio = form.querySelector('[name="product"][value="' + pre.product + '"]');
 			if (radio) {
 				radio.checked = true;
-				productLocked = true;
+				state.productLocked = true;
+				state.answers.product = pre.product;
 				prefillEl.hidden = false;
 				prefillEl.textContent = '';
-				prefillEl.appendChild(document.createTextNode((ckfForm.i18n.evaluating || '') + ' '));
+				prefillEl.appendChild(document.createTextNode((i18n.evaluating || '') + ' '));
 				var strong = document.createElement('strong');
 				strong.textContent = (ckfForm.products && ckfForm.products[pre.product]) || pre.product;
 				prefillEl.appendChild(strong);
 				var change = document.createElement('button');
 				change.type = 'button';
-				change.textContent = ckfForm.i18n.change;
+				change.textContent = i18n.change;
 				change.addEventListener('click', function () {
-					productLocked = false;
+					state.productLocked = false;
 					prefillEl.hidden = true;
-					index = 0;
-					showStep();
+					state.currentStep = 0;
+					syncAnswersFromDom();
+					renderStep();
 				});
 				prefillEl.appendChild(change);
 			}
@@ -259,26 +408,32 @@
 			var frag = form.querySelector('[name="fragrance"][value="' + pre.fragrance + '"]');
 			if (frag) {
 				frag.checked = true;
+				state.answers.fragrance = pre.fragrance;
 			}
 		}
 	}
 
 	function collectPayload() {
+		syncAnswersFromDom();
+		recalculate();
 		var answers = {};
-		var visible = visibleSequence();
-		visible.forEach(function (slug) {
-			var q = bySlug[slug];
-			if (!q || q.type === 'info') {
-				return;
-			}
-			var vals = valuesOf(slug);
-			if (q.type === 'multi_choice') {
-				answers[slug] = vals;
-			} else if (q.type === 'yes_no' && q.settings && q.settings.ui === 'checkbox') {
-				answers[slug] = vals.length ? '1' : '';
-			} else {
-				answers[slug] = vals[0] || '';
-			}
+		state.visibleSteps.forEach(function (step) {
+			applicableQuestions(step, state.answers).forEach(function (q) {
+				if (q.type === 'info') {
+					return;
+				}
+				var result = CKFValidate.validateAnswer(q, state.answers[q.slug], i18n);
+				if (!result.ok) {
+					return;
+				}
+				if (q.type === 'multi_choice') {
+					answers[q.slug] = result.values;
+				} else if (q.type === 'yes_no' && q.settings && q.settings.ui === 'checkbox') {
+					answers[q.slug] = result.values.length ? '1' : '';
+				} else {
+					answers[q.slug] = result.values[0] || '';
+				}
+			});
 		});
 		return {
 			answers: answers,
@@ -291,32 +446,136 @@
 		};
 	}
 
+	function updateCount(el) {
+		var slug = el.getAttribute('data-count-for');
+		var max = el.getAttribute('data-max');
+		var field = form.querySelector('[name="' + slug + '"]');
+		if (!field) {
+			return;
+		}
+		el.textContent = String(field.value.length) + ' / ' + max;
+	}
+
+	form.querySelectorAll('[data-count-for]').forEach(updateCount);
+
+	form.addEventListener('input', function (event) {
+		var name = event.target.name ? event.target.name.replace(/\[\]$/, '') : '';
+		if (!name || !bySlug[name]) {
+			return;
+		}
+		if (bySlug[name].type === 'multi_choice') {
+			var q = bySlug[name];
+			var max = q.settings && q.settings.max_selections != null ? parseInt(q.settings.max_selections, 10) : 0;
+			if (max && event.target.type === 'checkbox' && event.target.checked) {
+				var selected = readDomValue(name);
+				if (selected.length > max) {
+					event.target.checked = false;
+					if (state.attempted[state.visibleSteps[state.currentStep] && state.visibleSteps[state.currentStep].slug]) {
+						showFieldError(name, (i18n.maxSelect || '').replace('%s', max));
+					}
+					return;
+				}
+			}
+		}
+		syncAnswersFromDom();
+		recalculate();
+		if (state.attempted[name] || state.errors[name]) {
+			validateField(bySlug[name], true);
+		}
+		var counterEl = form.querySelector('[data-count-for="' + name + '"]');
+		if (counterEl) {
+			updateCount(counterEl);
+		}
+		renderProgressOnly();
+	});
+
+	form.addEventListener('change', function (event) {
+		var name = event.target.name ? event.target.name.replace(/\[\]$/, '') : '';
+		if (!name || !bySlug[name]) {
+			return;
+		}
+		syncAnswersFromDom();
+		recalculate();
+		if (state.attempted[name] || state.errors[name]) {
+			validateField(bySlug[name], true);
+		}
+		renderStepKeepFocus();
+	});
+
+	function renderProgressOnly() {
+		var current = state.visibleSteps[state.currentStep];
+		counter.textContent = pad(state.currentStep + 1) + ' / ' + pad(state.visibleSteps.length || 1);
+		fill.style.width = state.visibleSteps.length ? ((state.currentStep + 1) / state.visibleSteps.length) * 100 + '%' : '0';
+		if (current) {
+			questionsForStep(current).forEach(function (q) {
+				var block = fieldEl(q.slug);
+				if (block) {
+					block.hidden = !applies(q, state.answers);
+				}
+			});
+		}
+	}
+
+	function renderStepKeepFocus() {
+		var active = document.activeElement;
+		var slug = active && active.name ? active.name.replace(/\[\]$/, '') : '';
+		renderStep();
+		if (slug) {
+			var again = controlEl(slug);
+			if (again && again === active) {
+				return;
+			}
+			if (again && again.type !== 'radio' && again.type !== 'checkbox') {
+				again.focus();
+			}
+		}
+	}
+
 	root.querySelector('[data-start]').addEventListener('click', startForm);
 
 	nextBtn.addEventListener('click', function () {
-		setError('');
-		if (!validateStep()) {
-			return;
+		syncAnswersFromDom();
+		recalculate();
+		var step = state.visibleSteps[state.currentStep];
+		if (step) {
+			state.attempted[step.slug] = true;
+			applicableQuestions(step, state.answers).forEach(function (q) {
+				state.attempted[q.slug] = true;
+			});
+			if (!validateStep(step, true)) {
+				return;
+			}
 		}
-		index += 1;
-		showStep();
+		state.currentStep += 1;
+		renderStep();
 	});
 
 	backBtn.addEventListener('click', function () {
-		setError('');
-		index = Math.max(0, index - 1);
-		showStep();
+		syncAnswersFromDom();
+		state.currentStep = Math.max(0, state.currentStep - 1);
+		renderStep();
 	});
 
 	form.addEventListener('submit', function (event) {
 		event.preventDefault();
-		setError('');
-		if (lock || !validateStep()) {
+		setFormError('');
+		if (state.isSubmitting) {
 			return;
 		}
-		lock = true;
+		syncAnswersFromDom();
+		var step = state.visibleSteps[state.currentStep];
+		if (step) {
+			state.attempted[step.slug] = true;
+			applicableQuestions(step, state.answers).forEach(function (q) {
+				state.attempted[q.slug] = true;
+			});
+		}
+		if (!validateAll()) {
+			return;
+		}
+		state.isSubmitting = true;
 		submitBtn.disabled = true;
-		submitBtn.textContent = ckfForm.i18n.sending;
+		submitBtn.textContent = i18n.sending || 'Enviando...';
 		form.setAttribute('aria-busy', 'true');
 
 		fetch(ckfForm.restUrl, {
@@ -331,7 +590,10 @@
 			.then(function (response) {
 				return response.json().then(function (body) {
 					if (!response.ok || body.success === false) {
-						throw new Error(body.message || (body.data && body.data.message) || ckfForm.i18n.serverError);
+						var err = new Error(body.message || (body.data && body.data.message) || i18n.serverError);
+						err.slug = body.data && body.data.slug;
+						err.status = response.status;
+						throw err;
 					}
 					return body;
 				});
@@ -346,13 +608,23 @@
 				}
 			})
 			.catch(function (error) {
-				setError(error.message || ckfForm.i18n.serverError);
-				lock = false;
+				if (error.slug) {
+					showFieldError(error.slug, error.message);
+					var node = controlEl(error.slug);
+					if (node) {
+						node.focus();
+					}
+				} else {
+					setFormError(error.message || i18n.serverError);
+				}
+				state.isSubmitting = false;
 				submitBtn.disabled = false;
-				submitBtn.textContent = 'Enviar avaliação';
+				submitBtn.textContent = i18n.submit || 'Enviar';
 				form.removeAttribute('aria-busy');
 			});
 	});
 
 	applyPrefill();
+	syncAnswersFromDom();
+	state.visibleSteps = visibleSteps();
 }());

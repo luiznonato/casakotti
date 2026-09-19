@@ -6,7 +6,7 @@ Plugin WordPress próprio para o questionário de experiência do cliente. Não 
 
 1. Envie `dist/casa-kotti-feedback.zip` em **Plugins > Adicionar plugin > Enviar plugin**.
 2. Ative **Casa Kotti — Avaliações**.
-3. Na ativação/atualização o plugin cria (via `dbDelta`) as tabelas de respostas, fragrâncias, **perguntas**, **alternativas** e **respostas dinâmicas**. A versão de schema é `1.1.0` (`ckf_db_version`).
+3. Na ativação/atualização o plugin cria (via `dbDelta`) as tabelas de respostas, fragrâncias, **páginas**, **perguntas**, **alternativas** e **respostas dinâmicas**. A versão de schema é `1.2.0` (`ckf_db_version`). A migração `ckf_steps_migrated` agrupa Nome, E-mail e aceite na página **Quase lá**.
 4. Se a tabela de perguntas estiver vazia, o fluxo atual é semeado **uma única vez** (`ckf_questions_seeded`). Reativar o plugin não duplica perguntas.
 
 O plugin pode ser desativado normalmente. As tabelas e as respostas permanecem no banco.
@@ -28,7 +28,7 @@ Com o tema Casa Kotti, a página reutiliza o fundo grafite, Montserrat, tokens `
 
 ## Question Builder
 
-Em **Casa Kotti > Perguntas** é possível criar, editar, duplicar, reordenar, ativar/desativar e (quando seguro) excluir perguntas.
+Em **Casa Kotti > Questionário** é possível criar páginas e, dentro delas, criar, editar, mover, reordenar, ativar/desativar e (quando seguro) excluir perguntas. Uma página pode ter várias perguntas. O progresso do cliente conta páginas.
 
 Tipos: texto, textarea, seleção única, radio, multiseleção, select, estrelas, escala, sim/não, e-mail, número, informativo.
 
@@ -89,7 +89,9 @@ Exemplos:
 
 `wp_casa_kotti_fragrances`: nome, slug, status, ordem.
 
-`wp_casa_kotti_feedback_questions`: slug, título, tipo, obrigatoriedade, status, ordem, `is_system`, `settings_json`.
+`wp_casa_kotti_feedback_steps`: páginas do wizard (`slug`, título, descrição, ordem, status).
+
+`wp_casa_kotti_feedback_questions`: slug, título, tipo, obrigatoriedade, status, ordem, `step_id`, `is_system`, `settings_json`.
 
 `wp_casa_kotti_feedback_question_options`: value estável + label editável.
 

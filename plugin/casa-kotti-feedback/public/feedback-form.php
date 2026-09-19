@@ -1,6 +1,6 @@
 <?php
 /**
- * Public questionnaire — rendered from the question builder.
+ * Public questionnaire — rendered from wizard pages.
  *
  * @package Casa_Kotti_Feedback
  */
@@ -9,10 +9,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$copy       = CKF_Questions::copy();
-$questions  = CKF_Questions::public_definition();
-$privacy_id = absint( get_option( 'wp_page_for_privacy_policy', 0 ) );
-$privacy_url = $privacy_id && 'publish' === get_post_status( $privacy_id ) ? get_permalink( $privacy_id ) : '';
+$copy        = CKF_Questions::copy();
+$wizard      = CKF_Questions::public_wizard();
+$steps       = $wizard['steps'];
+$questions   = $wizard['questions'];
+$by_step     = array();
+$orphans     = array();
+foreach ( $questions as $question ) {
+	$sid = isset( $question['step_id'] ) ? (int) $question['step_id'] : 0;
+	if ( $sid ) {
+		if ( ! isset( $by_step[ $sid ] ) ) {
+			$by_step[ $sid ] = array();
+		}
+		$by_step[ $sid ][] = $question;
+	} else {
+		$orphans[] = $question;
+	}
+}
 $thanks_url = $copy['thanks_url'] ? $copy['thanks_url'] : home_url( '/' );
 ?>
 <div class="ck-feedback" data-ck-feedback>
@@ -31,8 +44,27 @@ $thanks_url = $copy['thanks_url'] ? $copy['thanks_url'] : home_url( '/' );
 			<div class="ck-feedback__track" aria-hidden="true"><span class="ck-feedback__fill" data-fill></span></div>
 		</div>
 		<p class="ck-feedback__prefill" data-prefill hidden></p>
-		<?php foreach ( $questions as $question ) : ?>
-			<?php echo CKF_Renderer::step( $question ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in renderer. ?>
+		<p class="ck-feedback__error ck-feedback__error--form" data-form-error hidden></p>
+		<?php foreach ( $steps as $step ) : ?>
+			<?php
+			$sid   = (int) $step['id'];
+			$group = isset( $by_step[ $sid ] ) ? $by_step[ $sid ] : array();
+			if ( ! $group ) {
+				continue;
+			}
+			echo CKF_Renderer::page( $step, $group, $copy ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			?>
+		<?php endforeach; ?>
+		<?php foreach ( $orphans as $question ) : ?>
+			<?php
+			$fake = array(
+				'id'          => 0,
+				'slug'        => $question['slug'],
+				'title'       => $question['title'],
+				'description' => '',
+			);
+			echo CKF_Renderer::page( $fake, array( $question ), $copy ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			?>
 		<?php endforeach; ?>
 		<div class="ck-honeypot" aria-hidden="true">
 			<label><?php esc_html_e( 'Não preencha este campo', 'casa-kotti-feedback' ); ?>
@@ -45,17 +77,14 @@ $thanks_url = $copy['thanks_url'] ? $copy['thanks_url'] : home_url( '/' );
 		<input type="hidden" name="product_code" value="">
 		<div class="ck-feedback__nav" data-nav hidden>
 			<button type="button" class="ck-feedback__btn ck-feedback__btn--ghost" data-back><?php esc_html_e( 'Voltar', 'casa-kotti-feedback' ); ?></button>
-			<button type="button" class="ck-feedback__btn" data-next><?php esc_html_e( 'Continuar', 'casa-kotti-feedback' ); ?> <span aria-hidden="true">→</span></button>
-			<button type="submit" class="ck-feedback__btn" data-submit hidden><?php esc_html_e( 'Enviar avaliação', 'casa-kotti-feedback' ); ?></button>
+			<button type="button" class="ck-feedback__btn" data-next><?php esc_html_e( 'Próximo', 'casa-kotti-feedback' ); ?> <span aria-hidden="true">→</span></button>
+			<button type="submit" class="ck-feedback__btn" data-submit hidden><?php esc_html_e( 'Enviar', 'casa-kotti-feedback' ); ?></button>
 		</div>
 	</form>
 
 	<section class="ck-feedback__panel" data-panel="thanks" hidden>
 		<h2 class="ck-feedback__title"><?php echo esc_html( $copy['thanks_title'] ); ?></h2>
 		<p class="ck-feedback__helper"><?php echo esc_html( $copy['thanks_body'] ); ?></p>
-		<?php if ( $privacy_url ) : ?>
-			<p class="ck-feedback__privacy"><a href="<?php echo esc_url( $privacy_url ); ?>"><?php esc_html_e( 'Política de privacidade', 'casa-kotti-feedback' ); ?></a></p>
-		<?php endif; ?>
 		<a class="ck-feedback__btn" href="<?php echo esc_url( $thanks_url ); ?>"><?php echo esc_html( $copy['thanks_button'] ); ?></a>
 	</section>
 </div>

@@ -57,8 +57,8 @@ class CKF_Admin {
 		);
 		add_submenu_page(
 			'casa-kotti-feedback',
-			__( 'Perguntas', 'casa-kotti-feedback' ),
-			__( 'Perguntas', 'casa-kotti-feedback' ),
+			__( 'Questionário', 'casa-kotti-feedback' ),
+			__( 'Questionário', 'casa-kotti-feedback' ),
 			'manage_options',
 			'casa-kotti-questions',
 			array( 'CKF_Admin_Questions', 'page_list' )

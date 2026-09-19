@@ -109,6 +109,7 @@ class CKF_Questions {
 			'thanks_body'    => __( 'Cada resposta ajuda a Casa Kotti a aperfeiçoar aquilo que fazemos e criar experiências cada vez melhores.', 'casa-kotti-feedback' ),
 			'thanks_button'  => __( 'Voltar para Casa Kotti', 'casa-kotti-feedback' ),
 			'thanks_url'     => '',
+			'privacy_note'   => __( 'Ao enviar, você concorda com o tratamento das informações conforme nossa Política de Privacidade.', 'casa-kotti-feedback' ),
 		);
 		$saved = get_option( 'ckf_copy', array() );
 		return wp_parse_args( is_array( $saved ) ? $saved : array(), $defaults );
@@ -134,9 +135,20 @@ class CKF_Questions {
 	 * @return array
 	 */
 	public static function public_definition() {
+		$wizard = self::public_wizard();
+		return $wizard['questions'];
+	}
+
+	/**
+	 * Steps + questions for the public wizard.
+	 *
+	 * @return array{steps:array,questions:array}
+	 */
+	public static function public_wizard() {
 		$cached = get_transient( self::CACHE_KEY );
-		if ( is_array( $cached ) ) {
-			return self::hydrate_dynamic_options( $cached );
+		if ( is_array( $cached ) && isset( $cached['steps'], $cached['questions'] ) ) {
+			$cached['questions'] = self::hydrate_dynamic_options( $cached['questions'] );
+			return $cached;
 		}
 
 		$questions = array();
@@ -146,7 +158,6 @@ class CKF_Questions {
 			}
 			$questions[] = self::normalize( $row );
 		}
-
 		$ids = wp_list_pluck( $questions, 'id' );
 		$options_by_q = CKF_Question_Options::for_questions( $ids );
 		foreach ( $questions as &$question ) {
@@ -154,8 +165,27 @@ class CKF_Questions {
 		}
 		unset( $question );
 
-		set_transient( self::CACHE_KEY, $questions, HOUR_IN_SECONDS );
-		return self::hydrate_dynamic_options( $questions );
+		$steps = array();
+		foreach ( CKF_Steps::all() as $step ) {
+			if ( 'active' !== $step->status ) {
+				continue;
+			}
+			$steps[] = array(
+				'id'          => (int) $step->id,
+				'slug'        => $step->slug,
+				'title'       => $step->title,
+				'description' => (string) $step->description,
+				'sort_order'  => (int) $step->sort_order,
+			);
+		}
+
+		$payload = array(
+			'steps'     => $steps,
+			'questions' => $questions,
+		);
+		set_transient( self::CACHE_KEY, $payload, HOUR_IN_SECONDS );
+		$payload['questions'] = self::hydrate_dynamic_options( $questions );
+		return $payload;
 	}
 
 	/**
@@ -194,6 +224,7 @@ class CKF_Questions {
 			'required'    => (int) $row->required,
 			'status'      => $row->status,
 			'sort_order'  => (int) $row->sort_order,
+			'step_id'     => isset( $row->step_id ) ? (int) $row->step_id : 0,
 			'is_system'   => (int) $row->is_system,
 			'settings'    => self::settings( $row ),
 			'options'     => array(),
@@ -220,6 +251,7 @@ class CKF_Questions {
 				'required'      => 0,
 				'status'        => 'active',
 				'sort_order'    => self::next_order(),
+				'step_id'       => 0,
 				'is_system'     => 0,
 				'settings_json' => '{}',
 				'description'   => '',
@@ -236,12 +268,13 @@ class CKF_Questions {
 				'required'      => (int) $data['required'],
 				'status'        => $data['status'],
 				'sort_order'    => (int) $data['sort_order'],
+				'step_id'       => (int) $data['step_id'],
 				'is_system'     => (int) $data['is_system'],
 				'settings_json' => $data['settings_json'],
 				'created_at'    => $now,
 				'updated_at'    => $now,
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d', '%d', '%s', '%s', '%s' )
 		);
 		self::bust_cache();
 		return $ok ? (int) $wpdb->insert_id : 0;

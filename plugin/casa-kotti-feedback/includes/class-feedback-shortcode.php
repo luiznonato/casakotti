@@ -60,10 +60,25 @@ class CKF_Shortcode {
 			$style_deps,
 			CKF_VERSION
 		);
+		$font = get_template_directory() . '/assets/fonts/montserrat-latin.woff2';
+		if ( file_exists( $font ) ) {
+			$font_url = get_template_directory_uri() . '/assets/fonts/montserrat-latin.woff2';
+			wp_add_inline_style(
+				'casa-kotti-feedback',
+				'@font-face{font-family:"Montserrat CK";font-style:normal;font-weight:100 900;font-display:swap;src:url("' . esc_url( $font_url ) . '") format("woff2");}'
+			);
+		}
+		wp_enqueue_script(
+			'casa-kotti-feedback-validate',
+			CKF_URL . 'public/ckf-validate.js',
+			array(),
+			CKF_VERSION,
+			true
+		);
 		wp_enqueue_script(
 			'casa-kotti-feedback',
 			CKF_URL . 'public/feedback.js',
-			array(),
+			array( 'casa-kotti-feedback-validate' ),
 			CKF_VERSION,
 			true
 		);
@@ -82,6 +97,10 @@ class CKF_Shortcode {
 			);
 		}
 
+		$wizard = CKF_Questions::public_wizard();
+		$i18n   = CKF_Validate::messages();
+		$i18n['submit'] = __( 'Enviar', 'casa-kotti-feedback' );
+
 		wp_localize_script(
 			'casa-kotti-feedback',
 			'ckfForm',
@@ -91,7 +110,8 @@ class CKF_Shortcode {
 				'homeUrl'    => home_url( '/' ),
 				'products'   => ckf_products(),
 				'fragrances' => $frags,
-				'questions'  => CKF_Questions::public_definition(),
+				'steps'      => $wizard['steps'],
+				'questions'  => $wizard['questions'],
 				'prefill'    => array(
 					'product'   => $pre_product,
 					'fragrance' => $pre_frag,
@@ -99,15 +119,7 @@ class CKF_Shortcode {
 					'source'    => $pre_source,
 					'campaign'  => $pre_camp,
 				),
-				'i18n'       => array(
-					'continue'     => __( 'Continuar', 'casa-kotti-feedback' ),
-					'selectOption' => __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ),
-					'sending'      => __( 'Enviando...', 'casa-kotti-feedback' ),
-					'serverError'  => __( 'Não conseguimos enviar sua avaliação agora. Tente novamente.', 'casa-kotti-feedback' ),
-					'invalidEmail' => __( 'Digite um e-mail válido.', 'casa-kotti-feedback' ),
-					'change'       => __( 'Alterar produto', 'casa-kotti-feedback' ),
-					'evaluating'   => __( 'Você está avaliando:', 'casa-kotti-feedback' ),
-				),
+				'i18n'       => $i18n,
 			)
 		);
 	}

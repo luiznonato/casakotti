@@ -130,17 +130,21 @@ class CKF_API {
 			if ( ! CKF_Conditions::applies( $question, $incoming ) ) {
 				continue;
 			}
-			$raw = isset( $incoming[ $slug ] ) ? $incoming[ $slug ] : '';
-			$parsed = self::parse_answer( $question, $raw );
-			if ( is_wp_error( $parsed ) ) {
-				return $parsed;
-			}
-			if ( $question['required'] && self::is_empty( $parsed ) ) {
-				return new WP_Error( 'ckf_required', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+			$raw    = isset( $incoming[ $slug ] ) ? $incoming[ $slug ] : '';
+			$parsed = CKF_Validate::answer( $question, $raw );
+			if ( ! $parsed['ok'] ) {
+				return new WP_Error(
+					'ckf_invalid',
+					$parsed['error'],
+					array(
+						'status' => 400,
+						'slug'   => $slug,
+					)
+				);
 			}
 			$collected[ $slug ] = array(
 				'question' => $question,
-				'values'   => $parsed,
+				'values'   => $parsed['values'],
 			);
 		}
 
@@ -202,95 +206,4 @@ class CKF_API {
 		);
 	}
 
-	private static function is_empty( $parsed ) {
-		return ! $parsed || ( 1 === count( $parsed ) && '' === (string) $parsed[0] );
-	}
-
-	/**
-	 * @param array $question Question.
-	 * @param mixed $raw      Incoming value.
-	 * @return array|WP_Error
-	 */
-	private static function parse_answer( $question, $raw ) {
-		$type     = $question['type'];
-		$settings = $question['settings'];
-		$options  = isset( $question['options'] ) ? $question['options'] : array();
-		$allowed  = wp_list_pluck( $options, 'value' );
-
-		if ( 'multi_choice' === $type ) {
-			$values = is_array( $raw ) ? $raw : ( '' === $raw ? array() : array( $raw ) );
-			$clean  = array();
-			foreach ( $values as $value ) {
-				$value = sanitize_title( (string) $value );
-				if ( ! in_array( $value, $allowed, true ) ) {
-					return new WP_Error( 'ckf_option', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-				}
-				$clean[] = $value;
-			}
-			if ( count( $clean ) > count( $allowed ) ) {
-				return new WP_Error( 'ckf_option', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-			}
-			return $clean;
-		}
-
-		if ( in_array( $type, array( 'single_choice', 'radio', 'select' ), true ) ) {
-			$value = sanitize_title( is_array( $raw ) ? (string) reset( $raw ) : (string) $raw );
-			if ( '' === $value ) {
-				return array();
-			}
-			if ( ! in_array( $value, $allowed, true ) ) {
-				return new WP_Error( 'ckf_option', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-			}
-			return array( $value );
-		}
-
-		if ( 'yes_no' === $type ) {
-			$value = is_array( $raw ) ? (string) reset( $raw ) : (string) $raw;
-			if ( ! empty( $settings['ui'] ) && 'checkbox' === $settings['ui'] ) {
-				return array( $value ? '1' : '' );
-			}
-			$value = sanitize_title( $value );
-			if ( '' === $value ) {
-				return array();
-			}
-			if ( ! in_array( $value, array( 'sim', 'nao', '1', '0' ), true ) ) {
-				return new WP_Error( 'ckf_option', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-			}
-			return array( $value );
-		}
-
-		if ( 'stars' === $type || 'scale' === $type || 'number' === $type ) {
-			if ( '' === $raw || null === $raw ) {
-				return array();
-			}
-			if ( ! is_numeric( $raw ) ) {
-				return new WP_Error( 'ckf_number', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-			}
-			$num = 'number' === $type ? (float) $raw : (int) $raw;
-			$min = isset( $settings['min'] ) ? (float) $settings['min'] : ( 'scale' === $type ? 0 : 1 );
-			$max = isset( $settings['max'] ) ? (float) $settings['max'] : ( 'scale' === $type ? 10 : 5 );
-			if ( $num < $min || $num > $max ) {
-				return new WP_Error( 'ckf_number', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-			}
-			return array( (string) $num );
-		}
-
-		if ( 'email' === $type ) {
-			$email = sanitize_email( (string) $raw );
-			if ( $email && ! is_email( $email ) ) {
-				return new WP_Error( 'ckf_email', __( 'Digite um e-mail válido.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-			}
-			return $email ? array( $email ) : array();
-		}
-
-		$text = 'textarea' === $type ? sanitize_textarea_field( (string) $raw ) : sanitize_text_field( (string) $raw );
-		$cap  = 'textarea' === $type ? self::TEXTAREA_MAX : self::TEXT_MAX;
-		if ( isset( $settings['max_length'] ) ) {
-			$cap = min( $cap, absint( $settings['max_length'] ) );
-		}
-		if ( strlen( $text ) > $cap ) {
-			$text = substr( $text, 0, $cap );
-		}
-		return '' === $text ? array() : array( $text );
-	}
 }

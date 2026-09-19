@@ -51,3 +51,35 @@
 .ckf-admin .ckf-question-form {
 	max-width: 880px;
 }
+
+.ckf-admin .ckf-page-card {
+	max-width: 920px;
+	margin: 20px 0;
+	padding: 16px 18px;
+	border: 1px solid #dcdcde;
+	background: #fff;
+}
+
+.ckf-admin .ckf-page-card h2 {
+	margin: 4px 0 8px;
+}
+
+.ckf-admin .ckf-q-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ckf-admin .ckf-q-list li {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 0;
+	border-top: 1px solid #f0f0f1;
+}
+
+.ckf-admin .ckf-move,
+.ckf-admin .ckf-step-form label {
+	margin-right: 12px;
+}

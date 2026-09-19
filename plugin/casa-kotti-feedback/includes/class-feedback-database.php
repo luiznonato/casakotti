@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class CKF_Database {
-	const DB_VERSION = '1.1.0';
+	const DB_VERSION = '1.2.0';
 
 	/**
 	 * Create tables on activation.
@@ -18,6 +18,7 @@ class CKF_Database {
 	public static function activate() {
 		self::install_tables();
 		CKF_Questions::seed_defaults();
+		CKF_Steps::migrate_from_questions();
 	}
 
 	/**
@@ -28,6 +29,7 @@ class CKF_Database {
 			self::install_tables();
 		}
 		CKF_Questions::seed_defaults();
+		CKF_Steps::migrate_from_questions();
 	}
 
 	/**
@@ -43,6 +45,7 @@ class CKF_Database {
 		$questions = self::questions_table();
 		$options   = self::options_table();
 		$answers   = self::answers_table();
+		$steps     = self::steps_table();
 
 		$sql_feedback = "CREATE TABLE {$feedback} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -90,6 +93,22 @@ class CKF_Database {
 			KEY status_order (status, sort_order)
 		) {$charset};";
 
+		$sql_steps = "CREATE TABLE {$steps} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			uuid char(36) NOT NULL,
+			slug varchar(80) NOT NULL,
+			title varchar(255) NOT NULL,
+			description text NULL,
+			sort_order int(11) NOT NULL DEFAULT 0,
+			status varchar(20) NOT NULL DEFAULT 'active',
+			created_at datetime NOT NULL,
+			updated_at datetime NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY uuid (uuid),
+			UNIQUE KEY slug (slug),
+			KEY status_order (status, sort_order)
+		) {$charset};";
+
 		$sql_questions = "CREATE TABLE {$questions} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			uuid char(36) NOT NULL,
@@ -100,6 +119,7 @@ class CKF_Database {
 			required tinyint(1) unsigned NOT NULL DEFAULT 0,
 			status varchar(20) NOT NULL DEFAULT 'active',
 			sort_order int(11) NOT NULL DEFAULT 0,
+			step_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			is_system tinyint(1) unsigned NOT NULL DEFAULT 0,
 			settings_json longtext NULL,
 			created_at datetime NOT NULL,
@@ -107,7 +127,8 @@ class CKF_Database {
 			PRIMARY KEY  (id),
 			UNIQUE KEY uuid (uuid),
 			UNIQUE KEY slug (slug),
-			KEY status_order (status, sort_order)
+			KEY status_order (status, sort_order),
+			KEY step_id (step_id)
 		) {$charset};";
 
 		$sql_options = "CREATE TABLE {$options} (
@@ -140,6 +161,7 @@ class CKF_Database {
 
 		dbDelta( $sql_feedback );
 		dbDelta( $sql_frags );
+		dbDelta( $sql_steps );
 		dbDelta( $sql_questions );
 		dbDelta( $sql_options );
 		dbDelta( $sql_answers );
@@ -164,6 +186,11 @@ class CKF_Database {
 	public static function options_table() {
 		global $wpdb;
 		return $wpdb->prefix . 'casa_kotti_feedback_question_options';
+	}
+
+	public static function steps_table() {
+		global $wpdb;
+		return $wpdb->prefix . 'casa_kotti_feedback_steps';
 	}
 
 	public static function answers_table() {

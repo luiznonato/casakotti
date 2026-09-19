@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<tr><th><?php esc_html_e( 'Mensagem', 'casa-kotti-feedback' ); ?></th><td><textarea class="large-text" name="thanks_body" rows="3"><?php echo esc_textarea( $copy['thanks_body'] ); ?></textarea></td></tr>
 			<tr><th><?php esc_html_e( 'Texto do botão', 'casa-kotti-feedback' ); ?></th><td><input class="regular-text" name="thanks_button" value="<?php echo esc_attr( $copy['thanks_button'] ); ?>"></td></tr>
 			<tr><th><?php esc_html_e( 'Link', 'casa-kotti-feedback' ); ?></th><td><input class="regular-text" type="url" name="thanks_url" value="<?php echo esc_attr( $copy['thanks_url'] ); ?>" placeholder="<?php esc_attr_e( 'Vazio usa a homepage', 'casa-kotti-feedback' ); ?>"></td></tr>
+			<tr><th><?php esc_html_e( 'Nota de privacidade', 'casa-kotti-feedback' ); ?></th><td><textarea class="large-text" name="privacy_note" rows="3"><?php echo esc_textarea( $copy['privacy_note'] ); ?></textarea></td></tr>
 		</table>
 		<?php submit_button(); ?>
 	</form>
