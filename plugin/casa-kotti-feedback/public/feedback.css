@@ -194,11 +194,11 @@
 }
 
 .ck-feedback__progress {
-	margin: 0 0 1.8rem;
+	margin: 1.5rem 0 0;
 }
 
 .ck-feedback__counter {
-	margin: 0 0 0.55rem;
+	margin: 0.55rem 0 0;
 	color: var(--ck-muted, #bdb7ac);
 	font-size: 0.72rem;
 	letter-spacing: 0.18em;
