@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>Casa Kotti — Experiência</title>
+	<link rel="stylesheet" href="../theme/casa-kotti/assets/css/main.css">
+	<link rel="stylesheet" href="../plugin/casa-kotti-feedback/public/feedback.css">
+</head>
+<body class="ck-feedback-page">
+	<div class="ck-page">
+		<main class="ck-content" id="conteudo">
+			<h1>Experiência</h1>
+			<div class="ck-feedback" data-ck-feedback>
+				<section class="ck-feedback__panel is-active" data-panel="intro">
+					<p class="ck-feedback__kicker">Experiência</p>
+					<h2 class="ck-feedback__title">Como foi sua experiência com a Casa Kotti?</h2>
+					<p class="ck-feedback__lead">Queremos saber como foi ter um pouco da Casa Kotti com você.</p>
+					<p class="ck-feedback__helper">Sua opinião nos ajuda a aperfeiçoar cada detalhe — da fragrância à experiência de receber o produto.</p>
+					<p class="ck-feedback__helper">Leva menos de 2 minutos.</p>
+					<button type="button" class="ck-feedback__btn" data-start>Começar</button>
+				</section>
+				<form class="ck-feedback__form" data-form hidden novalidate>
+					<div class="ck-feedback__progress" data-progress hidden>
+						<p class="ck-feedback__counter" data-counter>01 / 02</p>
+						<div class="ck-feedback__track"><span class="ck-feedback__fill" data-fill></span></div>
+					</div>
+					<p class="ck-feedback__prefill" data-prefill hidden></p>
+					<fieldset class="ck-feedback__step" data-step="product" hidden>
+						<legend class="ck-feedback__question">Qual produto você experimentou?</legend>
+						<div class="ck-feedback__choices">
+							<label class="ck-feedback__choice"><input type="radio" name="product" value="home-spray"><span class="ck-feedback__choice-mark"></span><span>Home Spray</span></label>
+							<label class="ck-feedback__choice"><input type="radio" name="product" value="difusor"><span class="ck-feedback__choice-mark"></span><span>Difusor</span></label>
+							<label class="ck-feedback__choice"><input type="radio" name="product" value="automotivo"><span class="ck-feedback__choice-mark"></span><span>Automotivo</span></label>
+							<label class="ck-feedback__choice"><input type="radio" name="product" value="refil"><span class="ck-feedback__choice-mark"></span><span>Refil</span></label>
+							<label class="ck-feedback__choice"><input type="radio" name="product" value="mais-de-um"><span class="ck-feedback__choice-mark"></span><span>Mais de um produto</span></label>
+						</div>
+						<p class="ck-feedback__error" data-error hidden></p>
+					</fieldset>
+					<fieldset class="ck-feedback__step" data-step="overall_rating" hidden>
+						<legend class="ck-feedback__question">Como você avalia sua experiência geral com o produto?</legend>
+						<div class="ck-feedback__stars" data-stars>
+							<label class="ck-feedback__star"><input type="radio" name="overall_rating" value="1"><span aria-hidden="true">★</span></label>
+							<label class="ck-feedback__star"><input type="radio" name="overall_rating" value="2"><span aria-hidden="true">★</span></label>
+							<label class="ck-feedback__star"><input type="radio" name="overall_rating" value="3"><span aria-hidden="true">★</span></label>
+							<label class="ck-feedback__star"><input type="radio" name="overall_rating" value="4"><span aria-hidden="true">★</span></label>
+							<label class="ck-feedback__star"><input type="radio" name="overall_rating" value="5"><span aria-hidden="true">★</span></label>
+						</div>
+						<p class="ck-feedback__hint"><span>1</span><span>5</span></p>
+						<p class="ck-feedback__error" data-error hidden></p>
+					</fieldset>
+					<div class="ck-honeypot" aria-hidden="true"><label>Não preencha <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+					<input type="hidden" name="source" value=""><input type="hidden" name="campaign" value=""><input type="hidden" name="batch" value=""><input type="hidden" name="product_code" value="">
+					<div class="ck-feedback__nav" data-nav hidden>
+						<button type="button" class="ck-feedback__btn ck-feedback__btn--outline" data-back>Voltar</button>
+						<button type="button" class="ck-feedback__btn" data-next>Continuar →</button>
+						<button type="submit" class="ck-feedback__btn" data-submit hidden>Enviar avaliação</button>
+					</div>
+				</form>
+				<section class="ck-feedback__panel" data-panel="thanks" hidden>
+					<h2 class="ck-feedback__title">Obrigado por compartilhar.</h2>
+					<p class="ck-feedback__helper">Cada resposta ajuda a Casa Kotti a aperfeiçoar aquilo que fazemos.</p>
+					<a class="ck-feedback__btn" href="../preview/">Voltar para Casa Kotti</a>
+				</section>
+			</div>
+		</main>
+	</div>
+	<script>
+		window.ckfForm = {
+			restUrl: '#',
+			nonce: 'preview',
+			products: { 'home-spray': 'Home Spray', difusor: 'Difusor', automotivo: 'Automotivo', refil: 'Refil', 'mais-de-um': 'Mais de um produto' },
+			questions: [
+				{ slug: 'product', type: 'single_choice', required: 1, settings: {}, options: [] },
+				{ slug: 'overall_rating', type: 'stars', required: 1, settings: { min: 1, max: 5 }, options: [] }
+			],
+			prefill: { product: '', fragrance: '', batch: '', source: '', campaign: '' },
+			i18n: { continue: 'Continuar', selectOption: 'Selecione uma opção para continuar.', sending: 'Enviando...', serverError: 'Não conseguimos enviar sua avaliação agora. Tente novamente.', invalidEmail: 'Digite um e-mail válido.', change: 'Alterar produto', evaluating: 'Você está avaliando:' }
+		};
+	</script>
+	<script src="../plugin/casa-kotti-feedback/public/feedback.js"></script>
+</body>
+</html>
