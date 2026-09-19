@@ -16,6 +16,9 @@ $fmt = function ( $n, $dec = 1 ) {
 ?>
 <div class="wrap ckf-admin">
 	<h1><?php esc_html_e( 'Avaliações', 'casa-kotti-feedback' ); ?></h1>
+	<?php if ( isset( $_GET['deleted'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Avaliação excluída.', 'casa-kotti-feedback' ); ?></p></div>
+	<?php endif; ?>
 
 	<div class="ckf-cards">
 		<div class="ckf-card">
@@ -125,11 +128,12 @@ $fmt = function ( $n, $dec = 1 ) {
 				<th><?php esc_html_e( 'NPS', 'casa-kotti-feedback' ); ?></th>
 				<th><?php esc_html_e( 'Recompra', 'casa-kotti-feedback' ); ?></th>
 				<th><?php esc_html_e( 'Cliente', 'casa-kotti-feedback' ); ?></th>
+				<th><?php esc_html_e( 'Ações', 'casa-kotti-feedback' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php if ( ! $rows ) : ?>
-			<tr><td colspan="8"><?php esc_html_e( 'Nenhuma avaliação encontrada.', 'casa-kotti-feedback' ); ?></td></tr>
+			<tr><td colspan="9"><?php esc_html_e( 'Nenhuma avaliação encontrada.', 'casa-kotti-feedback' ); ?></td></tr>
 		<?php else : ?>
 			<?php foreach ( $rows as $row ) : ?>
 				<tr>
@@ -141,6 +145,11 @@ $fmt = function ( $n, $dec = 1 ) {
 					<td><?php echo esc_html( (string) (int) $row->nps_score ); ?></td>
 					<td><?php echo esc_html( isset( ckf_repurchase_options()[ $row->repurchase_intent ] ) ? ckf_repurchase_options()[ $row->repurchase_intent ] : $row->repurchase_intent ); ?></td>
 					<td><?php echo esc_html( $row->customer_name ? $row->customer_name : ( $row->customer_email ? $row->customer_email : '—' ) ); ?></td>
+					<td>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=casa-kotti-feedback&view=' . absint( $row->id ) ) ); ?>"><?php esc_html_e( 'Ver', 'casa-kotti-feedback' ); ?></a>
+						|
+						<a class="button-link-delete" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ckf_delete_feedback&id=' . absint( $row->id ) ), 'ckf_delete_feedback_' . absint( $row->id ) ) ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Excluir esta avaliação de forma permanente?', 'casa-kotti-feedback' ) ); ?>');"><?php esc_html_e( 'Excluir', 'casa-kotti-feedback' ); ?></a>
+					</td>
 				</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>

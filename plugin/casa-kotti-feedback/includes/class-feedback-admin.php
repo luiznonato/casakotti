@@ -17,6 +17,7 @@ class CKF_Admin {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'assets' ) );
 		add_action( 'admin_post_ckf_export', array( __CLASS__, 'export_csv' ) );
+		add_action( 'admin_post_ckf_delete_feedback', array( __CLASS__, 'delete_feedback' ) );
 		add_action( 'admin_post_ckf_save_fragrance', array( __CLASS__, 'save_fragrance' ) );
 		add_action( 'admin_post_ckf_toggle_fragrance', array( __CLASS__, 'toggle_fragrance' ) );
 		add_action( 'admin_post_ckf_reorder_fragrance', array( __CLASS__, 'reorder_fragrance' ) );
@@ -384,6 +385,19 @@ class CKF_Admin {
 		$table = CKF_Database::fragrance_table();
 		$wpdb->query( $wpdb->prepare( "UPDATE {$table} SET sort_order = sort_order + %d, updated_at = %s WHERE id = %d", $dir, current_time( 'mysql', true ), $id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		wp_safe_redirect( admin_url( 'admin.php?page=casa-kotti-fragrances' ) );
+		exit;
+	}
+
+	public static function delete_feedback() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Acesso negado.', 'casa-kotti-feedback' ), '', array( 'response' => 403 ) );
+		}
+		$id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+		check_admin_referer( 'ckf_delete_feedback_' . $id );
+		if ( $id ) {
+			CKF_Database::delete_feedback( $id );
+		}
+		wp_safe_redirect( admin_url( 'admin.php?page=casa-kotti-feedback&deleted=1' ) );
 		exit;
 	}
 

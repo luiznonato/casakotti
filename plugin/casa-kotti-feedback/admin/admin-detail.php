@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="wrap ckf-admin">
 	<p><a href="<?php echo esc_url( admin_url( 'admin.php?page=casa-kotti-feedback' ) ); ?>"><?php esc_html_e( '← Avaliações', 'casa-kotti-feedback' ); ?></a></p>
 	<h1><?php esc_html_e( 'Detalhe da avaliação', 'casa-kotti-feedback' ); ?></h1>
+	<p>
+		<a class="button button-link-delete" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ckf_delete_feedback&id=' . absint( $row->id ) ), 'ckf_delete_feedback_' . absint( $row->id ) ) ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Excluir esta avaliação de forma permanente?', 'casa-kotti-feedback' ) ); ?>');"><?php esc_html_e( 'Excluir avaliação', 'casa-kotti-feedback' ); ?></a>
+	</p>
 	<table class="widefat striped">
 		<tbody>
 			<tr><th><?php esc_html_e( 'Data (UTC)', 'casa-kotti-feedback' ); ?></th><td><?php echo esc_html( $row->created_at ); ?></td></tr>

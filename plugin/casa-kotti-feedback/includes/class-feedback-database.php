@@ -221,4 +221,14 @@ class CKF_Database {
 		$ok = $wpdb->insert( self::feedback_table(), $data );
 		return $ok ? (int) $wpdb->insert_id : false;
 	}
+
+	public static function delete_feedback( $id ) {
+		global $wpdb;
+		$id = absint( $id );
+		if ( ! $id ) {
+			return false;
+		}
+		$wpdb->delete( self::answers_table(), array( 'feedback_id' => $id ), array( '%d' ) );
+		return (bool) $wpdb->delete( self::feedback_table(), array( 'id' => $id ), array( '%d' ) );
+	}
 }

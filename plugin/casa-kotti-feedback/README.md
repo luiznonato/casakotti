@@ -51,6 +51,8 @@ Cadastre ao menos uma fragrância ativa antes de divulgar o QR Code.
 
 ## Consultar avaliações
 
+**Casa Kotti > Avaliações** permite **excluir** cada resposta (lista e detalhe), com confirmação. A exclusão remove a avaliação e as respostas dinâmicas associadas.
+
 **Casa Kotti > Avaliações** mostra:
 
 - Cards: total, nota média, NPS, % de recompra (Com certeza + Provavelmente sim)

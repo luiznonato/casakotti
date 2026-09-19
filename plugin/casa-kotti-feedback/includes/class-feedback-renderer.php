@@ -193,12 +193,12 @@ class CKF_Renderer {
 		for ( $i = $min; $i <= $max; $i++ ) {
 			echo '<label class="ck-feedback__star">';
 			echo '<input type="radio" name="' . esc_attr( $slug ) . '" value="' . esc_attr( (string) $i ) . '">';
-			echo '<span aria-hidden="true">★</span>';
+			echo '<span class="ck-feedback__star-icon" aria-hidden="true">★</span>';
+			echo '<span class="ck-feedback__star-num" aria-hidden="true">' . esc_html( (string) $i ) . '</span>';
 			echo '<span class="ck-feedback__sr">' . esc_html( sprintf( __( '%d de %d', 'casa-kotti-feedback' ), $i, $max ) ) . '</span>';
 			echo '</label>';
 		}
 		echo '</div>';
-		echo '<p class="ck-feedback__hint"><span>' . esc_html( (string) $min ) . '</span><span>' . esc_html( (string) $max ) . '</span></p>';
 	}
 
 	private static function scale( $slug, $settings, $error ) {

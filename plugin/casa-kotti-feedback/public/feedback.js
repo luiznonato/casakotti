@@ -342,8 +342,10 @@
 		}
 		var last = state.currentStep === state.visibleSteps.length - 1;
 		nextBtn.hidden = last;
+		nextBtn.setAttribute('aria-hidden', last ? 'true' : 'false');
 		submitBtn.hidden = !last;
 		backBtn.hidden = state.currentStep === 0;
+		nav.classList.toggle('is-last', last);
 		progress.hidden = false;
 		nav.hidden = false;
 		counter.textContent = pad(state.currentStep + 1) + ' / ' + pad(state.visibleSteps.length || 1);
