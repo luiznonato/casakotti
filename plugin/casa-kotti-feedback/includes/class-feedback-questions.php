@@ -78,6 +78,11 @@ class CKF_Questions {
 
 	public static function bust_cache() {
 		delete_transient( self::CACHE_KEY );
+		if ( class_exists( 'CKF_Surveys' ) ) {
+			foreach ( CKF_Surveys::all() as $survey ) {
+				delete_transient( self::CACHE_KEY . '_' . (int) $survey->id );
+			}
+		}
 	}
 
 	public static function types() {
@@ -94,10 +99,13 @@ class CKF_Questions {
 		return isset( $types[ $type ] ) ? $type : 'text';
 	}
 
-	public static function all() {
+	public static function all( $survey_id = null ) {
 		global $wpdb;
 		$table = CKF_Database::questions_table();
-		return $wpdb->get_results( "SELECT * FROM {$table} ORDER BY sort_order ASC, id ASC" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		if ( null === $survey_id ) {
+			return $wpdb->get_results( "SELECT * FROM {$table} ORDER BY sort_order ASC, id ASC" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+		return $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE survey_id = %d ORDER BY sort_order ASC, id ASC", absint( $survey_id ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	public static function get( $id ) {
@@ -118,25 +126,23 @@ class CKF_Questions {
 		return is_array( $data ) ? $data : array();
 	}
 
-	public static function copy() {
-		$defaults = array(
-			'intro_title'    => __( 'Como foi sua experiência com a Casa Kotti?', 'casa-kotti-feedback' ),
-			'intro_lead'     => __( 'Queremos saber como foi ter um pouco da Casa Kotti com você.', 'casa-kotti-feedback' ),
-			'intro_body'     => __( 'Sua opinião nos ajuda a aperfeiçoar cada detalhe — da fragrância à experiência de receber o produto.', 'casa-kotti-feedback' ),
-			'intro_note'     => __( 'Leva menos de 2 minutos.', 'casa-kotti-feedback' ),
-			'intro_button'   => __( 'Começar', 'casa-kotti-feedback' ),
-			'thanks_title'   => __( 'Obrigado por compartilhar.', 'casa-kotti-feedback' ),
-			'thanks_body'    => __( 'Cada resposta ajuda a Casa Kotti a aperfeiçoar aquilo que fazemos e criar experiências cada vez melhores.', 'casa-kotti-feedback' ),
-			'thanks_button'  => __( 'Voltar para Casa Kotti', 'casa-kotti-feedback' ),
-			'thanks_url'     => '',
-			'privacy_note'   => __( 'Ao enviar, você concorda com o tratamento das informações conforme nossa Política de Privacidade.', 'casa-kotti-feedback' ),
+	public static function default_copy() {
+		return array(
+			'intro_title'   => __( 'Como foi sua experiência com a Casa Kotti?', 'casa-kotti-feedback' ),
+			'intro_lead'    => __( 'Queremos saber como foi ter um pouco da Casa Kotti com você.', 'casa-kotti-feedback' ),
+			'intro_body'    => __( 'Sua opinião nos ajuda a aperfeiçoar cada detalhe — da fragrância à experiência de receber o produto.', 'casa-kotti-feedback' ),
+			'intro_note'    => __( 'Leva menos de 2 minutos.', 'casa-kotti-feedback' ),
+			'intro_button'  => __( 'Começar', 'casa-kotti-feedback' ),
+			'thanks_title'  => __( 'Obrigado por compartilhar.', 'casa-kotti-feedback' ),
+			'thanks_body'   => __( 'Cada resposta ajuda a Casa Kotti a aperfeiçoar aquilo que fazemos e criar experiências cada vez melhores.', 'casa-kotti-feedback' ),
+			'thanks_button' => __( 'Voltar para Casa Kotti', 'casa-kotti-feedback' ),
+			'thanks_url'    => '',
+			'privacy_note'  => __( 'Ao enviar, você concorda com o tratamento das informações conforme nossa Política de Privacidade.', 'casa-kotti-feedback' ),
 		);
-		$saved = get_option( 'ckf_copy', array() );
-		return wp_parse_args( is_array( $saved ) ? $saved : array(), $defaults );
 	}
 
-	public static function save_copy( $data ) {
-		$current = self::copy();
+	public static function sanitize_copy( $data ) {
+		$current = self::default_copy();
 		foreach ( $current as $key => $value ) {
 			if ( isset( $data[ $key ] ) ) {
 				$current[ $key ] = sanitize_textarea_field( $data[ $key ] );
@@ -145,6 +151,19 @@ class CKF_Questions {
 		if ( ! empty( $current['thanks_url'] ) ) {
 			$current['thanks_url'] = esc_url_raw( $current['thanks_url'] );
 		}
+		return $current;
+	}
+
+	public static function copy( $survey_id = 0 ) {
+		if ( $survey_id && class_exists( 'CKF_Surveys' ) ) {
+			return CKF_Surveys::copy( $survey_id );
+		}
+		$saved = get_option( 'ckf_copy', array() );
+		return wp_parse_args( is_array( $saved ) ? $saved : array(), self::default_copy() );
+	}
+
+	public static function save_copy( $data ) {
+		$current = self::sanitize_copy( $data );
 		update_option( 'ckf_copy', $current, false );
 		self::bust_cache();
 	}
@@ -154,25 +173,35 @@ class CKF_Questions {
 	 *
 	 * @return array
 	 */
-	public static function public_definition() {
-		$wizard = self::public_wizard();
+	public static function public_definition( $survey_id = 0 ) {
+		$wizard = self::public_wizard( $survey_id );
 		return $wizard['questions'];
 	}
 
 	/**
 	 * Steps + questions for the public wizard.
 	 *
-	 * @return array{steps:array,questions:array}
+	 * @param int $survey_id Survey.
+	 * @return array{steps:array,questions:array,survey_id:int}
 	 */
-	public static function public_wizard() {
-		$cached = get_transient( self::CACHE_KEY );
+	public static function public_wizard( $survey_id = 0 ) {
+		$survey_id = absint( $survey_id );
+		if ( ! $survey_id && class_exists( 'CKF_Surveys' ) ) {
+			$survey_id = CKF_Surveys::default_id();
+		}
+		$key    = $survey_id ? self::CACHE_KEY . '_' . $survey_id : self::CACHE_KEY;
+		$cached = get_transient( $key );
 		if ( is_array( $cached ) && isset( $cached['steps'], $cached['questions'] ) ) {
 			$cached['questions'] = self::hydrate_dynamic_options( $cached['questions'] );
+			$cached['survey_id'] = $survey_id;
 			return $cached;
 		}
 
 		$questions = array();
-		foreach ( self::all() as $row ) {
+		foreach ( self::all( $survey_id ? $survey_id : null ) as $row ) {
+			if ( $survey_id && isset( $row->survey_id ) && (int) $row->survey_id !== $survey_id ) {
+				continue;
+			}
 			if ( 'active' !== $row->status ) {
 				continue;
 			}
@@ -186,7 +215,8 @@ class CKF_Questions {
 		unset( $question );
 
 		$steps = array();
-		foreach ( CKF_Steps::all() as $step ) {
+		$step_rows = $survey_id ? CKF_Steps::all( $survey_id ) : CKF_Steps::all();
+		foreach ( $step_rows as $step ) {
 			if ( 'active' !== $step->status ) {
 				continue;
 			}
@@ -200,10 +230,11 @@ class CKF_Questions {
 		}
 
 		$payload = array(
-			'steps'     => $steps,
-			'questions' => $questions,
+			'steps'      => $steps,
+			'questions'  => $questions,
+			'survey_id'  => $survey_id,
 		);
-		set_transient( self::CACHE_KEY, $payload, HOUR_IN_SECONDS );
+		set_transient( $key, $payload, HOUR_IN_SECONDS );
 		$payload['questions'] = self::hydrate_dynamic_options( $questions );
 		return $payload;
 	}
@@ -245,6 +276,7 @@ class CKF_Questions {
 			'status'      => $row->status,
 			'sort_order'  => (int) $row->sort_order,
 			'step_id'     => isset( $row->step_id ) ? (int) $row->step_id : 0,
+			'survey_id'   => isset( $row->survey_id ) ? (int) $row->survey_id : 0,
 			'is_system'   => (int) $row->is_system,
 			'settings'    => self::settings( $row ),
 			'options'     => array(),
@@ -272,6 +304,7 @@ class CKF_Questions {
 				'status'        => 'active',
 				'sort_order'    => self::next_order(),
 				'step_id'       => 0,
+				'survey_id'     => class_exists( 'CKF_Surveys' ) ? CKF_Surveys::default_id() : 0,
 				'is_system'     => 0,
 				'settings_json' => '{}',
 				'description'   => '',
@@ -289,12 +322,13 @@ class CKF_Questions {
 				'status'        => $data['status'],
 				'sort_order'    => (int) $data['sort_order'],
 				'step_id'       => (int) $data['step_id'],
+				'survey_id'     => (int) $data['survey_id'],
 				'is_system'     => (int) $data['is_system'],
 				'settings_json' => $data['settings_json'],
 				'created_at'    => $now,
 				'updated_at'    => $now,
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d', '%d', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d', '%d', '%d', '%s', '%s', '%s' )
 		);
 		self::bust_cache();
 		return $ok ? (int) $wpdb->insert_id : 0;

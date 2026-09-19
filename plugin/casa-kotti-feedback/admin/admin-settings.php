@@ -4,10 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div class="wrap ckf-admin">
-	<h1><?php esc_html_e( 'Configurações do questionário', 'casa-kotti-feedback' ); ?></h1>
+	<h1><?php echo esc_html( $survey ? $survey->title : __( 'Configurações do questionário', 'casa-kotti-feedback' ) ); ?></h1>
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 		<?php wp_nonce_field( 'ckf_save_copy' ); ?>
 		<input type="hidden" name="action" value="ckf_save_copy">
+		<input type="hidden" name="survey_id" value="<?php echo esc_attr( (string) (int) $survey_id ); ?>">
 		<h2><?php esc_html_e( 'Introdução', 'casa-kotti-feedback' ); ?></h2>
 		<table class="form-table">
 			<tr><th><?php esc_html_e( 'Título', 'casa-kotti-feedback' ); ?></th><td><input class="large-text" name="intro_title" value="<?php echo esc_attr( $copy['intro_title'] ); ?>"></td></tr>

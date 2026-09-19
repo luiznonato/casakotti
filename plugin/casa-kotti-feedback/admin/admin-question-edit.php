@@ -5,17 +5,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 $types      = CKF_Questions::types();
 $locked     = $question && CKF_Questions::slug_locked( $question );
 $cond       = isset( $settings['conditions']['rules'][0] ) ? $settings['conditions']['rules'][0] : array();
-$all        = CKF_Questions::all();
+$all        = CKF_Questions::all( $survey_id );
 $option_src = isset( $settings['source'] ) ? $settings['source'] : '';
-$steps      = CKF_Steps::all();
+$steps      = CKF_Steps::all( $survey_id );
 $step_id    = $question && isset( $question->step_id ) ? (int) $question->step_id : ( isset( $_GET['step_id'] ) ? absint( $_GET['step_id'] ) : 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 ?>
 <div class="wrap ckf-admin">
-	<p><a href="<?php echo esc_url( admin_url( 'admin.php?page=casa-kotti-questions' ) ); ?>"><?php esc_html_e( '← Questionário', 'casa-kotti-feedback' ); ?></a></p>
+	<p><a href="<?php echo esc_url( CKF_Surveys::builder_url( array( 'survey_id' => $survey_id ) ) ); ?>"><?php esc_html_e( '← Questionário', 'casa-kotti-feedback' ); ?></a></p>
 	<h1><?php echo esc_html( $question ? __( 'Editar pergunta', 'casa-kotti-feedback' ) : __( 'Nova pergunta', 'casa-kotti-feedback' ) ); ?></h1>
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="ckf-question-form" id="ckf-question-form">
 		<?php wp_nonce_field( 'ckf_save_question' ); ?>
 		<input type="hidden" name="action" value="ckf_save_question">
+		<input type="hidden" name="survey_id" value="<?php echo esc_attr( (string) (int) $survey_id ); ?>">
 		<input type="hidden" name="id" value="<?php echo esc_attr( $question ? (string) $question->id : '0' ); ?>">
 		<table class="form-table">
 			<tr>
@@ -191,6 +192,18 @@ $step_id    = $question && isset( $question->step_id ) ? (int) $question->step_i
 							<select name="cond_action">
 								<option value="show" <?php selected( isset( $settings['cond_action'] ) ? $settings['cond_action'] : 'show', 'show' ); ?>><?php esc_html_e( 'Mostrar esta pergunta', 'casa-kotti-feedback' ); ?></option>
 								<option value="hide" <?php selected( isset( $settings['cond_action'] ) ? $settings['cond_action'] : '', 'hide' ); ?>><?php esc_html_e( 'Ocultar esta pergunta', 'casa-kotti-feedback' ); ?></option>
+								<option value="goto" <?php selected( isset( $settings['cond_action'] ) ? $settings['cond_action'] : '', 'goto' ); ?>><?php esc_html_e( 'Ir para a página', 'casa-kotti-feedback' ); ?></option>
+								<option value="end" <?php selected( isset( $settings['cond_action'] ) ? $settings['cond_action'] : '', 'end' ); ?>><?php esc_html_e( 'Encerrar o questionário', 'casa-kotti-feedback' ); ?></option>
+							</select>
+						</label>
+					</p>
+					<p>
+						<label><?php esc_html_e( 'Página de destino (goto)', 'casa-kotti-feedback' ); ?>
+							<select name="cond_goto">
+								<option value=""><?php esc_html_e( 'Selecione…', 'casa-kotti-feedback' ); ?></option>
+								<?php foreach ( $steps as $goto_step ) : ?>
+									<option value="<?php echo esc_attr( $goto_step->slug ); ?>" <?php selected( isset( $settings['cond_goto'] ) ? $settings['cond_goto'] : '', $goto_step->slug ); ?>><?php echo esc_html( $goto_step->title ); ?></option>
+								<?php endforeach; ?>
 							</select>
 						</label>
 					</p>

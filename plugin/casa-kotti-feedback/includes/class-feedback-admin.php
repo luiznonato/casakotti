@@ -58,8 +58,16 @@ class CKF_Admin {
 		);
 		add_submenu_page(
 			'casa-kotti-feedback',
+			__( 'Questionários', 'casa-kotti-feedback' ),
+			__( 'Questionários', 'casa-kotti-feedback' ),
+			'manage_options',
+			'casa-kotti-surveys',
+			array( 'CKF_Surveys', 'page_list' )
+		);
+		add_submenu_page(
+			'casa-kotti-feedback',
 			__( 'Questionário', 'casa-kotti-feedback' ),
-			__( 'Questionário', 'casa-kotti-feedback' ),
+			__( 'Páginas e perguntas', 'casa-kotti-feedback' ),
 			'manage_options',
 			'casa-kotti-questions',
 			array( 'CKF_Admin_Questions', 'page_list' )
@@ -131,6 +139,7 @@ class CKF_Admin {
 			'from'       => isset( $_GET['from'] ) ? sanitize_text_field( wp_unslash( $_GET['from'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			'to'         => isset( $_GET['to'] ) ? sanitize_text_field( wp_unslash( $_GET['to'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			's'          => isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			'survey_id'  => isset( $_GET['survey_id'] ) ? absint( $_GET['survey_id'] ) : 0, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		);
 	}
 
@@ -145,6 +154,11 @@ class CKF_Admin {
 		$table = CKF_Database::feedback_table();
 		$where = array( '1=1' );
 		$args  = array();
+
+		if ( ! empty( $filters['survey_id'] ) ) {
+			$where[] = 'survey_id = %d';
+			$args[]  = absint( $filters['survey_id'] );
+		}
 
 		if ( $filters['product'] && isset( ckf_products()[ $filters['product'] ] ) ) {
 			$where[] = 'product = %s';

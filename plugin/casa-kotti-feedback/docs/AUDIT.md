@@ -1,16 +1,12 @@
-# Auditoria Casa Kotti Avaliações (1.3.0)
+# Auditoria Casa Kotti Avaliações (1.4.0)
 
-## Problemas encontrados (antes desta revisão)
+## 1.4.0
 
-- Página/pergunta já era 1:N, mas faltavam tipos (telefone, data, consentimento, hidden, checkbox).
-- Editor sem largura, valor padrão, ajuda e mensagem de erro própria.
-- Montserrat dependia do tema; pesos 400/500/600 não estavam explícitos.
-- Admin sem exclusão de página, confirmação incompleta e formulários aninhados.
-- Sem preview do wizard completo no admin.
-- Respostas sem `field_type` / `schema_version`.
-- Condicionais só no modo “mostrar quando”.
-- Sem drag-and-drop de ordem.
+- Layout sem cartões: alternativas e escala em linhas, fieldset sem `min-inline-size` que recortava texto, `overflow` visível.
+- Motor condicional: `show`, `hide`, `goto` (página) e `end`, no admin, no JS e no REST.
+- Vários questionários (`casa_kotti_feedback_surveys` + `survey_id`), shortcode `[casa_kotti_feedback slug="…"]`.
+- Preview admin não envia para a API. REST recusa `preview`, limita payload, aceita só slugs do questionário ativo e valida a rota no servidor.
 
-## O que foi preservado
+## Preservado
 
-REST, nonce, honeypot, rate limit, slugs de sistema, dashboard, CSV, QR, validação compartilhada, páginas com várias perguntas, Quase lá.
+REST `/casa-kotti/v1/feedback`, nonce, honeypot, rate limit, slugs de sistema, dashboard, CSV, QR, validação compartilhada, páginas com várias perguntas, Quase lá.

@@ -46,6 +46,8 @@
 .ckf-admin .ckf-preview-frame {
 	margin-top: 24px;
 	max-width: 560px;
+	padding: 28px 4px;
+	background: #252726;
 }
 
 .ckf-admin .ckf-question-form {

@@ -10,9 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class CKF_API {
-	const TEXT_MAX     = 190;
-	const TEXTAREA_MAX = 4000;
-
 	public static function init() {
 		add_action( 'rest_api_init', array( __CLASS__, 'register_routes' ) );
 	}
@@ -50,6 +47,10 @@ class CKF_API {
 	}
 
 	public static function create( WP_REST_Request $request ) {
+		if ( $request->get_param( 'preview' ) ) {
+			return new WP_Error( 'ckf_preview', __( 'Pré-visualização não envia respostas.', 'casa-kotti-feedback' ), array( 'status' => 403 ) );
+		}
+
 		$nonce = $request->get_header( 'X-WP-Nonce' );
 		if ( ! $nonce ) {
 			$nonce = (string) $request->get_param( 'nonce' );
@@ -65,6 +66,11 @@ class CKF_API {
 
 		if ( ! CKF_Security::rate_limit_allows() ) {
 			return new WP_Error( 'ckf_rate', __( 'Não conseguimos enviar sua avaliação agora. Tente novamente.', 'casa-kotti-feedback' ), array( 'status' => 429 ) );
+		}
+
+		$incoming = $request->get_param( 'answers' );
+		if ( is_array( $incoming ) && count( $incoming ) > 80 ) {
+			return new WP_Error( 'ckf_payload', __( 'Não conseguimos enviar sua avaliação agora. Tente novamente.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
 		}
 
 		$validated = self::validate( $request );
@@ -120,16 +126,40 @@ class CKF_API {
 			}
 		}
 
-		$definition = CKF_Questions::public_definition();
-		$collected  = array();
+		$survey = null;
+		$sid    = absint( $request->get_param( 'survey_id' ) );
+		$sslug  = sanitize_title( (string) $request->get_param( 'survey' ) );
+		if ( $sid ) {
+			$survey = CKF_Surveys::get( $sid );
+		} elseif ( $sslug ) {
+			$survey = CKF_Surveys::by_slug( $sslug );
+		} else {
+			$survey = CKF_Surveys::default_row();
+		}
+		if ( ! $survey || 'active' !== $survey->status ) {
+			return new WP_Error( 'ckf_survey', __( 'Questionário indisponível.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+		}
+
+		$wizard     = CKF_Questions::public_wizard( (int) $survey->id );
+		$definition = $wizard['questions'];
+		$by_slug    = array();
 		foreach ( $definition as $question ) {
-			if ( in_array( $question['type'], array( 'info' ), true ) ) {
-				continue;
+			$by_slug[ $question['slug'] ] = $question;
+		}
+
+		$allowed_incoming = array();
+		foreach ( $incoming as $key => $value ) {
+			$slug = sanitize_title( (string) $key );
+			if ( isset( $by_slug[ $slug ] ) ) {
+				$allowed_incoming[ $slug ] = $value;
 			}
-			$slug = $question['slug'];
-			if ( ! CKF_Conditions::applies( $question, $incoming ) ) {
-				continue;
-			}
+		}
+		$incoming = $allowed_incoming;
+
+		$opts       = array();
+		$applicable = CKF_Conditions::applicable_on_route( $wizard['steps'], $definition, $incoming, $opts );
+		$collected  = array();
+		foreach ( $applicable as $slug => $question ) {
 			$raw    = isset( $incoming[ $slug ] ) ? $incoming[ $slug ] : '';
 			$parsed = CKF_Validate::answer( $question, $raw );
 			if ( ! $parsed['ok'] && ! empty( $question['settings']['error_message'] ) ) {
@@ -152,6 +182,7 @@ class CKF_API {
 		}
 
 		$row = array(
+			'survey_id'               => (int) $survey->id,
 			'product'                 => '',
 			'fragrance'               => '',
 			'fragrance_slug'          => '',

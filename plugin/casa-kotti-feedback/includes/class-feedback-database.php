@@ -10,13 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class CKF_Database {
-	const DB_VERSION = '1.3.0';
+	const DB_VERSION = '1.4.0';
 
 	/**
 	 * Create tables on activation.
 	 */
 	public static function activate() {
 		self::install_tables();
+		CKF_Surveys::migrate_default();
 		CKF_Questions::seed_defaults();
 		CKF_Steps::migrate_from_questions();
 	}
@@ -28,6 +29,7 @@ class CKF_Database {
 		if ( get_option( 'ckf_db_version' ) !== self::DB_VERSION ) {
 			self::install_tables();
 		}
+		CKF_Surveys::migrate_default();
 		CKF_Questions::seed_defaults();
 		CKF_Steps::migrate_from_questions();
 	}
@@ -46,10 +48,30 @@ class CKF_Database {
 		$options   = self::options_table();
 		$answers   = self::answers_table();
 		$steps     = self::steps_table();
+		$surveys   = self::surveys_table();
+
+		$sql_surveys = "CREATE TABLE {$surveys} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			uuid char(36) NOT NULL,
+			slug varchar(80) NOT NULL,
+			title varchar(255) NOT NULL,
+			description text NULL,
+			status varchar(20) NOT NULL DEFAULT 'active',
+			is_default tinyint(1) unsigned NOT NULL DEFAULT 0,
+			sort_order int(11) NOT NULL DEFAULT 0,
+			settings_json longtext NULL,
+			created_at datetime NOT NULL,
+			updated_at datetime NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY uuid (uuid),
+			UNIQUE KEY slug (slug),
+			KEY status_order (status, sort_order)
+		) {$charset};";
 
 		$sql_feedback = "CREATE TABLE {$feedback} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			uuid char(36) NOT NULL,
+			survey_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			product varchar(40) NOT NULL,
 			fragrance varchar(190) NOT NULL,
 			fragrance_slug varchar(190) NOT NULL,
@@ -76,6 +98,7 @@ class CKF_Database {
 			PRIMARY KEY  (id),
 			UNIQUE KEY uuid (uuid),
 			KEY product (product),
+			KEY survey_id (survey_id),
 			KEY fragrance_slug (fragrance_slug),
 			KEY created_at (created_at),
 			KEY nps_score (nps_score)
@@ -97,6 +120,7 @@ class CKF_Database {
 		$sql_steps = "CREATE TABLE {$steps} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			uuid char(36) NOT NULL,
+			survey_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			slug varchar(80) NOT NULL,
 			title varchar(255) NOT NULL,
 			description text NULL,
@@ -107,12 +131,14 @@ class CKF_Database {
 			PRIMARY KEY  (id),
 			UNIQUE KEY uuid (uuid),
 			UNIQUE KEY slug (slug),
-			KEY status_order (status, sort_order)
+			KEY status_order (status, sort_order),
+			KEY survey_id (survey_id)
 		) {$charset};";
 
 		$sql_questions = "CREATE TABLE {$questions} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			uuid char(36) NOT NULL,
+			survey_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			slug varchar(80) NOT NULL,
 			title varchar(255) NOT NULL,
 			description text NULL,
@@ -129,7 +155,8 @@ class CKF_Database {
 			UNIQUE KEY uuid (uuid),
 			UNIQUE KEY slug (slug),
 			KEY status_order (status, sort_order),
-			KEY step_id (step_id)
+			KEY step_id (step_id),
+			KEY survey_id (survey_id)
 		) {$charset};";
 
 		$sql_options = "CREATE TABLE {$options} (
@@ -161,6 +188,7 @@ class CKF_Database {
 			KEY feedback_slug (feedback_id, question_slug)
 		) {$charset};";
 
+		dbDelta( $sql_surveys );
 		dbDelta( $sql_feedback );
 		dbDelta( $sql_frags );
 		dbDelta( $sql_steps );
@@ -193,6 +221,11 @@ class CKF_Database {
 	public static function steps_table() {
 		global $wpdb;
 		return $wpdb->prefix . 'casa_kotti_feedback_steps';
+	}
+
+	public static function surveys_table() {
+		global $wpdb;
+		return $wpdb->prefix . 'casa_kotti_feedback_surveys';
 	}
 
 	public static function answers_table() {

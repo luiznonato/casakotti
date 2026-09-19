@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>design unboxed</title>
+<style>
+@font-face { font-family: "Montserrat CK"; src: url("../public/fonts/montserrat-latin.woff2") format("woff2"); font-weight: 100 900; }
+:root { --ck-bg:#252726; --ck-ink:#e5ded1; --ck-muted:#bdb7ac; --ck-line:rgba(229,222,209,.42); --ck-error:#ffd0c8; }
+body { margin:0; background:#252726; padding: 24px 12px; max-width: 100%; }
+</style>
+<link rel="stylesheet" href="../public/feedback.css">
+</head>
+<body>
+<div class="ck-feedback">
+	<p class="ck-feedback__kicker">Experiência</p>
+	<fieldset class="ck-feedback__step is-active" style="display:block">
+		<legend class="ck-feedback__question">Qual produto você experimentou nesta casa, mesmo que o nome seja longo o bastante para quebrar em várias linhas sem ser comido por uma caixa?</legend>
+		<div class="ck-feedback__block" data-field="product">
+			<p class="ck-feedback__question ck-feedback__question--sub">Escolha uma opção</p>
+			<div class="ck-feedback__choices">
+				<label class="ck-feedback__choice"><input type="radio" name="product" value="home-spray" checked><span class="ck-feedback__choice-mark"></span><span class="ck-feedback__choice-label">Home Spray com um texto bem longo para garantir que nada fique cortado pela caixa, nem no celular, nem quando a frase continua</span></label>
+				<label class="ck-feedback__choice"><input type="radio" name="product" value="difusor"><span class="ck-feedback__choice-mark"></span><span class="ck-feedback__choice-label">Difusor</span></label>
+				<label class="ck-feedback__choice"><input type="radio" name="product" value="automotivo"><span class="ck-feedback__choice-mark"></span><span class="ck-feedback__choice-label">Automotivo</span></label>
+			</div>
+		</div>
+		<div class="ck-feedback__block">
+			<p class="ck-feedback__question ck-feedback__question--sub">NPS</p>
+			<div class="ck-feedback__scale">
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="0"><span>0</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="1"><span>1</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="2"><span>2</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="3"><span>3</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="4"><span>4</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="5"><span>5</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="6"><span>6</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="7"><span>7</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="8"><span>8</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="9"><span>9</span></label>
+				<label class="ck-feedback__scale-item"><input type="radio" name="nps" value="10" checked><span>10</span></label>
+			</div>
+			<p class="ck-feedback__hint"><span>Pouco provável</span><span>Muito provável</span></p>
+		</div>
+		<div class="ck-feedback__nav">
+			<button type="button" class="ck-feedback__btn ck-feedback__btn--ghost">Voltar</button>
+			<button type="button" class="ck-feedback__btn">Continuar</button>
+		</div>
+	</fieldset>
+</div>
+</body>
+</html>

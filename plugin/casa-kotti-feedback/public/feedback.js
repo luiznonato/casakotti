@@ -1,14 +1,46 @@
 (function () {
 	'use strict';
 
-	var root = document.querySelector('[data-ck-feedback]');
-	if (!root || typeof ckfForm === 'undefined' || typeof CKFValidate === 'undefined') {
+	if (typeof CKFValidate === 'undefined' || typeof CKFConditions === 'undefined') {
 		return;
 	}
 
+	function mergeConfig(root) {
+		var base = typeof ckfForm !== 'undefined' ? ckfForm : {};
+		var el = root.querySelector('[data-ck-config]');
+		if (!el) {
+			return base;
+		}
+		try {
+			var extra = JSON.parse(el.textContent);
+			var out = {};
+			var key;
+			for (key in base) {
+				if (Object.prototype.hasOwnProperty.call(base, key)) {
+					out[key] = base[key];
+				}
+			}
+			for (key in extra) {
+				if (Object.prototype.hasOwnProperty.call(extra, key)) {
+					out[key] = extra[key];
+				}
+			}
+			return out;
+		} catch (e) {
+			return base;
+		}
+	}
+
+	function boot(root, cfg) {
+	if (!root || !cfg) {
+		return;
+	}
 	var intro = root.querySelector('[data-panel="intro"]');
 	var thanks = root.querySelector('[data-panel="thanks"]');
 	var form = root.querySelector('[data-form]');
+	if (!form || !intro) {
+		return;
+	}
 	var progress = root.querySelector('[data-progress]');
 	var counter = root.querySelector('[data-counter]');
 	var fill = root.querySelector('[data-fill]');
@@ -18,9 +50,10 @@
 	var submitBtn = root.querySelector('[data-submit]');
 	var prefillEl = root.querySelector('[data-prefill]');
 	var formError = root.querySelector('[data-form-error]');
-	var questions = ckfForm.questions || [];
-	var steps = ckfForm.steps || [];
-	var i18n = ckfForm.i18n || {};
+	var questions = cfg.questions || [];
+	var steps = cfg.steps || [];
+	var i18n = cfg.i18n || {};
+	var isPreview = root.getAttribute('data-preview') === '1' || cfg.preview === true;
 	var bySlug = {};
 	questions.forEach(function (q) {
 		bySlug[q.slug] = q;
@@ -77,90 +110,12 @@
 		});
 	}
 
-	function evalRule(rule, answers) {
-		var actual = answers[rule.question];
-		var flat = Array.isArray(actual) ? actual.map(String) : (actual === '' || actual == null ? [] : [String(actual)]);
-		var expected = rule.value;
-		var op = rule.operator || 'equals';
-		if (op === 'filled') {
-			return flat.length > 0;
-		}
-		if (op === 'empty') {
-			return flat.length === 0;
-		}
-		if (op === 'not_equals') {
-			return flat.indexOf(String(expected)) === -1;
-		}
-		if (op === 'contains') {
-			return flat.some(function (item) {
-				return item.toLowerCase().indexOf(String(expected).toLowerCase()) !== -1;
-			});
-		}
-		if (op === 'not_contains') {
-			return flat.every(function (item) {
-				return item.toLowerCase().indexOf(String(expected).toLowerCase()) === -1;
-			});
-		}
-		if (op === 'contains_any') {
-			var needles = Array.isArray(expected) ? expected : String(expected).split(/\s*,\s*/);
-			return needles.some(function (n) {
-				return flat.indexOf(String(n)) !== -1;
-			});
-		}
-		if (op === 'gt' || op === 'lt' || op === 'gte' || op === 'lte') {
-			var num = flat.length ? parseFloat(flat[0]) : 0;
-			var exp = parseFloat(expected);
-			if (op === 'gt') {
-				return num > exp;
-			}
-			if (op === 'lt') {
-				return num < exp;
-			}
-			if (op === 'gte') {
-				return num >= exp;
-			}
-			return num <= exp;
-		}
-		if (Array.isArray(expected)) {
-			return expected.some(function (n) {
-				return flat.indexOf(String(n)) !== -1;
-			});
-		}
-		return flat.indexOf(String(expected)) !== -1;
-	}
-
-	function evalGroup(group, answers) {
-		if (!group || !group.rules || !group.rules.length) {
-			return true;
-		}
-		var logic = group.logic === 'or' ? 'or' : 'and';
-		var results = group.rules.map(function (rule) {
-			return rule.rules ? evalGroup(rule, answers) : evalRule(rule, answers);
-		});
-		return logic === 'or' ? results.indexOf(true) !== -1 : results.indexOf(false) === -1;
-	}
-
 	function applies(question, answers) {
-		if (question.type === 'hidden') {
-			return false;
-		}
-		if (!question.settings || !question.settings.conditions) {
-			return true;
-		}
-		var match = evalGroup(question.settings.conditions, answers);
-		if (question.settings.cond_action === 'hide') {
-			return !match;
-		}
-		return match;
+		return CKFConditions.isVisible(question, answers, { productLocked: state.productLocked });
 	}
 
 	function questionsForStep(step) {
-		return questions.filter(function (q) {
-			if (step.id) {
-				return Number(q.step_id) === Number(step.id);
-			}
-			return q.slug === step.slug;
-		});
+		return CKFConditions.questionsForStep(step, questions);
 	}
 
 	function applicableQuestions(step, answers) {
@@ -173,25 +128,7 @@
 	}
 
 	function visibleSteps() {
-		var answers = state.answers;
-		var out = [];
-		steps.forEach(function (step) {
-			if (applicableQuestions(step, answers).length) {
-				out.push(step);
-			}
-		});
-		questions.forEach(function (q) {
-			if (q.step_id) {
-				return;
-			}
-			if (state.productLocked && q.slug === 'product' && answers.product) {
-				return;
-			}
-			if (applies(q, answers)) {
-				out.push({ id: 0, slug: q.slug, title: q.title, description: '' });
-			}
-		});
-		return out;
+		return CKFConditions.route(steps, questions, state.answers, { productLocked: state.productLocked });
 	}
 
 	function fieldEl(slug) {
@@ -390,7 +327,7 @@
 	}
 
 	function applyPrefill() {
-		var pre = ckfForm.prefill || {};
+		var pre = cfg.prefill || {};
 		['source', 'campaign', 'batch'].forEach(function (name) {
 			var hidden = form.querySelector('[name="' + name + '"]');
 			if (hidden) {
@@ -407,7 +344,7 @@
 				prefillEl.textContent = '';
 				prefillEl.appendChild(document.createTextNode((i18n.evaluating || '') + ' '));
 				var strong = document.createElement('strong');
-				strong.textContent = (ckfForm.products && ckfForm.products[pre.product]) || pre.product;
+				strong.textContent = (cfg.products && cfg.products[pre.product]) || pre.product;
 				prefillEl.appendChild(strong);
 				var change = document.createElement('button');
 				change.type = 'button';
@@ -461,15 +398,18 @@
 				}
 			});
 		});
-		return {
+		var payload = {
 			answers: answers,
 			website: form.querySelector('[name="website"]').value,
 			source: form.querySelector('[name="source"]').value,
 			campaign: form.querySelector('[name="campaign"]').value,
 			batch: form.querySelector('[name="batch"]').value,
 			product_code: form.querySelector('[name="product_code"]').value,
-			nonce: ckfForm.nonce
+			survey_id: cfg.surveyId || (form.querySelector('[name="survey_id"]') && form.querySelector('[name="survey_id"]').value) || 0,
+			survey: cfg.survey || '',
+			nonce: cfg.nonce
 		};
+		return payload;
 	}
 
 	function updateCount(el) {
@@ -599,17 +539,23 @@
 		if (!validateAll()) {
 			return;
 		}
+		if (isPreview) {
+			form.hidden = true;
+			thanks.hidden = false;
+			thanks.classList.add('is-active');
+			return;
+		}
 		state.isSubmitting = true;
 		submitBtn.disabled = true;
 		submitBtn.textContent = i18n.sending || 'Enviando...';
 		form.setAttribute('aria-busy', 'true');
 
-		fetch(ckfForm.restUrl, {
+		fetch(cfg.restUrl, {
 			method: 'POST',
 			credentials: 'same-origin',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-WP-Nonce': ckfForm.nonce
+				'X-WP-Nonce': cfg.nonce
 			},
 			body: JSON.stringify(collectPayload())
 		})
@@ -653,4 +599,9 @@
 	applyPrefill();
 	syncAnswersFromDom();
 	state.visibleSteps = visibleSteps();
+	}
+
+	document.querySelectorAll('[data-ck-feedback]').forEach(function (root) {
+		boot(root, mergeConfig(root));
+	});
 }());

@@ -77,9 +77,16 @@ class CKF_Shortcode {
 			true
 		);
 		wp_enqueue_script(
+			'casa-kotti-feedback-conditions',
+			CKF_URL . 'public/ckf-conditions.js',
+			array(),
+			CKF_VERSION,
+			true
+		);
+		wp_enqueue_script(
 			'casa-kotti-feedback',
 			CKF_URL . 'public/feedback.js',
-			array( 'casa-kotti-feedback-validate' ),
+			array( 'casa-kotti-feedback-validate', 'casa-kotti-feedback-conditions' ),
 			CKF_VERSION,
 			true
 		);
@@ -98,8 +105,7 @@ class CKF_Shortcode {
 			);
 		}
 
-		$wizard = CKF_Questions::public_wizard();
-		$i18n   = CKF_Validate::messages();
+		$i18n           = CKF_Validate::messages();
 		$i18n['submit'] = __( 'Enviar', 'casa-kotti-feedback' );
 
 		wp_localize_script(
@@ -111,8 +117,6 @@ class CKF_Shortcode {
 				'homeUrl'    => home_url( '/' ),
 				'products'   => ckf_products(),
 				'fragrances' => $frags,
-				'steps'      => $wizard['steps'],
-				'questions'  => $wizard['questions'],
 				'prefill'    => array(
 					'product'   => $pre_product,
 					'fragrance' => $pre_frag,
@@ -128,9 +132,28 @@ class CKF_Shortcode {
 	/**
 	 * Render the questionnaire.
 	 *
+	 * @param array $atts Shortcode attributes.
 	 * @return string
 	 */
-	public static function render() {
+	public static function render( $atts = array() ) {
+		$atts    = shortcode_atts(
+			array(
+				'slug'    => '',
+				'preview' => '',
+			),
+			$atts,
+			'casa_kotti_feedback'
+		);
+		$survey  = CKF_Surveys::resolve_public( $atts['slug'] );
+		$preview = ! empty( $atts['preview'] ) || ( is_admin() && ! wp_doing_ajax() );
+		if ( ! $survey ) {
+			if ( current_user_can( 'manage_options' ) ) {
+				return '<p class="ck-feedback__error">' . esc_html__( 'Questionário não encontrado ou inativo.', 'casa-kotti-feedback' ) . '</p>';
+			}
+			return '';
+		}
+		$ckf_survey  = $survey;
+		$ckf_preview = $preview;
 		ob_start();
 		include CKF_DIR . 'public/feedback-form.php';
 		return ob_get_clean();

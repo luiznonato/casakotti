@@ -61,6 +61,7 @@
 			form.innerHTML = '<input type="hidden" name="action" value="ckf_move_question">'
 				+ '<input type="hidden" name="id" value="' + sel.getAttribute('data-id') + '">'
 				+ '<input type="hidden" name="step_id" value="' + sel.value + '">'
+				+ '<input type="hidden" name="survey_id" value="' + (sel.getAttribute('data-survey') || '') + '">'
 				+ '<input type="hidden" name="_wpnonce" value="' + (ckfAdmin && ckfAdmin.moveNonce ? ckfAdmin.moveNonce : '') + '">';
 			document.body.appendChild(form);
 			form.submit();

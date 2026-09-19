@@ -66,6 +66,15 @@ $fmt = function ( $n, $dec = 1 ) {
 	<form method="get" class="ckf-filters">
 		<input type="hidden" name="page" value="casa-kotti-feedback">
 		<label>
+			<span><?php esc_html_e( 'Questionário', 'casa-kotti-feedback' ); ?></span>
+			<select name="survey_id">
+				<option value=""><?php esc_html_e( 'Todos', 'casa-kotti-feedback' ); ?></option>
+				<?php foreach ( CKF_Surveys::all() as $survey_row ) : ?>
+					<option value="<?php echo esc_attr( (string) (int) $survey_row->id ); ?>" <?php selected( (int) $filters['survey_id'], (int) $survey_row->id ); ?>><?php echo esc_html( $survey_row->title ); ?></option>
+				<?php endforeach; ?>
+			</select>
+		</label>
+		<label>
 			<span><?php esc_html_e( 'Produto', 'casa-kotti-feedback' ); ?></span>
 			<select name="product">
 				<option value=""><?php esc_html_e( 'Todos', 'casa-kotti-feedback' ); ?></option>

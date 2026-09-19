@@ -6,7 +6,7 @@ Plugin WordPress próprio para o questionário de experiência do cliente. Não 
 
 1. Envie `dist/casa-kotti-feedback.zip` em **Plugins > Adicionar plugin > Enviar plugin**.
 2. Ative **Casa Kotti — Avaliações**.
-3. Na ativação/atualização o plugin cria (via `dbDelta`) as tabelas de respostas, fragrâncias, **páginas**, **perguntas**, **alternativas** e **respostas dinâmicas**. A versão de schema é `1.2.0` (`ckf_db_version`). A migração `ckf_steps_migrated` agrupa Nome, E-mail e aceite na página **Quase lá**.
+3. Na ativação/atualização o plugin cria (via `dbDelta`) as tabelas de **questionários**, respostas, fragrâncias, páginas, perguntas, alternativas e respostas dinâmicas. Schema `1.4.0` (`ckf_db_version`). Instalações anteriores recebem o questionário padrão `experiencia` e as páginas/perguntas existentes são associadas a ele.
 4. Se a tabela de perguntas estiver vazia, o fluxo atual é semeado **uma única vez** (`ckf_questions_seeded`). Reativar o plugin não duplica perguntas.
 
 O plugin pode ser desativado normalmente. As tabelas e as respostas permanecem no banco.
@@ -18,7 +18,10 @@ O plugin pode ser desativado normalmente. As tabelas e as respostas permanecem n
 
 ```
 [casa_kotti_feedback]
+[casa_kotti_feedback slug="experiencia"]
 ```
+
+O shortcode sem `slug` usa o questionário padrão. Questionários extras ficam em **Casa Kotti > Questionários**.
 
 O shortcode funciona no editor de blocos e no clássico. Não usa iframe.
 
@@ -28,15 +31,17 @@ Com o tema Casa Kotti, a página reutiliza o fundo grafite, Montserrat, tokens `
 
 ## Question Builder
 
-Em **Casa Kotti > Questionário** é possível criar páginas e, dentro delas, criar, editar, mover, reordenar, ativar/desativar e (quando seguro) excluir perguntas. Uma página pode ter várias perguntas. O progresso do cliente conta páginas.
+Em **Casa Kotti > Questionários** dá para criar, duplicar, desativar e (se não houver respostas) excluir questionários. **Páginas e perguntas** e **Configurações** (textos de intro/obrigado) são por questionário.
+
+Uma página pode ter várias perguntas. O progresso do cliente conta páginas.
+
+Condicionais completas: mostrar, ocultar, ir para uma página (`goto`) ou encerrar (`end`). AND/OR aninhado continua no banco; a UI simples cobre uma regra. O servidor recalcula a rota e ignora respostas de páginas não visitadas.
 
 Tipos: texto curto, texto longo, e-mail, telefone, número, data, radio, checkbox, seleção única, multiseleção, select, escala, estrelas, sim/não, consentimento, informativo e campo oculto. Novos tipos podem ser registrados via filtro `ckf_field_types`.
 
 Perguntas de sistema (`product`, `fragrance`, `overall_rating`, `nps_score`, etc.) têm slug protegido. A fragrância continua vindo de **Casa Kotti > Fragrâncias**, não de alternativas estáticas.
 
-Intro e tela final: **Casa Kotti > Configurações**.
-
-Condicionais: uma regra simples na UI (é igual a, contém, maior que…). O banco já aceita grupos AND/OR aninhados (o fluxo de refil/difusor usa OR).
+Intro e tela final: **Casa Kotti > Configurações**, no questionário selecionado.
 
 ## Cadastro de fragrâncias
 

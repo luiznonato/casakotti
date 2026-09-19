@@ -9,10 +9,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$copy        = CKF_Questions::copy();
-$wizard      = CKF_Questions::public_wizard();
+if ( empty( $ckf_survey ) ) {
+	$ckf_survey = CKF_Surveys::default_row();
+}
+if ( ! $ckf_survey ) {
+	return;
+}
+
+$copy        = CKF_Surveys::copy( $ckf_survey );
+$wizard      = CKF_Questions::public_wizard( (int) $ckf_survey->id );
 $steps       = $wizard['steps'];
 $questions   = $wizard['questions'];
+$ckf_preview = ! empty( $ckf_preview );
 $by_step     = array();
 $orphans     = array();
 foreach ( $questions as $question ) {
@@ -27,10 +35,18 @@ foreach ( $questions as $question ) {
 	}
 }
 $thanks_url = $copy['thanks_url'] ? $copy['thanks_url'] : home_url( '/' );
+$config     = array(
+	'surveyId'  => (int) $ckf_survey->id,
+	'survey'    => $ckf_survey->slug,
+	'preview'   => $ckf_preview,
+	'steps'     => $steps,
+	'questions' => $questions,
+);
 ?>
-<div class="ck-feedback kotti-questionnaire" data-ck-feedback>
+<div class="ck-feedback kotti-questionnaire" data-ck-feedback data-survey="<?php echo esc_attr( $ckf_survey->slug ); ?>"<?php echo $ckf_preview ? ' data-preview="1"' : ''; ?>>
+	<script type="application/json" data-ck-config><?php echo wp_json_encode( $config, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
 	<section class="ck-feedback__panel is-active" data-panel="intro">
-		<p class="ck-feedback__kicker"><?php esc_html_e( 'Experiência', 'casa-kotti-feedback' ); ?></p>
+		<p class="ck-feedback__kicker"><?php echo esc_html( $ckf_survey->title ); ?></p>
 		<h2 class="ck-feedback__title"><?php echo esc_html( $copy['intro_title'] ); ?></h2>
 		<?php if ( $copy['intro_lead'] ) : ?><p class="ck-feedback__lead"><?php echo esc_html( $copy['intro_lead'] ); ?></p><?php endif; ?>
 		<?php if ( $copy['intro_body'] ) : ?><p class="ck-feedback__helper"><?php echo esc_html( $copy['intro_body'] ); ?></p><?php endif; ?>
@@ -75,6 +91,7 @@ $thanks_url = $copy['thanks_url'] ? $copy['thanks_url'] : home_url( '/' );
 		<input type="hidden" name="campaign" value="">
 		<input type="hidden" name="batch" value="">
 		<input type="hidden" name="product_code" value="">
+		<input type="hidden" name="survey_id" value="<?php echo esc_attr( (string) (int) $ckf_survey->id ); ?>">
 		<div class="ck-feedback__nav" data-nav hidden>
 			<button type="button" class="ck-feedback__btn ck-feedback__btn--ghost" data-back><?php esc_html_e( 'Voltar', 'casa-kotti-feedback' ); ?></button>
 			<button type="button" class="ck-feedback__btn" data-next><?php esc_html_e( 'Continuar', 'casa-kotti-feedback' ); ?></button>

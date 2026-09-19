@@ -12,10 +12,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 class CKF_Steps {
 	const MIGRATE_KEY = 'ckf_steps_migrated';
 
-	public static function all() {
+	public static function all( $survey_id = null ) {
 		global $wpdb;
 		$table = CKF_Database::steps_table();
-		return $wpdb->get_results( "SELECT * FROM {$table} ORDER BY sort_order ASC, id ASC" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		if ( null === $survey_id ) {
+			return $wpdb->get_results( "SELECT * FROM {$table} ORDER BY sort_order ASC, id ASC" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+		return $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE survey_id = %d ORDER BY sort_order ASC, id ASC", absint( $survey_id ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	public static function get( $id ) {
@@ -34,6 +37,7 @@ class CKF_Steps {
 				'description' => '',
 				'status'      => 'active',
 				'sort_order'  => self::next_order(),
+				'survey_id'   => class_exists( 'CKF_Surveys' ) ? CKF_Surveys::default_id() : 0,
 			)
 		);
 		$ok = $wpdb->insert(
@@ -45,10 +49,11 @@ class CKF_Steps {
 				'description' => $data['description'],
 				'sort_order'  => (int) $data['sort_order'],
 				'status'      => $data['status'],
+				'survey_id'   => (int) $data['survey_id'],
 				'created_at'  => $now,
 				'updated_at'  => $now,
 			),
-			array( '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s' )
 		);
 		CKF_Questions::bust_cache();
 		return $ok ? (int) $wpdb->insert_id : 0;
@@ -231,6 +236,7 @@ class CKF_Steps {
 				'title'       => $row->title,
 				'description' => $row->description,
 				'status'      => 'inactive',
+				'survey_id'   => isset( $row->survey_id ) ? (int) $row->survey_id : 0,
 			)
 		);
 		if ( ! $new ) {
@@ -249,6 +255,7 @@ class CKF_Steps {
 					'required'      => $question->required,
 					'status'        => 'inactive',
 					'step_id'       => $new,
+					'survey_id'     => isset( $row->survey_id ) ? (int) $row->survey_id : 0,
 					'is_system'     => 0,
 					'settings_json' => $question->settings_json,
 				)
