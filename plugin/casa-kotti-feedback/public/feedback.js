@@ -114,7 +114,14 @@
 		return CKFConditions.isVisible(question, answers, { productLocked: state.productLocked });
 	}
 
+	function isIdentityQuestion(q) {
+		return q.slug === 'customer_name' || q.slug === 'customer_email' || q.slug === 'marketing_consent';
+	}
+
 	function questionsForStep(step) {
+		if (step && step.questions) {
+			return step.questions;
+		}
 		return CKFConditions.questionsForStep(step, questions);
 	}
 
@@ -128,7 +135,38 @@
 	}
 
 	function visibleSteps() {
-		return CKFConditions.route(steps, questions, state.answers, { productLocked: state.productLocked });
+		var routed = CKFConditions.route(steps, questions, state.answers, { productLocked: state.productLocked });
+		var out = [];
+		routed.forEach(function (step) {
+			var qs = applicableQuestions(step, state.answers);
+			var i = 0;
+			while (i < qs.length) {
+				if (isIdentityQuestion(qs[i])) {
+					var group = [];
+					while (i < qs.length && isIdentityQuestion(qs[i])) {
+						group.push(qs[i]);
+						i += 1;
+					}
+					out.push({
+						id: step.id,
+						slug: step.slug,
+						title: step.title,
+						description: step.description || '',
+						questions: group
+					});
+				} else {
+					out.push({
+						id: step.id,
+						slug: qs[i].slug,
+						title: qs[i].title || step.title,
+						description: qs[i].description || '',
+						questions: [qs[i]]
+					});
+					i += 1;
+				}
+			}
+		});
+		return out;
 	}
 
 	function fieldEl(slug) {
@@ -202,10 +240,13 @@
 	}
 
 	function validateStep(step, show) {
-		var qs = applicableQuestions(step, state.answers);
+		var qs = step && step.questions ? step.questions : applicableQuestions(step, state.answers);
 		var ok = true;
 		var slugs = [];
 		qs.forEach(function (q) {
+			if (!applies(q, state.answers)) {
+				return;
+			}
 			slugs.push(q.slug);
 			if (!validateField(q, show)) {
 				ok = false;
@@ -221,13 +262,9 @@
 		syncAnswersFromDom();
 		recalculate();
 		var ok = true;
-		var firstSlugs = [];
-		state.visibleSteps.forEach(function (step, i) {
-			var qs = applicableQuestions(step, state.answers);
+		state.visibleSteps.forEach(function (step) {
+			var qs = step.questions || applicableQuestions(step, state.answers);
 			qs.forEach(function (q) {
-				if (i === 0) {
-					firstSlugs.push(q.slug);
-				}
 				if (!validateField(q, true)) {
 					ok = false;
 				}
@@ -239,7 +276,7 @@
 				if (found) {
 					return;
 				}
-				var slugs = applicableQuestions(step, state.answers).map(function (q) {
+				var slugs = (step.questions || applicableQuestions(step, state.answers)).map(function (q) {
 					return q.slug;
 				});
 				var has = slugs.some(function (s) {
@@ -273,25 +310,57 @@
 		}
 	}
 
+	function screenBelongsToFieldset(screen, el) {
+		if (!screen) {
+			return false;
+		}
+		var sid = Number(el.getAttribute('data-step-id') || 0);
+		var page = el.getAttribute('data-step');
+		if (screen.questions && screen.questions.length) {
+			return screen.questions.some(function (q) {
+				if (sid && Number(q.step_id) === sid) {
+					return true;
+				}
+				return q.slug === page;
+			});
+		}
+		if (sid && Number(screen.id) === sid) {
+			return true;
+		}
+		return page === screen.slug;
+	}
+
 	function renderStep() {
 		recalculate();
 		var current = state.visibleSteps[state.currentStep];
 		form.querySelectorAll('[data-step]').forEach(function (el) {
-			var on = current && el.getAttribute('data-step') === current.slug;
+			var on = screenBelongsToFieldset(current, el);
 			el.hidden = !on;
 			el.classList.toggle('is-active', on);
-			var sid = Number(el.getAttribute('data-step-id') || 0);
-			questionsForStep(current || { id: 0, slug: '' }).forEach(function () {});
+			el.querySelectorAll(':scope > .ck-feedback__helper').forEach(function (helper) {
+				helper.hidden = !(current && current.questions && current.questions.length > 1);
+			});
+		});
+		form.querySelectorAll('[data-field]').forEach(function (block) {
+			block.hidden = true;
 		});
 		if (current) {
-			questionsForStep(current).forEach(function (q) {
+			(current.questions || []).forEach(function (q) {
 				var block = fieldEl(q.slug);
 				if (!block) {
 					return;
 				}
 				var vis = applies(q, state.answers) && !(state.productLocked && q.slug === 'product' && state.answers.product);
 				block.hidden = !vis;
+				var sub = block.querySelector('.ck-feedback__question--sub');
+				if (sub) {
+					sub.hidden = current.questions.length === 1 && (current.title === q.title || !q.title);
+				}
 			});
+			var activePage = form.querySelector('[data-step].is-active legend');
+			if (activePage && current.title) {
+				activePage.textContent = current.title;
+			}
 		}
 		var last = state.currentStep === state.visibleSteps.length - 1;
 		nextBtn.hidden = last;
@@ -472,12 +541,12 @@
 		var current = state.visibleSteps[state.currentStep];
 		counter.textContent = pad(state.currentStep + 1) + ' / ' + pad(state.visibleSteps.length || 1);
 		fill.style.width = state.visibleSteps.length ? ((state.currentStep + 1) / state.visibleSteps.length) * 100 + '%' : '0';
-		if (current) {
-			questionsForStep(current).forEach(function (q) {
-				var block = fieldEl(q.slug);
-				if (block) {
-					block.hidden = !applies(q, state.answers);
-				}
+		if (current && current.questions) {
+			form.querySelectorAll('[data-field]').forEach(function (block) {
+				var slug = block.getAttribute('data-field');
+				block.hidden = !current.questions.some(function (q) {
+					return q.slug === slug && applies(q, state.answers);
+				});
 			});
 		}
 	}
