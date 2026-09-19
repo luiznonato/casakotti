@@ -6,7 +6,8 @@ Plugin WordPress próprio para o questionário de experiência do cliente. Não 
 
 1. Envie `dist/casa-kotti-feedback.zip` em **Plugins > Adicionar plugin > Enviar plugin**.
 2. Ative **Casa Kotti — Avaliações**.
-3. Na ativação o plugin cria (via `dbDelta`) as tabelas `wp_casa_kotti_feedback` e `wp_casa_kotti_fragrances`.
+3. Na ativação/atualização o plugin cria (via `dbDelta`) as tabelas de respostas, fragrâncias, **perguntas**, **alternativas** e **respostas dinâmicas**. A versão de schema é `1.1.0` (`ckf_db_version`).
+4. Se a tabela de perguntas estiver vazia, o fluxo atual é semeado **uma única vez** (`ckf_questions_seeded`). Reativar o plugin não duplica perguntas.
 
 O plugin pode ser desativado normalmente. As tabelas e as respostas permanecem no banco.
 
@@ -24,6 +25,18 @@ O shortcode funciona no editor de blocos e no clássico. Não usa iframe.
 CSS e JavaScript do questionário são carregados **somente** nessa página.
 
 Com o tema Casa Kotti, a página reutiliza o fundo grafite, Montserrat, tokens `--ck-*` e as folhagens laterais já existentes. A homepage não é alterada pelo plugin.
+
+## Question Builder
+
+Em **Casa Kotti > Perguntas** é possível criar, editar, duplicar, reordenar, ativar/desativar e (quando seguro) excluir perguntas.
+
+Tipos: texto, textarea, seleção única, radio, multiseleção, select, estrelas, escala, sim/não, e-mail, número, informativo.
+
+Perguntas de sistema (`product`, `fragrance`, `overall_rating`, `nps_score`, etc.) têm slug protegido. A fragrância continua vindo de **Casa Kotti > Fragrâncias**, não de alternativas estáticas.
+
+Intro e tela final: **Casa Kotti > Configurações**.
+
+Condicionais: uma regra simples na UI (é igual a, contém, maior que…). O banco já aceita grupos AND/OR aninhados (o fluxo de refil/difusor usa OR).
 
 ## Cadastro de fragrâncias
 
@@ -50,7 +63,7 @@ NPS = % promotores (9–10) − % detratores (0–6). Neutros são 7 e 8.
 
 ## Exportar CSV
 
-O botão **Exportar CSV** respeita os filtros aplicados. O arquivo é UTF-8 com BOM para o Excel. Células que começam com `= + - @` são prefixadas para evitar fórmulas.
+O botão **Exportar CSV** respeita os filtros. Colunas fixas do dashboard + colunas dinâmicas para perguntas personalizadas (multiselect unido por `; `). UTF-8 com BOM. Células `= + - @` são prefixadas.
 
 ## Parâmetros de URL (QR Code)
 
@@ -76,11 +89,36 @@ Exemplos:
 
 `wp_casa_kotti_fragrances`: nome, slug, status, ordem.
 
+`wp_casa_kotti_feedback_questions`: slug, título, tipo, obrigatoriedade, status, ordem, `is_system`, `settings_json`.
+
+`wp_casa_kotti_feedback_question_options`: value estável + label editável.
+
+`wp_casa_kotti_feedback_answers`: uma linha por valor (`multi_choice` = N linhas).
+
+Perguntas de sistema também atualizam as colunas da tabela principal, para o dashboard continuar igual.
+
 IP puro nunca é persistido.
+
+Cobre oficial do questionário: `#b57a54` (`--ck-copper`), usado só em interação. Tipografia: Montserrat Regular (`"Montserrat CK"`, peso 400; botões 500).
 
 ## Envio
 
-`POST /wp-json/casa-kotti/v1/feedback` com nonce REST, honeypot, rate limit e validação no servidor. O consentimento de marketing não é obrigatório.
+`POST /wp-json/casa-kotti/v1/feedback`
+
+```json
+{ "answers": { "product": "home-spray", "overall_rating": 5 }, "source": "", "batch": "" }
+```
+
+Campos soltos no root ainda são aceitos (retrocompatibilidade). Nonce REST, honeypot, rate limit e validação contra a definição atual. Respostas de perguntas que não se aplicam à condição são ignoradas. Consentimento de marketing não é obrigatório.
+
+## Testes manuais sugeridos
+
+- Atualizar plugin com respostas antigas: seed uma vez, dashboard intacto.
+- Builder: criar/editar/duplicar/reordenar/desativar; alterar só o label de uma opção.
+- Cada tipo de campo no wizard público; progresso muda com condicionais.
+- Voltar/avançar, erro inline, submit com servidor recusando (estado preservado).
+- QR `?produto=spray` pré-seleciona `home-spray`.
+- Mobile 320–430px: estrelas, escala, cards sem scroll horizontal.
 
 Hook reservado para o futuro (CRM, cupom, e-mail): `casa_kotti_feedback_saved`.
 

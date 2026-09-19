@@ -1,6 +1,6 @@
 <?php
 /**
- * Tables and fragrance queries.
+ * Tables, upgrades and fragrance queries.
  *
  * @package Casa_Kotti_Feedback
  */
@@ -10,13 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class CKF_Database {
-	const DB_VERSION = '1.0.0';
+	const DB_VERSION = '1.1.0';
 
 	/**
 	 * Create tables on activation.
 	 */
 	public static function activate() {
 		self::install_tables();
+		CKF_Questions::seed_defaults();
 	}
 
 	/**
@@ -26,18 +27,22 @@ class CKF_Database {
 		if ( get_option( 'ckf_db_version' ) !== self::DB_VERSION ) {
 			self::install_tables();
 		}
+		CKF_Questions::seed_defaults();
 	}
 
 	/**
-	 * dbDelta install.
+	 * dbDelta install. Existing tables are preserved.
 	 */
 	public static function install_tables() {
 		global $wpdb;
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		$charset = $wpdb->get_charset_collate();
-		$feedback = self::feedback_table();
-		$frags    = self::fragrance_table();
+		$charset   = $wpdb->get_charset_collate();
+		$feedback  = self::feedback_table();
+		$frags     = self::fragrance_table();
+		$questions = self::questions_table();
+		$options   = self::options_table();
+		$answers   = self::answers_table();
 
 		$sql_feedback = "CREATE TABLE {$feedback} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -85,71 +90,105 @@ class CKF_Database {
 			KEY status_order (status, sort_order)
 		) {$charset};";
 
+		$sql_questions = "CREATE TABLE {$questions} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			uuid char(36) NOT NULL,
+			slug varchar(80) NOT NULL,
+			title varchar(255) NOT NULL,
+			description text NULL,
+			type varchar(40) NOT NULL,
+			required tinyint(1) unsigned NOT NULL DEFAULT 0,
+			status varchar(20) NOT NULL DEFAULT 'active',
+			sort_order int(11) NOT NULL DEFAULT 0,
+			is_system tinyint(1) unsigned NOT NULL DEFAULT 0,
+			settings_json longtext NULL,
+			created_at datetime NOT NULL,
+			updated_at datetime NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY uuid (uuid),
+			UNIQUE KEY slug (slug),
+			KEY status_order (status, sort_order)
+		) {$charset};";
+
+		$sql_options = "CREATE TABLE {$options} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			question_id bigint(20) unsigned NOT NULL,
+			value varchar(80) NOT NULL,
+			label varchar(255) NOT NULL,
+			sort_order int(11) NOT NULL DEFAULT 0,
+			status varchar(20) NOT NULL DEFAULT 'active',
+			created_at datetime NOT NULL,
+			updated_at datetime NOT NULL,
+			PRIMARY KEY  (id),
+			KEY question_order (question_id, sort_order),
+			KEY question_value (question_id, value)
+		) {$charset};";
+
+		$sql_answers = "CREATE TABLE {$answers} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			feedback_id bigint(20) unsigned NOT NULL,
+			question_id bigint(20) unsigned NOT NULL,
+			question_slug varchar(80) NOT NULL,
+			answer_value varchar(190) NOT NULL DEFAULT '',
+			answer_text text NULL,
+			created_at datetime NOT NULL,
+			PRIMARY KEY  (id),
+			KEY feedback_id (feedback_id),
+			KEY question_slug (question_slug),
+			KEY feedback_slug (feedback_id, question_slug)
+		) {$charset};";
+
 		dbDelta( $sql_feedback );
 		dbDelta( $sql_frags );
+		dbDelta( $sql_questions );
+		dbDelta( $sql_options );
+		dbDelta( $sql_answers );
 		update_option( 'ckf_db_version', self::DB_VERSION, false );
 	}
 
-	/**
-	 * Feedback table name.
-	 *
-	 * @return string
-	 */
 	public static function feedback_table() {
 		global $wpdb;
 		return $wpdb->prefix . 'casa_kotti_feedback';
 	}
 
-	/**
-	 * Fragrance table name.
-	 *
-	 * @return string
-	 */
 	public static function fragrance_table() {
 		global $wpdb;
 		return $wpdb->prefix . 'casa_kotti_fragrances';
 	}
 
-	/**
-	 * Active fragrances for the public form.
-	 *
-	 * @return array<int, object>
-	 */
+	public static function questions_table() {
+		global $wpdb;
+		return $wpdb->prefix . 'casa_kotti_feedback_questions';
+	}
+
+	public static function options_table() {
+		global $wpdb;
+		return $wpdb->prefix . 'casa_kotti_feedback_question_options';
+	}
+
+	public static function answers_table() {
+		global $wpdb;
+		return $wpdb->prefix . 'casa_kotti_feedback_answers';
+	}
+
 	public static function active_fragrances() {
 		global $wpdb;
 		$table = self::fragrance_table();
 		return $wpdb->get_results( "SELECT id, name, slug FROM {$table} WHERE status = 'active' ORDER BY sort_order ASC, name ASC" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
-	/**
-	 * All fragrances for admin.
-	 *
-	 * @return array<int, object>
-	 */
 	public static function all_fragrances() {
 		global $wpdb;
 		$table = self::fragrance_table();
 		return $wpdb->get_results( "SELECT * FROM {$table} ORDER BY sort_order ASC, name ASC" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
-	/**
-	 * Find fragrance by slug.
-	 *
-	 * @param string $slug Slug.
-	 * @return object|null
-	 */
 	public static function fragrance_by_slug( $slug ) {
 		global $wpdb;
 		$table = self::fragrance_table();
 		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE slug = %s LIMIT 1", $slug ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
-	/**
-	 * Insert a feedback row.
-	 *
-	 * @param array $data Column values.
-	 * @return int|false
-	 */
 	public static function insert_feedback( $data ) {
 		global $wpdb;
 		$ok = $wpdb->insert( self::feedback_table(), $data );

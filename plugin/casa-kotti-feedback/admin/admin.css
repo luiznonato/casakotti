@@ -42,3 +42,12 @@
 	max-width: 640px;
 	margin-bottom: 28px;
 }
+
+.ckf-admin .ckf-preview-frame {
+	margin-top: 24px;
+	max-width: 560px;
+}
+
+.ckf-admin .ckf-question-form {
+	max-width: 880px;
+}

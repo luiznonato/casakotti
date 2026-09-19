@@ -4,6 +4,9 @@
 	--ck-muted: #bdb7ac;
 	--ck-line: rgba(229, 222, 209, 0.42);
 	--ck-error: #ffd0c8;
+	--ck-copper: #b57a54;
+	--ck-copper-soft: rgba(181, 122, 84, 0.15);
+	--ck-copper-medium: rgba(181, 122, 84, 0.4);
 	--ck-foliage: #e5ded1;
 	--ck-gutter: clamp(1.25rem, 8vw, 5.5rem);
 }

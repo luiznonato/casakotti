@@ -20,6 +20,7 @@ class CKF_Admin {
 		add_action( 'admin_post_ckf_save_fragrance', array( __CLASS__, 'save_fragrance' ) );
 		add_action( 'admin_post_ckf_toggle_fragrance', array( __CLASS__, 'toggle_fragrance' ) );
 		add_action( 'admin_post_ckf_reorder_fragrance', array( __CLASS__, 'reorder_fragrance' ) );
+		CKF_Admin_Questions::init();
 		add_action( 'admin_init', array( __CLASS__, 'privacy_policy' ) );
 		add_filter( 'wp_privacy_personal_data_exporters', array( __CLASS__, 'register_exporter' ) );
 		add_filter( 'wp_privacy_personal_data_erasers', array( __CLASS__, 'register_eraser' ) );
@@ -54,6 +55,30 @@ class CKF_Admin {
 			'casa-kotti-fragrances',
 			array( __CLASS__, 'page_fragrances' )
 		);
+		add_submenu_page(
+			'casa-kotti-feedback',
+			__( 'Perguntas', 'casa-kotti-feedback' ),
+			__( 'Perguntas', 'casa-kotti-feedback' ),
+			'manage_options',
+			'casa-kotti-questions',
+			array( 'CKF_Admin_Questions', 'page_list' )
+		);
+		add_submenu_page(
+			'casa-kotti-feedback',
+			__( 'Editar pergunta', 'casa-kotti-feedback' ),
+			__( 'Nova pergunta', 'casa-kotti-feedback' ),
+			'manage_options',
+			'casa-kotti-question-edit',
+			array( 'CKF_Admin_Questions', 'page_edit' )
+		);
+		add_submenu_page(
+			'casa-kotti-feedback',
+			__( 'Configurações', 'casa-kotti-feedback' ),
+			__( 'Configurações', 'casa-kotti-feedback' ),
+			'manage_options',
+			'casa-kotti-feedback-settings',
+			array( 'CKF_Admin_Questions', 'page_settings' )
+		);
 	}
 
 	/**
@@ -65,8 +90,17 @@ class CKF_Admin {
 		if ( false === strpos( $hook, 'casa-kotti' ) ) {
 			return;
 		}
-		wp_enqueue_style( 'casa-kotti-feedback-admin', CKF_URL . 'admin/admin.css', array(), CKF_VERSION );
+		wp_enqueue_style( 'casa-kotti-feedback', CKF_URL . 'public/feedback.css', array(), CKF_VERSION );
+		wp_enqueue_style( 'casa-kotti-feedback-admin', CKF_URL . 'admin/admin.css', array( 'casa-kotti-feedback' ), CKF_VERSION );
 		wp_enqueue_script( 'casa-kotti-feedback-admin', CKF_URL . 'admin/admin.js', array(), CKF_VERSION, true );
+		wp_localize_script(
+			'casa-kotti-feedback-admin',
+			'ckfAdmin',
+			array(
+				'previewNonce' => wp_create_nonce( 'ckf_preview_question' ),
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+			)
+		);
 	}
 
 	/**
@@ -377,37 +411,58 @@ class CKF_Admin {
 		header( 'Content-Disposition: attachment; filename="casa-kotti-avaliacoes-' . gmdate( 'Y-m-d' ) . '.csv"' );
 		$output = fopen( 'php://output', 'w' );
 		fputs( $output, "\xEF\xBB\xBF" );
-		$headers = array( 'id', 'uuid', 'data_utc', 'produto', 'fragrancia', 'nota', 'intensidade', 'resposta_especifica', 'performance', 'apresentacao', 'recompra', 'nps', 'melhoria', 'positivo', 'nome', 'email', 'marketing', 'origem', 'campanha', 'lote' );
+		$custom = CKF_Answers::custom_slugs();
+		$headers = array_merge(
+			array( 'id', 'uuid', 'data_utc', 'produto', 'fragrancia', 'nota', 'intensidade', 'resposta_especifica', 'performance', 'apresentacao', 'recompra', 'nps', 'melhoria', 'positivo', 'nome', 'email', 'marketing', 'origem', 'campanha', 'lote' ),
+			$custom
+		);
 		fputcsv( $output, $headers );
+
+		$by_id = array();
+		if ( $rows && $custom ) {
+			$ids = array_map( 'intval', wp_list_pluck( $rows, 'id' ) );
+			$ans_table = CKF_Database::answers_table();
+			$in = implode( ',', $ids );
+			$placeholders = implode( ',', array_fill( 0, count( $custom ), '%s' ) );
+			$sql_ans = "SELECT feedback_id, question_slug, answer_value, answer_text FROM {$ans_table} WHERE feedback_id IN ({$in}) AND question_slug IN ({$placeholders})";
+			$answers = $wpdb->get_results( $wpdb->prepare( $sql_ans, $custom ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			foreach ( $answers as $ans ) {
+				$val = $ans->answer_text ? $ans->answer_text : $ans->answer_value;
+				if ( ! isset( $by_id[ $ans->feedback_id ][ $ans->question_slug ] ) ) {
+					$by_id[ $ans->feedback_id ][ $ans->question_slug ] = array();
+				}
+				$by_id[ $ans->feedback_id ][ $ans->question_slug ][] = $val;
+			}
+		}
+
 		foreach ( $rows as $row ) {
-			fputcsv(
-				$output,
-				array_map(
-					array( 'CKF_Security', 'csv_safe' ),
-					array(
-						$row['id'],
-						$row['uuid'],
-						$row['created_at'],
-						$row['product'],
-						$row['fragrance'],
-						$row['overall_rating'],
-						$row['intensity'],
-						$row['product_specific_answer'],
-						$row['performance'],
-						$row['presentation_rating'],
-						$row['repurchase_intent'],
-						$row['nps_score'],
-						$row['improvement_comment'],
-						$row['positive_comment'],
-						$row['customer_name'],
-						$row['customer_email'],
-						$row['marketing_consent'],
-						$row['source'],
-						$row['campaign'],
-						$row['batch'],
-					)
-				)
+			$cells = array(
+				$row['id'],
+				$row['uuid'],
+				$row['created_at'],
+				$row['product'],
+				$row['fragrance'],
+				$row['overall_rating'],
+				$row['intensity'],
+				$row['product_specific_answer'],
+				$row['performance'],
+				$row['presentation_rating'],
+				$row['repurchase_intent'],
+				$row['nps_score'],
+				$row['improvement_comment'],
+				$row['positive_comment'],
+				$row['customer_name'],
+				$row['customer_email'],
+				$row['marketing_consent'],
+				$row['source'],
+				$row['campaign'],
+				$row['batch'],
 			);
+			foreach ( $custom as $slug ) {
+				$vals = isset( $by_id[ $row['id'] ][ $slug ] ) ? $by_id[ $row['id'] ][ $slug ] : array();
+				$cells[] = implode( '; ', $vals );
+			}
+			fputcsv( $output, array_map( array( 'CKF_Security', 'csv_safe' ), $cells ) );
 		}
 		fclose( $output );
 		exit;

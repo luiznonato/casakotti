@@ -10,16 +10,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class CKF_API {
-	/**
-	 * Hook REST routes.
-	 */
+	const TEXT_MAX     = 190;
+	const TEXTAREA_MAX = 4000;
+
 	public static function init() {
 		add_action( 'rest_api_init', array( __CLASS__, 'register_routes' ) );
 	}
 
-	/**
-	 * Register endpoints.
-	 */
 	public static function register_routes() {
 		register_rest_route(
 			'casa-kotti/v1',
@@ -41,11 +38,6 @@ class CKF_API {
 		);
 	}
 
-	/**
-	 * Public fragrance list.
-	 *
-	 * @return WP_REST_Response
-	 */
 	public static function list_fragrances() {
 		$items = array();
 		foreach ( CKF_Database::active_fragrances() as $row ) {
@@ -57,12 +49,6 @@ class CKF_API {
 		return rest_ensure_response( array( 'success' => true, 'fragrances' => $items ) );
 	}
 
-	/**
-	 * Accept a feedback payload.
-	 *
-	 * @param WP_REST_Request $request Request.
-	 * @return WP_REST_Response|WP_Error
-	 */
 	public static function create( WP_REST_Request $request ) {
 		$nonce = $request->get_header( 'X-WP-Nonce' );
 		if ( ! $nonce ) {
@@ -86,23 +72,20 @@ class CKF_API {
 			return $validated;
 		}
 
-		$validated['uuid']       = wp_generate_uuid4();
-		$validated['created_at'] = current_time( 'mysql', true );
-		$validated['ip_hash']    = CKF_Security::ip_hash();
-		$validated['user_agent'] = CKF_Security::user_agent();
+		$row                 = $validated['row'];
+		$row['uuid']         = wp_generate_uuid4();
+		$row['created_at']   = current_time( 'mysql', true );
+		$row['ip_hash']      = CKF_Security::ip_hash();
+		$row['user_agent']   = CKF_Security::user_agent();
 
-		$id = CKF_Database::insert_feedback( $validated );
+		$id = CKF_Database::insert_feedback( $row );
 		if ( ! $id ) {
 			return new WP_Error( 'ckf_save', __( 'Não conseguimos enviar sua avaliação agora. Tente novamente.', 'casa-kotti-feedback' ), array( 'status' => 500 ) );
 		}
 
-		/**
-		 * After a feedback row is stored. Reserved for CRM, mail, coupons.
-		 *
-		 * @param int   $id   Inserted ID.
-		 * @param array $data Sanitized row.
-		 */
-		do_action( 'casa_kotti_feedback_saved', $id, $validated );
+		CKF_Answers::insert_many( $id, $validated['answers'] );
+
+		do_action( 'casa_kotti_feedback_saved', $id, $row );
 
 		return rest_ensure_response(
 			array(
@@ -113,106 +96,201 @@ class CKF_API {
 	}
 
 	/**
-	 * Server-side field validation.
+	 * Validate dynamic answers and build denormalized row.
+	 *
+	 * Inapplicable answers are ignored. Missing required applicable answers fail.
 	 *
 	 * @param WP_REST_Request $request Request.
 	 * @return array|WP_Error
 	 */
 	private static function validate( WP_REST_Request $request ) {
-		$products = ckf_products();
-		$product  = sanitize_key( (string) $request->get_param( 'product' ) );
-		if ( ! isset( $products[ $product ] ) ) {
-			return new WP_Error( 'ckf_product', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+		$incoming = $request->get_param( 'answers' );
+		if ( ! is_array( $incoming ) ) {
+			$incoming = array();
 		}
-
-		$slug      = sanitize_title( (string) $request->get_param( 'fragrance' ) );
-		$fragrance = CKF_Database::fragrance_by_slug( $slug );
-		if ( ! $fragrance ) {
-			return new WP_Error( 'ckf_fragrance', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+		foreach ( array( 'product', 'fragrance', 'overall_rating', 'intensity', 'refil_target', 'performance', 'presentation_rating', 'repurchase_intent', 'nps_score', 'improvement_comment', 'positive_comment', 'customer_name', 'customer_email', 'marketing_consent', 'product_specific_answer' ) as $legacy ) {
+			if ( ! isset( $incoming[ $legacy ] ) && null !== $request->get_param( $legacy ) && '' !== $request->get_param( $legacy ) ) {
+				$incoming[ $legacy ] = $request->get_param( $legacy );
+			}
 		}
-		if ( 'active' !== $fragrance->status ) {
-			return new WP_Error( 'ckf_fragrance', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-		}
-
-		$overall = absint( $request->get_param( 'overall_rating' ) );
-		$pres    = absint( $request->get_param( 'presentation_rating' ) );
-		if ( $overall < 1 || $overall > 5 || $pres < 1 || $pres > 5 ) {
-			return new WP_Error( 'ckf_rating', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-		}
-
-		$intensity = sanitize_key( (string) $request->get_param( 'intensity' ) );
-		if ( ! isset( ckf_intensity_options()[ $intensity ] ) ) {
-			return new WP_Error( 'ckf_intensity', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-		}
-
-		$performance = sanitize_key( (string) $request->get_param( 'performance' ) );
-		if ( ! isset( ckf_performance_options()[ $performance ] ) ) {
-			return new WP_Error( 'ckf_performance', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-		}
-
-		$repurchase = sanitize_key( (string) $request->get_param( 'repurchase_intent' ) );
-		if ( ! isset( ckf_repurchase_options()[ $repurchase ] ) ) {
-			return new WP_Error( 'ckf_repurchase', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-		}
-
-		$nps = $request->get_param( 'nps_score' );
-		if ( ! is_numeric( $nps ) ) {
-			return new WP_Error( 'ckf_nps', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-		}
-		$nps = (int) $nps;
-		if ( $nps < 0 || $nps > 10 ) {
-			return new WP_Error( 'ckf_nps', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-		}
-
-		$specific_key = sanitize_key( (string) $request->get_param( 'product_specific_answer' ) );
-		$specific_ok  = '';
-		$target       = $product;
-		if ( 'refil' === $product ) {
-			$refil_for = sanitize_key( (string) $request->get_param( 'refil_target' ) );
-			if ( 'difusor' === $refil_for ) {
-				$target = 'difusor';
-			} elseif ( 'outro' === $refil_for ) {
-				$target = '';
-			} else {
-				return new WP_Error( 'ckf_refil', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+		if ( ! empty( $incoming['product'] ) ) {
+			$mapped = CKF_Security::sanitize_product_param( $incoming['product'] );
+			if ( $mapped ) {
+				$incoming['product'] = $mapped;
 			}
 		}
 
-		$specific_map = ckf_product_specific();
-		if ( $target && isset( $specific_map[ $target ] ) ) {
-			if ( ! isset( $specific_map[ $target ]['options'][ $specific_key ] ) ) {
-				return new WP_Error( 'ckf_specific', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+		$definition = CKF_Questions::public_definition();
+		$collected  = array();
+		foreach ( $definition as $question ) {
+			if ( 'info' === $question['type'] ) {
+				continue;
 			}
-			$specific_ok = $specific_key;
+			$slug = $question['slug'];
+			if ( ! CKF_Conditions::applies( $question, $incoming ) ) {
+				continue;
+			}
+			$raw = isset( $incoming[ $slug ] ) ? $incoming[ $slug ] : '';
+			$parsed = self::parse_answer( $question, $raw );
+			if ( is_wp_error( $parsed ) ) {
+				return $parsed;
+			}
+			if ( $question['required'] && self::is_empty( $parsed ) ) {
+				return new WP_Error( 'ckf_required', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+			}
+			$collected[ $slug ] = array(
+				'question' => $question,
+				'values'   => $parsed,
+			);
 		}
 
-		$email = sanitize_email( (string) $request->get_param( 'customer_email' ) );
-		if ( $email && ! is_email( $email ) ) {
-			return new WP_Error( 'ckf_email', __( 'Digite um e-mail válido.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
-		}
+		$row = array(
+			'product'                 => '',
+			'fragrance'               => '',
+			'fragrance_slug'          => '',
+			'overall_rating'          => 0,
+			'intensity'               => '',
+			'product_specific_answer' => '',
+			'performance'             => '',
+			'presentation_rating'     => 0,
+			'repurchase_intent'       => '',
+			'nps_score'               => 0,
+			'improvement_comment'     => '',
+			'positive_comment'        => '',
+			'customer_name'           => '',
+			'customer_email'          => '',
+			'marketing_consent'       => 0,
+			'source'                  => CKF_Security::sanitize_token( (string) $request->get_param( 'source' ) ),
+			'campaign'                => CKF_Security::sanitize_token( (string) $request->get_param( 'campaign' ) ),
+			'product_code'            => CKF_Security::sanitize_token( (string) $request->get_param( 'product_code' ) ),
+			'batch'                   => CKF_Security::sanitize_token( (string) $request->get_param( 'batch' ) ),
+		);
 
-		$consent = $request->get_param( 'marketing_consent' ) ? 1 : 0;
+		$answer_rows = array();
+		foreach ( $collected as $slug => $item ) {
+			$question = $item['question'];
+			foreach ( $item['values'] as $value ) {
+				$answer_rows[] = array(
+					'question_id'   => $question['id'],
+					'question_slug' => $slug,
+					'answer_value'  => is_string( $value ) ? $value : (string) $value,
+					'answer_text'   => is_string( $value ) ? $value : (string) $value,
+				);
+			}
+			$first = isset( $item['values'][0] ) ? $item['values'][0] : '';
+			if ( 'fragrance' === $slug && $first ) {
+				$frag = CKF_Database::fragrance_by_slug( $first );
+				if ( $frag ) {
+					$row['fragrance']      = $frag->name;
+					$row['fragrance_slug'] = $frag->slug;
+				}
+			} elseif ( isset( CKF_Questions::SYSTEM_COLUMNS[ $slug ] ) ) {
+				$col = CKF_Questions::SYSTEM_COLUMNS[ $slug ];
+				if ( 'marketing_consent' === $col ) {
+					$row[ $col ] = in_array( (string) $first, array( '1', 'sim', 'yes' ), true ) ? 1 : 0;
+				} elseif ( in_array( $col, array( 'overall_rating', 'presentation_rating', 'nps_score' ), true ) ) {
+					$row[ $col ] = (int) $first;
+				} else {
+					$row[ $col ] = (string) $first;
+				}
+			}
+		}
 
 		return array(
-			'product'                  => $product,
-			'fragrance'                => $fragrance->name,
-			'fragrance_slug'           => $fragrance->slug,
-			'overall_rating'           => $overall,
-			'intensity'                => $intensity,
-			'product_specific_answer'  => $specific_ok,
-			'performance'              => $performance,
-			'presentation_rating'      => $pres,
-			'repurchase_intent'        => $repurchase,
-			'nps_score'                => $nps,
-			'improvement_comment'      => sanitize_textarea_field( (string) $request->get_param( 'improvement_comment' ) ),
-			'positive_comment'         => sanitize_textarea_field( (string) $request->get_param( 'positive_comment' ) ),
-			'customer_name'            => sanitize_text_field( (string) $request->get_param( 'customer_name' ) ),
-			'customer_email'           => $email,
-			'marketing_consent'        => $consent,
-			'source'                   => CKF_Security::sanitize_token( (string) $request->get_param( 'source' ) ),
-			'campaign'                 => CKF_Security::sanitize_token( (string) $request->get_param( 'campaign' ) ),
-			'product_code'             => CKF_Security::sanitize_token( (string) $request->get_param( 'product_code' ) ),
-			'batch'                    => CKF_Security::sanitize_token( (string) $request->get_param( 'batch' ) ),
+			'row'     => $row,
+			'answers' => $answer_rows,
 		);
+	}
+
+	private static function is_empty( $parsed ) {
+		return ! $parsed || ( 1 === count( $parsed ) && '' === (string) $parsed[0] );
+	}
+
+	/**
+	 * @param array $question Question.
+	 * @param mixed $raw      Incoming value.
+	 * @return array|WP_Error
+	 */
+	private static function parse_answer( $question, $raw ) {
+		$type     = $question['type'];
+		$settings = $question['settings'];
+		$options  = isset( $question['options'] ) ? $question['options'] : array();
+		$allowed  = wp_list_pluck( $options, 'value' );
+
+		if ( 'multi_choice' === $type ) {
+			$values = is_array( $raw ) ? $raw : ( '' === $raw ? array() : array( $raw ) );
+			$clean  = array();
+			foreach ( $values as $value ) {
+				$value = sanitize_title( (string) $value );
+				if ( ! in_array( $value, $allowed, true ) ) {
+					return new WP_Error( 'ckf_option', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+				}
+				$clean[] = $value;
+			}
+			if ( count( $clean ) > count( $allowed ) ) {
+				return new WP_Error( 'ckf_option', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+			}
+			return $clean;
+		}
+
+		if ( in_array( $type, array( 'single_choice', 'radio', 'select' ), true ) ) {
+			$value = sanitize_title( is_array( $raw ) ? (string) reset( $raw ) : (string) $raw );
+			if ( '' === $value ) {
+				return array();
+			}
+			if ( ! in_array( $value, $allowed, true ) ) {
+				return new WP_Error( 'ckf_option', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+			}
+			return array( $value );
+		}
+
+		if ( 'yes_no' === $type ) {
+			$value = is_array( $raw ) ? (string) reset( $raw ) : (string) $raw;
+			if ( ! empty( $settings['ui'] ) && 'checkbox' === $settings['ui'] ) {
+				return array( $value ? '1' : '' );
+			}
+			$value = sanitize_title( $value );
+			if ( '' === $value ) {
+				return array();
+			}
+			if ( ! in_array( $value, array( 'sim', 'nao', '1', '0' ), true ) ) {
+				return new WP_Error( 'ckf_option', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+			}
+			return array( $value );
+		}
+
+		if ( 'stars' === $type || 'scale' === $type || 'number' === $type ) {
+			if ( '' === $raw || null === $raw ) {
+				return array();
+			}
+			if ( ! is_numeric( $raw ) ) {
+				return new WP_Error( 'ckf_number', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+			}
+			$num = 'number' === $type ? (float) $raw : (int) $raw;
+			$min = isset( $settings['min'] ) ? (float) $settings['min'] : ( 'scale' === $type ? 0 : 1 );
+			$max = isset( $settings['max'] ) ? (float) $settings['max'] : ( 'scale' === $type ? 10 : 5 );
+			if ( $num < $min || $num > $max ) {
+				return new WP_Error( 'ckf_number', __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+			}
+			return array( (string) $num );
+		}
+
+		if ( 'email' === $type ) {
+			$email = sanitize_email( (string) $raw );
+			if ( $email && ! is_email( $email ) ) {
+				return new WP_Error( 'ckf_email', __( 'Digite um e-mail válido.', 'casa-kotti-feedback' ), array( 'status' => 400 ) );
+			}
+			return $email ? array( $email ) : array();
+		}
+
+		$text = 'textarea' === $type ? sanitize_textarea_field( (string) $raw ) : sanitize_text_field( (string) $raw );
+		$cap  = 'textarea' === $type ? self::TEXTAREA_MAX : self::TEXT_MAX;
+		if ( isset( $settings['max_length'] ) ) {
+			$cap = min( $cap, absint( $settings['max_length'] ) );
+		}
+		if ( strlen( $text ) > $cap ) {
+			$text = substr( $text, 0, $cap );
+		}
+		return '' === $text ? array() : array( $text );
 	}
 }

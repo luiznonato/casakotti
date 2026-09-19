@@ -86,20 +86,20 @@ class CKF_Shortcode {
 			'casa-kotti-feedback',
 			'ckfForm',
 			array(
-				'restUrl'     => esc_url_raw( rest_url( 'casa-kotti/v1/feedback' ) ),
-				'nonce'       => wp_create_nonce( 'wp_rest' ),
-				'homeUrl'     => home_url( '/' ),
-				'products'    => ckf_products(),
-				'fragrances'  => $frags,
-				'specific'    => ckf_product_specific(),
-				'prefill'     => array(
+				'restUrl'    => esc_url_raw( rest_url( 'casa-kotti/v1/feedback' ) ),
+				'nonce'      => wp_create_nonce( 'wp_rest' ),
+				'homeUrl'    => home_url( '/' ),
+				'products'   => ckf_products(),
+				'fragrances' => $frags,
+				'questions'  => CKF_Questions::public_definition(),
+				'prefill'    => array(
 					'product'   => $pre_product,
 					'fragrance' => $pre_frag,
 					'batch'     => $pre_batch,
 					'source'    => $pre_source,
 					'campaign'  => $pre_camp,
 				),
-				'i18n'        => array(
+				'i18n'       => array(
 					'continue'     => __( 'Continuar', 'casa-kotti-feedback' ),
 					'selectOption' => __( 'Selecione uma opção para continuar.', 'casa-kotti-feedback' ),
 					'sending'      => __( 'Enviando...', 'casa-kotti-feedback' ),
