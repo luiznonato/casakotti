@@ -278,6 +278,8 @@
 .ck-feedback__panel.is-active > .ck-feedback__btn,
 .ck-feedback__panel.is-active > .ck-feedback__btn[data-start] {
 	margin-top: auto;
+	align-self: flex-start;
+	width: auto;
 }
 
 .ck-feedback__step.is-active .ck-feedback__block:last-child {
