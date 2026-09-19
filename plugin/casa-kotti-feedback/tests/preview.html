@@ -25,6 +25,10 @@
 		<button type="button" class="ck-feedback__btn" data-start>Começar</button>
 	</section>
 	<form class="ck-feedback__form" data-form hidden novalidate>
+		<div class="ck-feedback__progress" data-progress hidden>
+			<p class="ck-feedback__counter" data-counter>01 / 01</p>
+			<div class="ck-feedback__track" aria-hidden="true"><span class="ck-feedback__fill" data-fill></span></div>
+		</div>
 		<p class="ck-feedback__prefill" data-prefill hidden></p>
 		<p class="ck-feedback__error ck-feedback__error--form" data-form-error hidden></p>
 
@@ -104,12 +108,8 @@
 		<input type="hidden" name="batch" value="">
 		<input type="hidden" name="product_code" value="">
 		<footer class="ck-feedback__footer" data-footer hidden>
-			<div class="ck-feedback__progress" data-progress>
-				<div class="ck-feedback__track"><span class="ck-feedback__fill" data-fill></span></div>
-			</div>
 			<div class="ck-feedback__nav" data-nav>
 				<button type="button" class="ck-feedback__btn ck-feedback__btn--ghost" data-back>Voltar</button>
-				<p class="ck-feedback__counter" data-counter>01 / 01</p>
 				<div class="ck-feedback__nav-end">
 					<button type="button" class="ck-feedback__btn" data-next>Continuar</button>
 					<button type="submit" class="ck-feedback__btn" data-submit hidden>Enviar</button>
