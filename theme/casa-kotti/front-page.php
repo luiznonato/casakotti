@@ -14,10 +14,8 @@ $privacy_url   = $privacy_page && 'publish' === get_post_status( $privacy_page )
 $has_form      = casa_kotti_setting( 'form_enabled', true )
 	&& casa_kotti_has_valid_privacy_page()
 	&& function_exists( 'casa_kotti_render_interest_form' );
-$motion_class  = casa_kotti_setting( 'animations_enabled', true ) ? ' has-motion' : '';
 ?>
-<div class="ck-page<?php echo esc_attr( $motion_class ); ?>">
-	<?php get_template_part( 'template-parts/foliage' ); ?>
+<div class="ck-page">
 	<main class="ck-main" id="conteudo">
 		<div class="ck-brand">
 			<?php if ( has_custom_logo() ) : ?>

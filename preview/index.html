@@ -7,15 +7,7 @@
 	<link rel="stylesheet" href="../theme/casa-kotti/assets/css/main.css">
 </head>
 <body>
-	<div class="ck-page has-motion">
-		<div class="ck-foliage-layer" aria-hidden="true">
-			<div class="ck-foliage ck-foliage--left">
-				<div class="ck-foliage__motion"></div>
-			</div>
-			<div class="ck-foliage ck-foliage--right">
-				<div class="ck-foliage__motion"></div>
-			</div>
-		</div>
+	<div class="ck-page">
 		<main class="ck-main">
 			<div class="ck-brand">
 				<img class="ck-brand-logo" src="../theme/casa-kotti/assets/images/logo-casa-kotti.png" alt="Casa Kotti" width="1237" height="752">
@@ -49,13 +41,5 @@
 			<p>&copy; 2026 Casa Kotti</p>
 		</footer>
 	</div>
-	<script>
-		fetch('../theme/casa-kotti/assets/images/foliage-left.svg').then((r) => r.text()).then((svg) => {
-			document.querySelector('.ck-foliage--left .ck-foliage__motion').innerHTML = svg;
-		});
-		fetch('../theme/casa-kotti/assets/images/foliage-right.svg').then((r) => r.text()).then((svg) => {
-			document.querySelector('.ck-foliage--right .ck-foliage__motion').innerHTML = svg;
-		});
-	</script>
 </body>
 </html>

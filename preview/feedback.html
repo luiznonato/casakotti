@@ -8,11 +8,7 @@
 	<link rel="stylesheet" href="../plugin/casa-kotti-feedback/public/feedback.css">
 </head>
 <body class="ck-feedback-page">
-	<div class="ck-page has-motion">
-		<div class="ck-foliage-layer" aria-hidden="true">
-			<div class="ck-foliage ck-foliage--left"><div class="ck-foliage__motion"></div></div>
-			<div class="ck-foliage ck-foliage--right"><div class="ck-foliage__motion"></div></div>
-		</div>
+	<div class="ck-page">
 		<main class="ck-content" id="conteudo">
 			<h1>Experiência</h1>
 			<div class="ck-feedback" data-ck-feedback>
@@ -83,13 +79,5 @@
 		};
 	</script>
 	<script src="../plugin/casa-kotti-feedback/public/feedback.js"></script>
-	<script>
-		fetch('../theme/casa-kotti/assets/images/foliage-left.svg').then((r) => r.text()).then((svg) => {
-			document.querySelector('.ck-foliage--left .ck-foliage__motion').innerHTML = svg;
-		});
-		fetch('../theme/casa-kotti/assets/images/foliage-right.svg').then((r) => r.text()).then((svg) => {
-			document.querySelector('.ck-foliage--right .ck-foliage__motion').innerHTML = svg;
-		});
-	</script>
 </body>
 </html>

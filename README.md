@@ -21,7 +21,7 @@ WordPress core, banco, uploads, credenciais e configurações do servidor não f
 5. Crie e publique a política de privacidade aprovada. Selecione a mesma página:
    - em **Configurações > Privacidade**; e
    - em **Aparência > Personalizar > Casa Kotti — Pré-lançamento**.
-6. Em **Aparência > Personalizar**, confirme o logo e configure textos, links, contato, formulário e animações. O logo oficial já acompanha o tema; um logo configurado no WordPress continua tendo prioridade.
+6. Em **Aparência > Personalizar**, confirme o logo e configure textos, links, contato e formulário. O logo oficial já acompanha o tema; um logo configurado no WordPress continua tendo prioridade.
 
 O formulário permanece oculto e não aceita cadastros até que uma página de privacidade publicada esteja corretamente selecionada. Se houver e-mail de contato, ele aparece como alternativa. Instagram e demais links opcionais ficam ocultos enquanto estiverem vazios.
 
@@ -40,10 +40,9 @@ Administradores podem listar, exportar CSV e excluir registros em **Ferramentas 
 
 O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre os dados técnicos coletados. Ele deve ser revisado e incorporado à política jurídica aprovada; o projeto não inventa informações jurídicas.
 
-## Logo e folhagens
+## Logo
 
 - **Logo integrado:** o símbolo e o lettering originais foram preservados em `assets/images/logo-casa-kotti.png`, com fundo transparente e proporções originais. O painel continua permitindo substituí-lo sem alterar o tema.
-- **Folhagens integradas:** os ramos originais estão em `assets/images/foliage-left.svg` e `assets/images/foliage-right.svg`, renderizados pelo partial `template-parts/foliage.php`. Enquadram o conteúdo pelas laterais (tokens `--ck-foliage-side`, `--ck-foliage-inset`, `--ck-foliage-scale`) e recortam o excesso para o centro respirar. O balanço continua na base do caule.
 
 Para gerar novamente os pacotes:
 
