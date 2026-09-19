@@ -88,15 +88,17 @@ $config     = array(
 		<input type="hidden" name="batch" value="">
 		<input type="hidden" name="product_code" value="">
 		<input type="hidden" name="survey_id" value="<?php echo esc_attr( (string) (int) $ckf_survey->id ); ?>">
-		<div class="ck-feedback__nav" data-nav hidden>
-			<button type="button" class="ck-feedback__btn ck-feedback__btn--ghost" data-back><?php esc_html_e( 'Voltar', 'casa-kotti-feedback' ); ?></button>
-			<button type="button" class="ck-feedback__btn" data-next><?php esc_html_e( 'Continuar', 'casa-kotti-feedback' ); ?></button>
-			<button type="submit" class="ck-feedback__btn" data-submit hidden><?php esc_html_e( 'Enviar', 'casa-kotti-feedback' ); ?></button>
-		</div>
-		<div class="ck-feedback__progress" data-progress hidden>
-			<div class="ck-feedback__track" aria-hidden="true"><span class="ck-feedback__fill" data-fill></span></div>
-			<p class="ck-feedback__counter" data-counter>01 / 01</p>
-		</div>
+		<footer class="ck-feedback__footer">
+			<div class="ck-feedback__nav" data-nav hidden>
+				<button type="button" class="ck-feedback__btn ck-feedback__btn--ghost" data-back><?php esc_html_e( 'Voltar', 'casa-kotti-feedback' ); ?></button>
+				<button type="button" class="ck-feedback__btn" data-next><?php esc_html_e( 'Continuar', 'casa-kotti-feedback' ); ?></button>
+				<button type="submit" class="ck-feedback__btn" data-submit hidden><?php esc_html_e( 'Enviar', 'casa-kotti-feedback' ); ?></button>
+			</div>
+			<div class="ck-feedback__progress" data-progress hidden>
+				<div class="ck-feedback__track" aria-hidden="true"><span class="ck-feedback__fill" data-fill></span></div>
+				<p class="ck-feedback__counter" data-counter>01 / 01</p>
+			</div>
+		</footer>
 	</form>
 
 	<section class="ck-feedback__panel" data-panel="thanks" hidden>
