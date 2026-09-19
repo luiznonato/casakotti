@@ -126,6 +126,54 @@ class CKF_Questions {
 		return is_array( $data ) ? $data : array();
 	}
 
+	/**
+	 * Whether the field title is shown visually. Missing key keeps current forms unchanged.
+	 *
+	 * @param array $settings Question settings.
+	 * @return bool
+	 */
+	public static function show_label( $settings ) {
+		if ( ! is_array( $settings ) || ! array_key_exists( 'show_label', $settings ) ) {
+			return true;
+		}
+		$value = $settings['show_label'];
+		if ( is_bool( $value ) ) {
+			return $value;
+		}
+		return '0' !== (string) $value && 'false' !== strtolower( (string) $value ) && '' !== (string) $value;
+	}
+
+	/**
+	 * Hide visual titles on identity name/email once. Consent checkbox copy is unchanged.
+	 */
+	public static function migrate_identity_hide_labels() {
+		if ( get_option( 'ckf_identity_hide_labels' ) ) {
+			return;
+		}
+		global $wpdb;
+		$table = CKF_Database::questions_table();
+		$rows  = $wpdb->get_results( "SELECT id, slug, settings_json FROM {$table} WHERE slug IN ('customer_name','customer_email')" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		foreach ( (array) $rows as $row ) {
+			$settings = self::settings( $row );
+			if ( array_key_exists( 'show_label', $settings ) ) {
+				continue;
+			}
+			$settings['show_label'] = false;
+			$wpdb->update(
+				$table,
+				array(
+					'settings_json' => wp_json_encode( $settings ),
+					'updated_at'    => current_time( 'mysql', true ),
+				),
+				array( 'id' => (int) $row->id ),
+				array( '%s', '%s' ),
+				array( '%d' )
+			);
+		}
+		update_option( 'ckf_identity_hide_labels', '1', false );
+		self::bust_cache();
+	}
+
 	public static function default_copy() {
 		return array(
 			'intro_title'   => __( 'Como foi sua experiência com a Casa Kotti?', 'casa-kotti-feedback' ),

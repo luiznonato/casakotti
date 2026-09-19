@@ -83,13 +83,13 @@
 			<legend class="ck-feedback__question">Quase lá</legend>
 			<p class="ck-feedback__helper">Se quiser, conte para a gente quem você é.</p>
 			<div class="ck-feedback__block" data-field="customer_name" data-type="text">
-				<p class="ck-feedback__question ck-feedback__question--sub">Nome</p>
-				<label class="ck-feedback__field"><input class="ck-feedback__input" name="customer_name" placeholder="Seu nome"></label>
+				<label class="ck-feedback__question ck-feedback__question--sub ck-feedback__sr" id="ckf-lbl-customer_name" for="ckf-in-customer_name">Nome</label>
+				<label class="ck-feedback__field"><input class="ck-feedback__input" id="ckf-in-customer_name" name="customer_name" placeholder="Nome" aria-labelledby="ckf-lbl-customer_name"></label>
 				<p class="ck-feedback__error" id="ckf-err-customer_name" data-error hidden></p>
 			</div>
 			<div class="ck-feedback__block" data-field="customer_email" data-type="email">
-				<p class="ck-feedback__question ck-feedback__question--sub">E-mail</p>
-				<label class="ck-feedback__field"><input class="ck-feedback__input" type="email" name="customer_email" placeholder="voce@email.com"></label>
+				<label class="ck-feedback__question ck-feedback__question--sub ck-feedback__sr" id="ckf-lbl-customer_email" for="ckf-in-customer_email">E-mail</label>
+				<label class="ck-feedback__field"><input class="ck-feedback__input" id="ckf-in-customer_email" type="email" name="customer_email" placeholder="E-mail" aria-labelledby="ckf-lbl-customer_email"></label>
 				<p class="ck-feedback__error" id="ckf-err-customer_email" data-error hidden></p>
 			</div>
 			<div class="ck-feedback__block" data-field="marketing_consent" data-type="yes_no">
@@ -138,8 +138,8 @@ window.ckfForm = {
 		{ id: 2, slug: 'fragrance', title: 'Qual fragrância?', type: 'single_choice', required: 1, step_id: 2, settings: {}, options: [{ value: 'figo', label: 'Figo' }, { value: 'alecrim', label: 'Alecrim' }] },
 		{ id: 3, slug: 'overall_rating', title: 'Como foi sua experiência?', type: 'stars', required: 1, step_id: 3, settings: { min: 1, max: 5 }, options: [] },
 		{ id: 4, slug: 'nps_score', title: 'NPS', type: 'scale', required: 1, step_id: 3, settings: { min: 0, max: 10 }, options: [] },
-		{ id: 5, slug: 'customer_name', title: 'Nome', type: 'text', required: 0, step_id: 4, settings: { placeholder: 'Seu nome' }, options: [] },
-		{ id: 6, slug: 'customer_email', title: 'E-mail', type: 'email', required: 0, step_id: 4, settings: {}, options: [] },
+		{ id: 5, slug: 'customer_name', title: 'Nome', type: 'text', required: 0, step_id: 4, settings: { placeholder: 'Nome', show_label: false }, options: [] },
+		{ id: 6, slug: 'customer_email', title: 'E-mail', type: 'email', required: 0, step_id: 4, settings: { placeholder: 'E-mail', show_label: false }, options: [] },
 		{ id: 7, slug: 'marketing_consent', title: 'Novidades', type: 'yes_no', required: 0, step_id: 4, settings: { ui: 'checkbox', checkbox_label: 'Quero receber novidades, lançamentos e conteúdos da Casa Kotti.' }, options: [] }
 	],
 	prefill: {},

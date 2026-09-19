@@ -20,6 +20,7 @@ class CKF_Database {
 		CKF_Surveys::migrate_default();
 		CKF_Questions::seed_defaults();
 		CKF_Steps::migrate_from_questions();
+		CKF_Questions::migrate_identity_hide_labels();
 	}
 
 	/**
@@ -32,6 +33,7 @@ class CKF_Database {
 		CKF_Surveys::migrate_default();
 		CKF_Questions::seed_defaults();
 		CKF_Steps::migrate_from_questions();
+		CKF_Questions::migrate_identity_hide_labels();
 	}
 
 	/**

@@ -144,6 +144,11 @@
 	color: var(--ck-ink, #e5ded1);
 }
 
+.ck-feedback__question--sub.ck-feedback__sr {
+	margin: 0;
+	padding: 0;
+}
+
 .ck-feedback__step {
 	min-inline-size: 0;
 	min-width: 0;

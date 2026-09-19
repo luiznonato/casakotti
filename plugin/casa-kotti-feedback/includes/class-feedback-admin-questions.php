@@ -158,9 +158,21 @@ class CKF_Admin_Questions {
 		exit;
 	}
 
+	private static function posted_show_label() {
+		if ( ! isset( $_POST['show_label'] ) ) {
+			return true;
+		}
+		$raw = wp_unslash( $_POST['show_label'] );
+		if ( is_array( $raw ) ) {
+			$raw = end( $raw );
+		}
+		return '1' === (string) $raw;
+	}
+
 	private static function collect_settings( $type, $existing ) {
 		$settings = $existing ? CKF_Questions::settings( $existing ) : array();
 		$settings['placeholder'] = isset( $_POST['placeholder'] ) ? sanitize_text_field( wp_unslash( $_POST['placeholder'] ) ) : '';
+		$settings['show_label']  = self::posted_show_label();
 		$settings['max_length']  = isset( $_POST['max_length'] ) ? absint( $_POST['max_length'] ) : 0;
 		$settings['min']         = isset( $_POST['min'] ) ? (int) wp_unslash( $_POST['min'] ) : ( 'scale' === $type ? 0 : 1 );
 		$settings['max']         = isset( $_POST['max'] ) ? (int) wp_unslash( $_POST['max'] ) : ( 'scale' === $type ? 10 : 5 );
@@ -325,11 +337,15 @@ class CKF_Admin_Questions {
 			'description' => isset( $_POST['description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['description'] ) ) : '',
 			'type'        => isset( $_POST['type'] ) ? sanitize_key( wp_unslash( $_POST['type'] ) ) : 'text',
 			'settings'    => array(
-				'placeholder' => isset( $_POST['placeholder'] ) ? sanitize_text_field( wp_unslash( $_POST['placeholder'] ) ) : '',
-				'min'         => isset( $_POST['min'] ) ? (int) $_POST['min'] : 1,
-				'max'         => isset( $_POST['max'] ) ? (int) $_POST['max'] : 5,
-				'min_label'   => isset( $_POST['min_label'] ) ? sanitize_text_field( wp_unslash( $_POST['min_label'] ) ) : '',
-				'max_label'   => isset( $_POST['max_label'] ) ? sanitize_text_field( wp_unslash( $_POST['max_label'] ) ) : '',
+				'placeholder'    => isset( $_POST['placeholder'] ) ? sanitize_text_field( wp_unslash( $_POST['placeholder'] ) ) : '',
+				'min'            => isset( $_POST['min'] ) ? (int) $_POST['min'] : 1,
+				'max'            => isset( $_POST['max'] ) ? (int) $_POST['max'] : 5,
+				'min_label'      => isset( $_POST['min_label'] ) ? sanitize_text_field( wp_unslash( $_POST['min_label'] ) ) : '',
+				'max_label'      => isset( $_POST['max_label'] ) ? sanitize_text_field( wp_unslash( $_POST['max_label'] ) ) : '',
+				'help_text'      => isset( $_POST['help_text'] ) ? sanitize_text_field( wp_unslash( $_POST['help_text'] ) ) : '',
+				'ui'             => isset( $_POST['ui'] ) ? sanitize_key( wp_unslash( $_POST['ui'] ) ) : '',
+				'checkbox_label' => isset( $_POST['checkbox_label'] ) ? sanitize_text_field( wp_unslash( $_POST['checkbox_label'] ) ) : '',
+				'show_label'     => self::posted_show_label(),
 			),
 			'options'     => array(),
 		);

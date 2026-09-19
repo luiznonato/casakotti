@@ -354,7 +354,7 @@
 				var vis = applies(q, state.answers) && !(state.productLocked && q.slug === 'product' && state.answers.product);
 				block.hidden = !vis;
 				var sub = block.querySelector('.ck-feedback__question--sub');
-				if (sub) {
+				if (sub && !sub.classList.contains('ck-feedback__sr')) {
 					sub.hidden = current.questions.length === 1 && (current.title === q.title || !q.title);
 				}
 			});

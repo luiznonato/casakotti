@@ -68,6 +68,9 @@ function run() {
 		!!visibleStep().querySelector('[name="customer_email"]') &&
 		!!visibleStep().querySelector('[name="marketing_consent"]')
 	));
+	results.push('name_label_sr=' + document.querySelector('#ckf-lbl-customer_name').classList.contains('ck-feedback__sr'));
+	results.push('email_label_sr=' + document.querySelector('#ckf-lbl-customer_email').classList.contains('ck-feedback__sr'));
+	results.push('consent_text=' + document.querySelector('[data-field="marketing_consent"] .ck-feedback__consent span').textContent);
 	results.push('progress_final=' + document.querySelector('[data-counter]').textContent);
 	document.querySelector('[name="customer_email"]').value = 'maria@';
 	document.querySelector('[name="customer_email"]').dispatchEvent(new Event('input', { bubbles: true }));

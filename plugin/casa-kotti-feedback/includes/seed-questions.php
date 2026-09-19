@@ -282,6 +282,7 @@ function ckf_seed_default_questions() {
 					'placeholder'            => 'Nome',
 					'contains_personal_data' => true,
 					'max_length'             => 190,
+					'show_label'             => false,
 				)
 			),
 		)
@@ -301,6 +302,7 @@ function ckf_seed_default_questions() {
 					'placeholder'            => 'E-mail',
 					'contains_personal_data' => true,
 					'max_length'             => 190,
+					'show_label'             => false,
 				)
 			),
 		)
