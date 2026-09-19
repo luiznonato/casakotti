@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face {
+	font-family: "Montserrat CK";
+	src: url("../../theme/casa-kotti/assets/fonts/montserrat-latin.woff2") format("woff2");
+}
+:root { --ck-bg:#252726; --ck-ink:#e5ded1; --ck-error:#ffd0c8; }
+body { background:#252726; }
+</style>
+<link rel="stylesheet" href="../public/feedback.css">
+</head>
+<body>
+<div class="ck-feedback" id="root">
+	<p class="ck-feedback__question" id="q">Qual produto você experimentou?</p>
+	<label class="ck-feedback__choice" id="alt"><input type="radio" name="p" value="a"><span class="ck-feedback__choice-label">Home Spray</span></label>
+	<input class="ck-feedback__input" id="name" name="customer_name" placeholder="Seu nome">
+	<input class="ck-feedback__input" id="email" type="email" name="customer_email" placeholder="voce@email.com">
+	<label class="ck-feedback__consent" id="consent"><input type="checkbox"><span>Quero receber novidades, lançamentos e conteúdos da Casa Kotti.</span></label>
+	<button class="ck-feedback__btn" id="next" type="button">Próximo</button>
+	<button class="ck-feedback__btn" id="send" type="button">Enviar</button>
+	<p class="ck-feedback__error" id="err">Digite um e-mail válido.</p>
+	<div class="ck-feedback__scale-item" id="nps"><span>10</span></div>
+	<label class="ck-feedback__star" id="star"><span>★</span></label>
+	<p class="ck-feedback__privacy" id="priv">Política de Privacidade</p>
+	<pre id="out"></pre>
+</div>
+<script>
+function fam(el, pseudo) {
+	return getComputedStyle(el, pseudo).fontFamily;
+}
+var rows = [
+	['pergunta', fam(document.getElementById('q'))],
+	['alternativa', fam(document.querySelector('.ck-feedback__choice-label'))],
+	['nome', fam(document.getElementById('name'))],
+	['email', fam(document.getElementById('email'))],
+	['placeholder', fam(document.getElementById('name'), '::placeholder')],
+	['consentimento', fam(document.querySelector('#consent span'))],
+	['proximo', fam(document.getElementById('next'))],
+	['enviar', fam(document.getElementById('send'))],
+	['erro', fam(document.getElementById('err'))],
+	['nps', fam(document.getElementById('nps'))],
+	['estrela', fam(document.getElementById('star'))],
+	['privacidade', fam(document.getElementById('priv'))]
+];
+document.getElementById('out').textContent = JSON.stringify(rows, null, 2);
+</script>
+</body>
+</html>
