@@ -20,8 +20,20 @@ $step_id    = $question && isset( $question->step_id ) ? (int) $question->step_i
 		<input type="hidden" name="id" value="<?php echo esc_attr( $question ? (string) $question->id : '0' ); ?>">
 		<table class="form-table">
 			<tr>
-				<th><label for="ckf-title"><?php esc_html_e( 'Pergunta', 'casa-kotti-feedback' ); ?></label></th>
+				<th><label for="ckf-title"><?php esc_html_e( 'Título', 'casa-kotti-feedback' ); ?></label></th>
 				<td><input class="large-text" id="ckf-title" name="title" required value="<?php echo esc_attr( $question ? $question->title : '' ); ?>"></td>
+			</tr>
+			<tr>
+				<th><?php esc_html_e( 'Exibir título', 'casa-kotti-feedback' ); ?></th>
+				<td>
+					<input type="hidden" name="show_label" value="0">
+					<label>
+						<input type="checkbox" name="show_label" value="1" <?php checked( CKF_Questions::show_label( $settings ), true ); ?>>
+						<?php esc_html_e( 'Exibir título/label no formulário', 'casa-kotti-feedback' ); ?>
+					</label>
+					<p class="description"><?php esc_html_e( 'Quando desativado, o título não será exibido visualmente no formulário. Use um placeholder ou outra identificação clara para o campo.', 'casa-kotti-feedback' ); ?></p>
+					<p class="description ckf-type-field" data-types="stars,radio,single_choice,multi_choice,scale,yes_no"><?php esc_html_e( 'Neste tipo de campo o título costuma ser a própria pergunta. Ocultá-lo pode prejudicar a compreensão.', 'casa-kotti-feedback' ); ?></p>
+				</td>
 			</tr>
 			<tr>
 				<th><label for="ckf-description"><?php esc_html_e( 'Texto auxiliar', 'casa-kotti-feedback' ); ?></label></th>
