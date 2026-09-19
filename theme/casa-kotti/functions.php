@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CASA_KOTTI_THEME_VERSION', '1.5.6' );
+define( 'CASA_KOTTI_THEME_VERSION', '1.5.7' );
 
 function casa_kotti_setup() {
 	add_theme_support( 'title-tag' );

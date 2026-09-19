@@ -50,6 +50,7 @@
 	--ck-choice-min: 48px;
 	position: relative;
 	z-index: 1;
+	isolation: isolate;
 	width: 100%;
 	max-width: var(--ck-content-width);
 	margin: 0 auto;

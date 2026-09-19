@@ -43,7 +43,7 @@ O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre 
 ## Logo e folhagens
 
 - **Logo integrado:** o símbolo e o lettering originais foram preservados em `assets/images/logo-casa-kotti.png`, com fundo transparente e proporções originais. O painel continua permitindo substituí-lo sem alterar o tema.
-- **Folhagens integradas:** os ramos originais estão em `assets/images/foliage-left.svg` e `assets/images/foliage-right.svg`. Ficam numa camada transparente atrás do conteúdo, sem caixa opaca nem recorte no meio da folha. O balanço continua na base do caule.
+- **Folhagens integradas:** os ramos originais estão em `assets/images/foliage-left.svg` e `assets/images/foliage-right.svg`, renderizados pelo partial `template-parts/foliage.php`. Enquadram o conteúdo pelas laterais (tokens `--ck-foliage-side`, `--ck-foliage-inset`, `--ck-foliage-scale`) e recortam o excesso para o centro respirar. O balanço continua na base do caule.
 
 Para gerar novamente os pacotes:
 
@@ -62,7 +62,7 @@ A prévia estática ilustra a composição sem WordPress, persistência ou compo
 php -S 127.0.0.1:8080 -t .
 ```
 
-Acesse `http://127.0.0.1:8080/preview/`. Ela não substitui o teste do tema/plugin em WordPress.
+Acesse `http://127.0.0.1:8080/preview/` (pré-lançamento), `/preview/page.html` (institucional) e `/preview/feedback.html` (questionário). Elas não substituem o teste do tema/plugin em WordPress.
 
 Capturas da implementação executada em WordPress:
 
