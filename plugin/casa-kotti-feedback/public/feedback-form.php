@@ -55,8 +55,10 @@ $config     = array(
 		<h2 class="ck-feedback__title"><?php echo esc_html( $copy['intro_title'] ); ?></h2>
 		<?php if ( $copy['intro_lead'] ) : ?><p class="ck-feedback__lead"><?php echo esc_html( $copy['intro_lead'] ); ?></p><?php endif; ?>
 		<?php if ( $copy['intro_body'] ) : ?><p class="ck-feedback__helper"><?php echo esc_html( $copy['intro_body'] ); ?></p><?php endif; ?>
-		<?php if ( $copy['intro_note'] ) : ?><p class="ck-feedback__helper"><?php echo esc_html( $copy['intro_note'] ); ?></p><?php endif; ?>
-		<button type="button" class="ck-feedback__btn" data-start><?php echo esc_html( $copy['intro_button'] ); ?></button>
+		<div class="ck-intro-cta">
+			<?php if ( $copy['intro_note'] ) : ?><p class="ck-feedback__helper ck-intro-cta__note"><?php echo esc_html( $copy['intro_note'] ); ?></p><?php endif; ?>
+			<button type="button" class="ck-feedback__btn" data-start><?php echo esc_html( $copy['intro_button'] ); ?></button>
+		</div>
 	</section>
 
 	<form class="ck-feedback__form" data-form hidden novalidate>
