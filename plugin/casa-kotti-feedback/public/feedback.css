@@ -282,6 +282,59 @@
 	width: auto;
 }
 
+.ck-feedback__panel[data-panel="intro"] > *:has(+ .ck-intro-cta) {
+	margin-bottom: 0;
+}
+
+.ck-intro-cta {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	align-self: stretch;
+	margin: 36px 0 0;
+	padding: 0;
+	width: 100%;
+	max-width: 100%;
+	border: 0;
+	background: none;
+	box-shadow: none;
+}
+
+.ck-intro-cta__note,
+.ck-intro-cta .ck-feedback__helper {
+	margin: 0 0 20px;
+}
+
+.ck-intro-cta .ck-feedback__btn {
+	display: inline-flex;
+	width: auto;
+	max-width: 100%;
+	height: 52px;
+	min-height: 52px;
+	margin: 0;
+	padding: 0 32px;
+	flex: 0 0 auto;
+	align-self: flex-start;
+	border-radius: 26px;
+	font-weight: 400;
+	letter-spacing: 0.14em;
+}
+
+.ck-intro-cta .ck-feedback__btn:hover {
+	background: var(--ck-button-primary-bg);
+	opacity: 0.92;
+}
+
+.ck-intro-cta .ck-feedback__btn:active {
+	background: var(--ck-button-primary-bg);
+	opacity: 0.84;
+}
+
+.ck-intro-cta .ck-feedback__btn:focus-visible {
+	outline: 1px solid var(--ck-copper-medium);
+	outline-offset: 3px;
+}
+
 .ck-feedback__step.is-active .ck-feedback__block:last-child {
 	margin-bottom: 0;
 }
