@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>Casa Kotti — Prévia</title>
+	<link rel="stylesheet" href="../theme/casa-kotti/assets/css/main.css">
+</head>
+<body>
+	<div class="ck-page has-motion">
+		<div class="ck-foliage-layer" aria-hidden="true">
+			<div class="ck-foliage ck-foliage--left">
+				<div class="ck-foliage__motion"></div>
+			</div>
+			<div class="ck-foliage ck-foliage--right">
+				<div class="ck-foliage__motion"></div>
+			</div>
+		</div>
+		<main class="ck-main">
+			<div class="ck-brand">
+				<img class="ck-brand-logo" src="../theme/casa-kotti/assets/images/logo-casa-kotti.png" alt="Casa Kotti" width="1237" height="752">
+				<p class="ck-tagline">Perfumaria para ambientes</p>
+			</div>
+			<div class="ck-message">
+				<h1>Em breve, um novo aroma para o seu cotidiano.</h1>
+				<p>Estamos preparando nossa primeira coleção. Deixe seu e-mail para saber quando ela chegar.</p>
+			</div>
+			<div class="ck-interest">
+				<form class="ck-form" onsubmit="return false">
+					<div class="ck-form__row">
+						<label>
+							<span class="ck-form__label">Seu e-mail</span>
+							<input type="email" placeholder="Seu e-mail">
+						</label>
+						<button type="submit">Quero saber do lançamento</button>
+					</div>
+					<label class="ck-form__consent">
+						<input type="checkbox">
+						<span>Quero receber novidades sobre o lançamento da Casa Kotti por e-mail.</span>
+					</label>
+				</form>
+			</div>
+		</main>
+		<footer class="ck-footer">
+			<nav aria-label="Links institucionais">
+				<a href="#">Fale com a Casa Kotti</a>
+				<a href="#">Política de privacidade</a>
+			</nav>
+			<p>&copy; 2026 Casa Kotti</p>
+		</footer>
+	</div>
+	<script>
+		fetch('../theme/casa-kotti/assets/images/foliage-left.svg').then((r) => r.text()).then((svg) => {
+			document.querySelector('.ck-foliage--left .ck-foliage__motion').innerHTML = svg;
+		});
+		fetch('../theme/casa-kotti/assets/images/foliage-right.svg').then((r) => r.text()).then((svg) => {
+			document.querySelector('.ck-foliage--right .ck-foliage__motion').innerHTML = svg;
+		});
+	</script>
+</body>
+</html>
