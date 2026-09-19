@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>identity labels</title>
+<style>
+@font-face { font-family: "Montserrat CK"; src: url("../public/fonts/montserrat-latin.woff2") format("woff2"); font-weight: 100 900; }
+:root { --ck-bg:#252726; --ck-ink:#e5ded1; --ck-muted:#bdb7ac; --ck-line:rgba(229,222,209,.42); --ck-hairline: rgba(229, 222, 209, 0.14); }
+body { margin:0; background:#252726; padding: 24px 12px; }
+</style>
+<link rel="stylesheet" href="../public/feedback.css">
+</head>
+<body>
+<div class="ck-feedback">
+	<div class="ck-feedback__progress">
+		<p class="ck-feedback__counter">05 / 05</p>
+		<div class="ck-feedback__track" aria-hidden="true"><span class="ck-feedback__fill" style="width:100%"></span></div>
+	</div>
+	<fieldset class="ck-feedback__step is-active">
+		<legend class="ck-feedback__question">Quase lá</legend>
+		<p class="ck-feedback__helper">Se quiser, conte para a gente quem você é.</p>
+		<div class="ck-feedback__block" data-field="customer_name">
+			<label class="ck-feedback__question ck-feedback__question--sub ck-feedback__sr" id="ckf-lbl-customer_name" for="ckf-in-customer_name">Nome</label>
+			<label class="ck-feedback__field"><input class="ck-feedback__input" id="ckf-in-customer_name" name="customer_name" placeholder="Nome" aria-labelledby="ckf-lbl-customer_name"></label>
+		</div>
+		<div class="ck-feedback__block" data-field="customer_email">
+			<label class="ck-feedback__question ck-feedback__question--sub ck-feedback__sr" id="ckf-lbl-customer_email" for="ckf-in-customer_email">E-mail</label>
+			<label class="ck-feedback__field"><input class="ck-feedback__input" id="ckf-in-customer_email" type="email" name="customer_email" placeholder="E-mail" aria-labelledby="ckf-lbl-customer_email"></label>
+		</div>
+		<div class="ck-feedback__block" data-field="marketing_consent">
+			<label class="ck-feedback__consent">
+				<input type="checkbox" id="ckf-in-marketing_consent" name="marketing_consent" value="1">
+				<span>Quero receber novidades, lançamentos e conteúdos da Casa Kotti.</span>
+			</label>
+		</div>
+		<p class="ck-feedback__privacy">Ao enviar, você concorda com o tratamento das informações conforme nossa Política de Privacidade.</p>
+	</fieldset>
+	<footer class="ck-feedback__footer">
+		<div class="ck-feedback__nav">
+			<button type="button" class="ck-feedback__btn ck-feedback__btn--outline">Voltar</button>
+			<div class="ck-feedback__nav-end">
+				<button type="submit" class="ck-feedback__btn">Enviar</button>
+			</div>
+		</div>
+	</footer>
+</div>
+</body>
+</html>

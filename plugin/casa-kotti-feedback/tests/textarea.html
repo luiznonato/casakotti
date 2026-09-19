@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>textarea padding</title>
+<style>
+@font-face { font-family: "Montserrat CK"; src: url("../public/fonts/montserrat-latin.woff2") format("woff2"); font-weight: 100 900; }
+:root { --ck-bg:#252726; --ck-ink:#e5ded1; --ck-muted:#bdb7ac; --ck-line:rgba(229,222,209,.42); --ck-hairline: rgba(229, 222, 209, 0.14); --ck-error:#ffd0c8; }
+body { margin:0; background:#252726; padding: 24px 12px; }
+</style>
+<link rel="stylesheet" href="../public/feedback.css">
+</head>
+<body>
+<div class="ck-feedback">
+	<div class="ck-feedback__progress">
+		<p class="ck-feedback__counter">07 / 14</p>
+		<div class="ck-feedback__track" aria-hidden="true"><span class="ck-feedback__fill" style="width:50%"></span></div>
+	</div>
+	<fieldset class="ck-feedback__step is-active">
+		<legend class="ck-feedback__question">Tem alguma coisa que você gostaria que a gente melhorasse?</legend>
+		<div class="ck-feedback__block" data-field="improvement_comment">
+			<label class="ck-feedback__field">
+				<textarea class="ck-feedback__input" id="ckf-in-comment" name="improvement_comment" rows="5" maxlength="4000" placeholder="Conte com calma. Cada detalhe nos ajuda a aperfeiçoar a experiência."></textarea>
+				<span class="ck-feedback__count">0 / 4000</span>
+			</label>
+		</div>
+	</fieldset>
+	<fieldset class="ck-feedback__step is-active" style="margin-top:48px">
+		<legend class="ck-feedback__question">Campo preenchido</legend>
+		<div class="ck-feedback__block">
+			<label class="ck-feedback__field">
+				<textarea class="ck-feedback__input" rows="5" maxlength="4000">A fragrância ficou um pouco intensa no quarto, mas o ritual de receber o produto foi muito especial.</textarea>
+				<span class="ck-feedback__count">108 / 4000</span>
+			</label>
+		</div>
+	</fieldset>
+	<fieldset class="ck-feedback__step is-active" style="margin-top:48px">
+		<legend class="ck-feedback__question">Estado de erro</legend>
+		<div class="ck-feedback__block ck-feedback__field--error">
+			<label class="ck-feedback__field ck-feedback__field--error">
+				<textarea class="ck-feedback__input" rows="5" maxlength="4000" placeholder="Escreva sua resposta"></textarea>
+				<span class="ck-feedback__count">0 / 4000</span>
+			</label>
+			<p class="ck-feedback__error">Este campo é obrigatório.</p>
+		</div>
+	</fieldset>
+	<footer class="ck-feedback__footer">
+		<div class="ck-feedback__nav">
+			<button type="button" class="ck-feedback__btn ck-feedback__btn--outline">Voltar</button>
+			<div class="ck-feedback__nav-end">
+				<button type="button" class="ck-feedback__btn">Continuar</button>
+			</div>
+		</div>
+	</footer>
+</div>
+</body>
+</html>
