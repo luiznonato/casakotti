@@ -51,7 +51,6 @@ $config     = array(
 		</a>
 	</header>
 	<section class="ck-feedback__panel is-active" data-panel="intro">
-		<p class="ck-feedback__kicker"><?php echo esc_html( $ckf_survey->title ); ?></p>
 		<h2 class="ck-feedback__title"><?php echo esc_html( $copy['intro_title'] ); ?></h2>
 		<?php if ( $copy['intro_lead'] ) : ?><p class="ck-feedback__lead"><?php echo esc_html( $copy['intro_lead'] ); ?></p><?php endif; ?>
 		<?php if ( $copy['intro_body'] ) : ?><p class="ck-feedback__helper"><?php echo esc_html( $copy['intro_body'] ); ?></p><?php endif; ?>

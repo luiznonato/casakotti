@@ -13,7 +13,9 @@ get_header();
 		<?php
 		while ( have_posts() ) {
 			the_post();
-			the_title( '<h1>', '</h1>' );
+			if ( ! has_shortcode( (string) get_post()->post_content, 'casa_kotti_feedback' ) ) {
+				the_title( '<h1>', '</h1>' );
+			}
 			the_content();
 		}
 		?>
