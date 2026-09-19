@@ -17,3 +17,16 @@ Cobertura: text (vazio/espaços/máximo), textarea, e-mail (vazio/válido/invál
 ## Preview local
 
 `plugin/casa-kotti-feedback/tests/preview.html` — wizard com 4 páginas (produto, fragrância, avaliação com 2 campos, identificação com 3 campos).
+
+## Preview no Chrome (headless)
+
+`getComputedStyle` em pergunta, alternativa, Nome, E-mail, placeholder, consentimento, Próximo, Enviar, erro, NPS, estrela e privacidade: `"Montserrat CK", Montserrat, sans-serif`.
+
+Wizard (`tests/wizard-run.html`):
+
+- progresso `01 / 04` (páginas)
+- Próximo sem resposta: erro inline, não avança
+- página Avaliação com estrelas + NPS: dois erros ao mesmo tempo
+- Quase lá: Nome + E-mail + aceite juntos
+- e-mail `maria@`: `Digite um e-mail válido.`
+- Voltar preserva estrelas

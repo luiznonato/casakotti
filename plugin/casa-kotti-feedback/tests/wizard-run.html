@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wizard run</title>
+<style>
+@font-face { font-family: "Montserrat CK"; src: url("../../theme/casa-kotti/assets/fonts/montserrat-latin.woff2") format("woff2"); }
+:root { --ck-bg:#252726; --ck-ink:#e5ded1; --ck-muted:#bdb7ac; --ck-line:rgba(229,222,209,.42); --ck-error:#ffd0c8; }
+body { margin:0; background:#252726; }
+</style>
+<link rel="stylesheet" href="../public/feedback.css">
+</head>
+<body>
+<div id="host"></div>
+<pre id="log"></pre>
+<script>
+fetch('preview.html').then(function (r) { return r.text(); }).then(function (html) {
+	var doc = new DOMParser().parseFromString(html, 'text/html');
+	document.getElementById('host').appendChild(doc.querySelector('[data-ck-feedback]'));
+	var s1 = document.createElement('script');
+	s1.textContent = doc.querySelectorAll('script')[0].textContent;
+	document.body.appendChild(s1);
+	return Promise.all([
+		new Promise(function (res, rej) { var s = document.createElement('script'); s.src = '../public/ckf-validate.js'; s.onload = res; s.onerror = rej; document.body.appendChild(s); }),
+	]).then(function () {
+		return new Promise(function (res, rej) { var s = document.createElement('script'); s.src = '../public/feedback.js'; s.onload = res; s.onerror = rej; document.body.appendChild(s); });
+	}).then(run);
+});
+
+function log(msg) {
+	document.getElementById('log').textContent += msg + '\n';
+}
+
+function visibleStep() {
+	return document.querySelector('[data-step]:not([hidden])');
+}
+
+function run() {
+	var results = [];
+	document.querySelector('[data-start]').click();
+	results.push('progress_start=' + document.querySelector('[data-counter]').textContent);
+	document.querySelector('[data-next]').click();
+	results.push('empty_product_error=' + (document.querySelector('[data-field="product"] [data-error]').hidden ? 'no' : document.querySelector('[data-field="product"] [data-error]').textContent));
+	results.push('still_on=' + visibleStep().getAttribute('data-step'));
+	document.querySelector('[name="product"][value="home-spray"]').click();
+	document.querySelector('[data-next]').click();
+	results.push('after_product=' + visibleStep().getAttribute('data-step'));
+	document.querySelector('[name="fragrance"][value="figo"]').click();
+	document.querySelector('[data-next]').click();
+	results.push('multi_page=' + visibleStep().getAttribute('data-step'));
+	results.push('has_stars=' + !!visibleStep().querySelector('[name="overall_rating"]'));
+	results.push('has_nps=' + !!visibleStep().querySelector('[name="nps_score"]'));
+	document.querySelector('[data-next]').click();
+	results.push('stars_err=' + document.querySelector('[data-field="overall_rating"] [data-error]').textContent);
+	results.push('nps_err=' + document.querySelector('[data-field="nps_score"] [data-error]').textContent);
+	results.push('both_errors=' + (!document.querySelector('[data-field="overall_rating"] [data-error]').hidden && !document.querySelector('[data-field="nps_score"] [data-error]').hidden));
+	document.querySelector('[name="overall_rating"][value="5"]').click();
+	document.querySelector('[name="nps_score"][value="10"]').click();
+	document.querySelector('[data-next]').click();
+	results.push('ident=' + visibleStep().getAttribute('data-step'));
+	results.push('name_email_consent=' + (
+		!!visibleStep().querySelector('[name="customer_name"]') &&
+		!!visibleStep().querySelector('[name="customer_email"]') &&
+		!!visibleStep().querySelector('[name="marketing_consent"]')
+	));
+	results.push('progress_final=' + document.querySelector('[data-counter]').textContent);
+	document.querySelector('[name="customer_email"]').value = 'maria@';
+	document.querySelector('[name="customer_email"]').dispatchEvent(new Event('input', { bubbles: true }));
+	document.querySelector('[data-submit]').click();
+	results.push('bad_email=' + document.querySelector('[data-field="customer_email"] [data-error]').textContent);
+	document.querySelector('[name="customer_email"]').value = '';
+	document.querySelector('[name="customer_email"]').dispatchEvent(new Event('input', { bubbles: true }));
+	document.querySelector('[data-back]').click();
+	results.push('back=' + visibleStep().getAttribute('data-step'));
+	results.push('stars_kept=' + document.querySelector('[name="overall_rating"][value="5"]').checked);
+	document.getElementById('log').textContent = results.join('\n');
+}
+</script>
+</body>
+</html>
