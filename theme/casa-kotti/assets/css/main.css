@@ -1,0 +1,521 @@
+:root {
+	--ck-bg: #252726;
+	--ck-ink: #e5ded1;
+	--ck-muted: #bdb7ac;
+	--ck-line: rgba(229, 222, 209, 0.42);
+	--ck-error: #ffd0c8;
+	--ck-copper: #b57a54;
+	--ck-copper-soft: rgba(181, 122, 84, 0.15);
+	--ck-copper-medium: rgba(181, 122, 84, 0.4);
+	--ck-foliage: #e5ded1;
+	--ck-gutter: clamp(1.25rem, 8vw, 5.5rem);
+}
+
+@font-face {
+	font-family: "Montserrat CK";
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url("../fonts/montserrat-latin.woff2") format("woff2");
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	background: var(--ck-bg);
+	overflow-x: hidden;
+}
+
+body {
+	margin: 0;
+	min-height: 100svh;
+	min-height: 100dvh;
+	background: var(--ck-bg);
+	color: var(--ck-ink);
+	font-family: "Montserrat CK", Montserrat, "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.6;
+	overflow-x: hidden;
+}
+
+a {
+	color: inherit;
+	text-underline-offset: 0.24em;
+	text-decoration-thickness: 1px;
+}
+
+a:hover {
+	text-decoration-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+	outline: 2px solid var(--ck-ink);
+	outline-offset: 4px;
+}
+
+.ck-page {
+	position: relative;
+	z-index: 0;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-height: 100svh;
+	min-height: 100dvh;
+	background: transparent;
+}
+
+.ck-foliage-layer {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	overflow: visible;
+	background: transparent;
+	pointer-events: none;
+}
+
+.ck-foliage,
+.ck-foliage__motion,
+.ck-foliage-art {
+	overflow: visible;
+	background: transparent;
+}
+
+.ck-foliage {
+	position: absolute;
+	top: 40%;
+	bottom: 0;
+	width: auto;
+	color: #e5ded1;
+}
+
+.ck-foliage--left {
+	left: 0;
+}
+
+.ck-foliage--right {
+	right: 0;
+}
+
+.ck-foliage__motion {
+	height: 100%;
+	width: auto;
+	aspect-ratio: 27.2 / 41.8;
+	transform-origin: 18% 100%;
+}
+
+.ck-foliage--left .ck-foliage__motion {
+	translate: -12% 0;
+}
+
+.ck-foliage--right .ck-foliage__motion {
+	margin-left: auto;
+	aspect-ratio: 24.8 / 41.8;
+	translate: 12% 0;
+	transform-origin: 82% 100%;
+}
+
+.ck-foliage-art {
+	display: block;
+	height: 100%;
+	width: auto;
+	max-width: none;
+}
+
+.ck-main,
+.ck-footer,
+.ck-brand,
+.ck-message,
+.ck-interest,
+.ck-form {
+	background: transparent;
+}
+
+.ck-main,
+.ck-footer {
+	position: relative;
+	z-index: 1;
+}
+
+.ck-main {
+	display: flex;
+	width: min(100%, 36rem);
+	margin: 0 auto;
+	flex: 1 1 auto;
+	padding:
+		max(2.5rem, env(safe-area-inset-top))
+		max(1.25rem, env(safe-area-inset-right))
+		1.5rem
+		max(1.25rem, env(safe-area-inset-left));
+	text-align: center;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.ck-brand {
+	margin-bottom: 1.5rem;
+}
+
+.custom-logo-link {
+	display: inline-block;
+}
+
+.custom-logo,
+.ck-brand-logo {
+	display: block;
+	width: min(42vw, 280px);
+	height: auto;
+	margin: 0 auto;
+	object-fit: contain;
+}
+
+.ck-tagline {
+	margin: 0.7rem 0 0;
+	color: var(--ck-muted);
+	font-size: 0.72rem;
+	font-weight: 500;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+}
+
+.ck-message h1 {
+	max-width: 22em;
+	margin: 0 auto;
+	font-size: clamp(1.35rem, 2.4vw, 2.2rem);
+	font-weight: 400;
+	line-height: 1.28;
+	letter-spacing: 0.045em;
+	text-transform: uppercase;
+	text-wrap: balance;
+}
+
+.ck-message > p {
+	max-width: 34em;
+	margin: 1rem auto 0;
+	color: var(--ck-muted);
+	font-size: 0.95rem;
+	line-height: 1.55;
+	text-wrap: pretty;
+}
+
+.ck-interest {
+	width: 100%;
+	max-width: 36rem;
+	margin-top: 1.6rem;
+}
+
+.ck-form {
+	text-align: left;
+}
+
+.ck-form__row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 12px;
+}
+
+.ck-form label {
+	display: block;
+}
+
+.ck-form__label {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.ck-form input[type="email"] {
+	width: 100%;
+	min-height: 48px;
+	border: 1px solid var(--ck-line);
+	border-radius: 0;
+	background: transparent;
+	color: var(--ck-ink);
+	padding: 12px 16px;
+	font: inherit;
+}
+
+.ck-form input[type="email"]::placeholder {
+	color: var(--ck-muted);
+	opacity: 1;
+}
+
+.ck-form button,
+.ck-contact-fallback {
+	display: inline-flex;
+	min-height: 48px;
+	border: 1px solid var(--ck-ink);
+	border-radius: 0;
+	align-items: center;
+	justify-content: center;
+	background: var(--ck-ink);
+	color: var(--ck-bg);
+	padding: 12px 20px;
+	font: inherit;
+	font-size: 0.78rem;
+	font-weight: 500;
+	letter-spacing: 0.055em;
+	text-decoration: none;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background-color 180ms ease, color 180ms ease;
+}
+
+.ck-form button:hover,
+.ck-contact-fallback:hover {
+	background: transparent;
+	color: var(--ck-ink);
+}
+
+.ck-form button[disabled] {
+	cursor: wait;
+	opacity: 0.7;
+}
+
+.ck-form__consent {
+	display: grid !important;
+	margin-top: 14px;
+	color: var(--ck-muted);
+	font-size: 0.76rem;
+	line-height: 1.45;
+	grid-template-columns: 18px 1fr;
+	gap: 10px;
+	align-items: start;
+}
+
+.ck-form__consent input {
+	width: 18px;
+	height: 18px;
+	margin: 2px 0 0;
+	accent-color: var(--ck-ink);
+}
+
+.ck-form__status {
+	min-height: 1.5em;
+	margin: 14px 0 0;
+	font-size: 0.82rem;
+	text-align: center;
+}
+
+.ck-form__status[data-state="error"] {
+	color: var(--ck-error);
+}
+
+.ck-honeypot {
+	position: absolute !important;
+	left: -10000px !important;
+	width: 1px !important;
+	height: 1px !important;
+	overflow: hidden !important;
+}
+
+.ck-footer {
+	display: flex;
+	width: 100%;
+	max-width: 40rem;
+	margin: 0 auto;
+	padding:
+		0
+		max(1.25rem, env(safe-area-inset-right))
+		max(1.25rem, env(safe-area-inset-bottom))
+		max(1.25rem, env(safe-area-inset-left));
+	color: var(--ck-muted);
+	font-size: 0.72rem;
+	line-height: 1.4;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 16px 24px;
+}
+
+.ck-footer nav {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 8px 20px;
+}
+
+.ck-footer p {
+	margin: 0;
+	white-space: nowrap;
+}
+
+.ck-content {
+	position: relative;
+	z-index: 1;
+	width: min(100% - 40px, 720px);
+	margin: 0 auto;
+	padding:
+		max(2.5rem, env(safe-area-inset-top))
+		max(1.25rem, env(safe-area-inset-right))
+		max(2.5rem, env(safe-area-inset-bottom))
+		max(1.25rem, env(safe-area-inset-left));
+	background: transparent;
+}
+
+.ck-content > h1 {
+	margin: 0 0 1.5rem;
+	font-size: clamp(1.28rem, 2.4vw, 2rem);
+	font-weight: 400;
+	line-height: 1.28;
+	letter-spacing: 0.045em;
+	text-transform: uppercase;
+	text-align: center;
+	text-wrap: balance;
+}
+
+@media (max-width: 700px) {
+	:root {
+		--ck-gutter: 1.15rem;
+	}
+
+	.ck-main {
+		width: 100%;
+	}
+
+	.ck-brand {
+		margin-bottom: 1.15rem;
+	}
+
+	.custom-logo,
+	.ck-brand-logo {
+		width: min(58vw, 198px);
+	}
+
+	.ck-tagline {
+		margin-top: 0.45rem;
+		font-size: 0.62rem;
+		letter-spacing: 0.16em;
+	}
+
+	.ck-message h1 {
+		font-size: 1.28rem;
+		line-height: 1.26;
+		letter-spacing: 0.04em;
+	}
+
+	.ck-message > p {
+		margin-top: 0.75rem;
+		font-size: 0.9rem;
+	}
+
+	.ck-interest {
+		margin-top: 1.2rem;
+	}
+
+	.ck-form__row {
+		grid-template-columns: 1fr;
+	}
+
+	.ck-form button,
+	.ck-contact-fallback {
+		width: 100%;
+		min-height: 48px;
+	}
+
+	.ck-form input[type="email"] {
+		min-height: 48px;
+	}
+
+	.ck-footer {
+		flex-wrap: wrap;
+		font-size: 0.68rem;
+		gap: 8px 16px;
+	}
+}
+
+@media (min-width: 701px) {
+	.custom-logo,
+	.ck-brand-logo {
+		width: min(34vw, 280px);
+	}
+
+	.ck-foliage {
+		top: 30%;
+		bottom: 0;
+		width: auto;
+	}
+
+	.ck-foliage--left .ck-foliage__motion {
+		translate: -20% 0;
+	}
+
+	.ck-foliage--right .ck-foliage__motion {
+		translate: 20% 0;
+	}
+}
+
+@media (min-width: 1200px) {
+	.ck-foliage {
+		top: 26%;
+	}
+}
+
+.has-motion .ck-foliage--left .ck-foliage__motion {
+	animation: ck-breeze-left 8.4s ease-in-out -1.4s infinite;
+}
+
+.has-motion .ck-foliage--right .ck-foliage__motion {
+	animation: ck-breeze-right 10.2s ease-in-out -3.8s infinite;
+}
+
+.has-motion .ck-foliage--left .ck-branch {
+	animation: ck-leaf-left 6.2s ease-in-out -0.8s infinite;
+	transform-box: fill-box;
+	transform-origin: 20% 100%;
+}
+
+.has-motion .ck-foliage--right .ck-branch {
+	animation: ck-leaf-right 7.4s ease-in-out -2.2s infinite;
+	transform-box: fill-box;
+	transform-origin: 80% 100%;
+}
+
+@keyframes ck-breeze-left {
+	0% { transform: rotate(-1.6deg) translate3d(0, 0, 0); }
+	35% { transform: rotate(1.8deg) translate3d(8px, -3px, 0); }
+	65% { transform: rotate(-0.8deg) translate3d(-4px, 2px, 0); }
+	100% { transform: rotate(-1.6deg) translate3d(0, 0, 0); }
+}
+
+@keyframes ck-breeze-right {
+	0% { transform: rotate(1.5deg) translate3d(0, 0, 0); }
+	40% { transform: rotate(-1.9deg) translate3d(-8px, -2px, 0); }
+	70% { transform: rotate(0.7deg) translate3d(4px, 2px, 0); }
+	100% { transform: rotate(1.5deg) translate3d(0, 0, 0); }
+}
+
+@keyframes ck-leaf-left {
+	0%, 100% { transform: rotate(0deg); }
+	45% { transform: rotate(2.4deg); }
+}
+
+@keyframes ck-leaf-right {
+	0%, 100% { transform: rotate(0deg); }
+	50% { transform: rotate(-2.2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.has-motion .ck-foliage__motion,
+	.has-motion .ck-branch {
+		animation: none !important;
+		transform: none !important;
+	}
+
+	* {
+		scroll-behavior: auto !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}

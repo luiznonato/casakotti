@@ -1,0 +1,87 @@
+.ckf-admin .ckf-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+	gap: 12px;
+	margin: 16px 0 24px;
+}
+
+.ckf-admin .ckf-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	padding: 16px 18px;
+}
+
+.ckf-admin .ckf-card p {
+	margin: 0 0 6px;
+	color: #646970;
+	font-size: 11px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.ckf-admin .ckf-card strong {
+	font-size: 28px;
+	font-weight: 500;
+}
+
+.ckf-admin .ckf-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px 16px;
+	align-items: flex-end;
+	margin: 20px 0;
+}
+
+.ckf-admin .ckf-filters label {
+	display: grid;
+	gap: 4px;
+	font-size: 12px;
+}
+
+.ckf-admin .ckf-frag-form {
+	max-width: 640px;
+	margin-bottom: 28px;
+}
+
+.ckf-admin .ckf-preview-frame {
+	margin-top: 24px;
+	max-width: 560px;
+	padding: 28px 4px;
+	background: #252726;
+}
+
+.ckf-admin .ckf-question-form {
+	max-width: 880px;
+}
+
+.ckf-admin .ckf-page-card {
+	max-width: 920px;
+	margin: 20px 0;
+	padding: 16px 18px;
+	border: 1px solid #dcdcde;
+	background: #fff;
+}
+
+.ckf-admin .ckf-page-card h2 {
+	margin: 4px 0 8px;
+}
+
+.ckf-admin .ckf-q-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ckf-admin .ckf-q-list li {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 0;
+	border-top: 1px solid #f0f0f1;
+}
+
+.ckf-admin .ckf-move,
+.ckf-admin .ckf-step-form label {
+	margin-right: 12px;
+}

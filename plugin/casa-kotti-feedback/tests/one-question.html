@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>one question</title>
+<style>
+@font-face { font-family: "Montserrat CK"; src: url("../public/fonts/montserrat-latin.woff2") format("woff2"); font-weight: 100 900; }
+:root { --ck-bg:#252726; --ck-ink:#e5ded1; --ck-muted:#bdb7ac; --ck-line:rgba(229,222,209,.42); --ck-hairline: rgba(229, 222, 209, 0.18); }
+body { margin:0; background:#252726; padding: 24px 12px; }
+</style>
+<link rel="stylesheet" href="../public/feedback.css">
+</head>
+<body>
+<div class="ck-feedback">
+	<div class="ck-feedback__progress">
+		<p class="ck-feedback__counter">02 / 14</p>
+		<div class="ck-feedback__track" aria-hidden="true"><span class="ck-feedback__fill" style="width:14%"></span></div>
+	</div>
+	<fieldset class="ck-feedback__step is-active">
+		<legend class="ck-feedback__question">Qual produto você experimentou?</legend>
+		<div class="ck-feedback__block" data-field="product">
+			<div class="ck-feedback__choices">
+				<label class="ck-feedback__choice"><input type="radio" name="product" value="home-spray" checked><span class="ck-feedback__choice-mark"></span><span class="ck-feedback__choice-label">Home Spray</span></label>
+				<label class="ck-feedback__choice"><input type="radio" name="product" value="difusor"><span class="ck-feedback__choice-mark"></span><span class="ck-feedback__choice-label">Difusor</span></label>
+				<label class="ck-feedback__choice"><input type="radio" name="product" value="automotivo"><span class="ck-feedback__choice-mark"></span><span class="ck-feedback__choice-label">Automotivo</span></label>
+			</div>
+		</div>
+	</fieldset>
+	<fieldset class="ck-feedback__step" hidden>
+		<legend class="ck-feedback__question">Esta página não deve aparecer</legend>
+	</fieldset>
+	<footer class="ck-feedback__footer">
+		<div class="ck-feedback__nav">
+			<button type="button" class="ck-feedback__btn ck-feedback__btn--ghost">Voltar</button>
+			<div class="ck-feedback__nav-end">
+				<button type="button" class="ck-feedback__btn">Continuar</button>
+			</div>
+		</div>
+	</footer>
+</div>
+</body>
+</html>
