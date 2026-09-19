@@ -259,7 +259,12 @@ class CKF_Renderer {
 		}
 		$min_label = isset( $settings['min_label'] ) ? $settings['min_label'] : '';
 		$max_label = isset( $settings['max_label'] ) ? $settings['max_label'] : '';
-		echo '<div class="ck-feedback__scale" role="radiogroup" aria-labelledby="ckf-lbl-' . esc_attr( $slug ) . '"' . self::described( $error ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$count = ( $max - $min ) + 1;
+		if ( $count < 1 ) {
+			$count = 1;
+		}
+		echo '<div class="ck-feedback__scale-wrap">';
+		echo '<div class="ck-feedback__scale" role="radiogroup" aria-labelledby="ckf-lbl-' . esc_attr( $slug ) . '" data-count="' . esc_attr( (string) $count ) . '" style="--ck-scale-count:' . esc_attr( (string) $count ) . '"' . self::described( $error ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		for ( $i = $min; $i <= $max; $i++ ) {
 			echo '<label class="ck-feedback__scale-item">';
 			echo '<input type="radio" name="' . esc_attr( $slug ) . '" value="' . esc_attr( (string) $i ) . '">';
@@ -270,6 +275,7 @@ class CKF_Renderer {
 		if ( $min_label || $max_label ) {
 			echo '<p class="ck-feedback__hint"><span>' . esc_html( $min_label ) . '</span><span>' . esc_html( $max_label ) . '</span></p>';
 		}
+		echo '</div>';
 	}
 
 	private static function select( $slug, $options, $error, $settings = array() ) {

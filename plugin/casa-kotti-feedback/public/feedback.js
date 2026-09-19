@@ -31,6 +31,18 @@
 		}
 	}
 
+	function sizeScales(scope) {
+		var rootEl = scope || document;
+		rootEl.querySelectorAll('.ck-feedback__scale').forEach(function (scale) {
+			var count = scale.querySelectorAll('.ck-feedback__scale-item').length;
+			if (!count) {
+				return;
+			}
+			scale.style.setProperty('--ck-scale-count', String(count));
+			scale.setAttribute('data-count', String(count));
+		});
+	}
+
 	function boot(root, cfg) {
 	if (!root || !cfg) {
 		return;
@@ -672,9 +684,11 @@
 	applyPrefill();
 	syncAnswersFromDom();
 	state.visibleSteps = visibleSteps();
+	sizeScales(root);
 	}
 
 	document.querySelectorAll('[data-ck-feedback]').forEach(function (root) {
 		boot(root, mergeConfig(root));
 	});
+	sizeScales(document);
 }());
