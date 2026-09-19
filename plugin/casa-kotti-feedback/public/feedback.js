@@ -45,6 +45,7 @@
 	var counter = root.querySelector('[data-counter]');
 	var fill = root.querySelector('[data-fill]');
 	var nav = root.querySelector('[data-nav]');
+	var footer = root.querySelector('[data-footer]');
 	var nextBtn = root.querySelector('[data-next]');
 	var backBtn = root.querySelector('[data-back]');
 	var submitBtn = root.querySelector('[data-submit]');
@@ -370,6 +371,9 @@
 		nav.classList.toggle('is-last', last);
 		progress.hidden = false;
 		nav.hidden = false;
+		if (footer) {
+			footer.hidden = false;
+		}
 		counter.textContent = pad(state.currentStep + 1) + ' / ' + pad(state.visibleSteps.length || 1);
 		fill.style.width = state.visibleSteps.length ? ((state.currentStep + 1) / state.visibleSteps.length) * 100 + '%' : '0';
 		var first = form.querySelector('[data-step]:not([hidden]) input:not([type="hidden"]):not([tabindex="-1"]), [data-step]:not([hidden]) textarea, [data-step]:not([hidden]) select');
