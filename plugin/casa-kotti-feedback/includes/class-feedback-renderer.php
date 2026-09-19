@@ -31,12 +31,7 @@ class CKF_Renderer {
 		if ( $show_privacy && ! empty( $copy['privacy_note'] ) ) {
 			$privacy_id  = absint( get_option( 'wp_page_for_privacy_policy', 0 ) );
 			$privacy_url = $privacy_id && function_exists( 'get_post_status' ) && 'publish' === get_post_status( $privacy_id ) ? get_permalink( $privacy_id ) : '';
-			echo '<p class="ck-feedback__privacy">';
-			echo esc_html( $copy['privacy_note'] );
-			if ( $privacy_url ) {
-				echo ' <a href="' . esc_url( $privacy_url ) . '">' . esc_html__( 'Política de Privacidade', 'casa-kotti-feedback' ) . '</a>';
-			}
-			echo '</p>';
+			echo '<p class="ck-feedback__privacy">' . self::privacy_note_html( $copy['privacy_note'], $privacy_url ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 		echo '</fieldset>';
 		return ob_get_clean();
@@ -310,5 +305,28 @@ class CKF_Renderer {
 			echo '</label>';
 		}
 		echo '</div>';
+	}
+
+	/**
+	 * Turn “Política de Privacidade” inside the note into the privacy-page link.
+	 *
+	 * @param string $note Privacy copy.
+	 * @param string $url  Privacy policy URL, if published.
+	 * @return string Escaped HTML.
+	 */
+	public static function privacy_note_html( $note, $url = '' ) {
+		$safe = esc_html( $note );
+		if ( ! $url ) {
+			return $safe;
+		}
+		$replaced = preg_replace_callback(
+			'/Pol[ií]tica de Privacidade/iu',
+			static function ( $matches ) use ( $url ) {
+				return '<a href="' . esc_url( $url ) . '">' . $matches[0] . '</a>';
+			},
+			$safe,
+			1
+		);
+		return is_string( $replaced ) ? $replaced : $safe;
 	}
 }

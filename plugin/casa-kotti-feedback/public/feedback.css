@@ -650,6 +650,13 @@
 	margin: 0 0 1rem;
 	color: var(--ck-muted, #bdb7ac);
 	font-size: 0.72rem;
+	line-height: 1.45;
+}
+
+.ck-feedback__privacy a {
+	color: inherit;
+	text-underline-offset: 0.2em;
+	text-decoration-thickness: 1px;
 }
 
 .ck-feedback__nav {
