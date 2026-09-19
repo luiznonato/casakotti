@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CASA_KOTTI_THEME_VERSION', '1.5.9' );
+define( 'CASA_KOTTI_THEME_VERSION', '1.5.10' );
 
 function casa_kotti_setup() {
 	add_theme_support( 'title-tag' );
@@ -32,6 +32,14 @@ function casa_kotti_enqueue_assets() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'casa_kotti_enqueue_assets' );
+
+function casa_kotti_body_class( $classes ) {
+	if ( is_front_page() ) {
+		$classes[] = 'ck-screen';
+	}
+	return $classes;
+}
+add_filter( 'body_class', 'casa_kotti_body_class' );
 
 /**
  * Compact header logo used on inner pages.

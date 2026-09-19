@@ -66,6 +66,22 @@
 	box-sizing: border-box;
 }
 
+.ck-feedback-page .ck-feedback {
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+	max-width: 100%;
+}
+
+.ck-feedback__form:not([hidden]) {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
 .ck-feedback__brand {
 	display: flex;
 	justify-content: center;
@@ -245,8 +261,23 @@
 
 .ck-feedback__panel.is-active,
 .ck-feedback__step.is-active {
-	display: block;
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: auto;
+	scrollbar-width: none;
 	animation: ck-feedback-in 320ms ease;
+}
+
+.ck-feedback__panel.is-active::-webkit-scrollbar,
+.ck-feedback__step.is-active::-webkit-scrollbar {
+	display: none;
+}
+
+.ck-feedback__panel.is-active > .ck-feedback__btn,
+.ck-feedback__panel.is-active > .ck-feedback__btn[data-start] {
+	margin-top: auto;
 }
 
 .ck-feedback__step.is-active .ck-feedback__block:last-child {
@@ -254,13 +285,16 @@
 }
 
 .ck-feedback__footer {
-	margin-top: var(--ck-space-6);
+	margin-top: auto;
+	padding-top: var(--ck-space-3);
 	width: 100%;
+	flex-shrink: 0;
 }
 
 .ck-feedback__progress {
-	margin: 0 0 var(--ck-space-5);
+	margin: 0 0 var(--ck-space-4);
 	width: 100%;
+	flex-shrink: 0;
 }
 
 .ck-feedback__counter {
@@ -799,6 +833,56 @@
 @keyframes ck-feedback-in {
 	from { opacity: 0; transform: translateY(8px); }
 	to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 700px) {
+	.ck-feedback,
+	.kotti-questionnaire {
+		--ck-space-2: clamp(4px, 1vh, 8px);
+		--ck-space-3: clamp(8px, 1.8vh, 16px);
+		--ck-space-4: clamp(10px, 2.4vh, 24px);
+		--ck-space-5: clamp(12px, 3vh, 32px);
+		--ck-space-6: clamp(12px, 3.5vh, 48px);
+		--ck-choice-min: clamp(40px, 6.4vh, 48px);
+		--ck-btn-height: 44px;
+	}
+
+	.ck-feedback__brand {
+		margin: 0 0 var(--ck-space-3);
+		flex-shrink: 0;
+	}
+
+	.ck-feedback__logo img {
+		width: min(34vw, 7.25rem);
+	}
+
+	.ck-feedback__title,
+	.ck-feedback__question,
+	.ck-feedback__step > .ck-feedback__question,
+	.ck-feedback__step > legend.ck-feedback__question {
+		font-size: clamp(1.2rem, 4.8vw, 1.55rem);
+		margin-bottom: var(--ck-space-3);
+	}
+
+	.ck-feedback__lead,
+	.ck-feedback__helper {
+		margin-bottom: 0.65rem;
+		font-size: 0.9rem;
+		line-height: 1.45;
+	}
+
+	.ck-feedback__choice {
+		padding: clamp(8px, 1.4vh, 16px) 0;
+	}
+
+	.ck-feedback__scale-item {
+		min-height: clamp(40px, 6.5vh, 44px);
+	}
+
+	.ck-feedback__grid {
+		flex: 1 1 auto;
+		min-height: 0;
+	}
 }
 
 @media (max-width: 430px) {

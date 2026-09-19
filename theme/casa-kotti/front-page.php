@@ -15,7 +15,7 @@ $has_form      = casa_kotti_setting( 'form_enabled', true )
 	&& casa_kotti_has_valid_privacy_page()
 	&& function_exists( 'casa_kotti_render_interest_form' );
 ?>
-<div class="ck-page">
+<div class="ck-page ck-page--screen">
 	<main class="ck-main" id="conteudo">
 		<div class="ck-brand">
 			<?php if ( has_custom_logo() ) : ?>
