@@ -94,7 +94,7 @@ $config     = array(
 		<input type="hidden" name="survey_id" value="<?php echo esc_attr( (string) (int) $ckf_survey->id ); ?>">
 		<footer class="ck-feedback__footer" data-footer hidden>
 			<div class="ck-feedback__nav" data-nav>
-				<button type="button" class="ck-feedback__btn ck-feedback__btn--ghost" data-back><?php esc_html_e( 'Voltar', 'casa-kotti-feedback' ); ?></button>
+				<button type="button" class="ck-feedback__btn ck-feedback__btn--outline" data-back><?php esc_html_e( 'Voltar', 'casa-kotti-feedback' ); ?></button>
 				<div class="ck-feedback__nav-end">
 					<button type="button" class="ck-feedback__btn" data-next><?php esc_html_e( 'Continuar', 'casa-kotti-feedback' ); ?></button>
 					<button type="submit" class="ck-feedback__btn" data-submit hidden><?php esc_html_e( 'Enviar', 'casa-kotti-feedback' ); ?></button>
