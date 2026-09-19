@@ -8,13 +8,12 @@
 	--ck-copper-soft: rgba(181, 122, 84, 0.15);
 	--ck-copper-medium: rgba(181, 122, 84, 0.4);
 	--ck-foliage: #e5ded1;
-	--ck-foliage-opacity: 0.22;
-	--ck-foliage-side: clamp(3.35rem, 16vw, 11.5rem);
-	--ck-foliage-inset: max(1.15rem, calc(var(--ck-foliage-side) * 0.86));
-	--ck-foliage-top: 44%;
-	--ck-foliage-height: 56%;
-	--ck-foliage-shift: -46%;
-	--ck-foliage-scale: 0.84;
+	--ck-foliage-opacity: 0.2;
+	--ck-foliage-side: clamp(4.4rem, 22vw, 8.5rem);
+	--ck-foliage-inset: max(1.15rem, calc(var(--ck-foliage-side) * 0.72));
+	--ck-foliage-top: 34%;
+	--ck-foliage-shift: -24%;
+	--ck-foliage-scale: 0.9;
 	--ck-gutter: var(--ck-foliage-inset);
 }
 
@@ -112,14 +111,14 @@ input:focus-visible {
 
 .ck-foliage__motion {
 	display: flex;
-	height: var(--ck-foliage-height);
+	height: 100%;
 	width: auto;
-	max-width: 160%;
+	max-width: 175%;
 	margin-top: auto;
 	aspect-ratio: 27.2 / 41.8;
 	align-items: flex-end;
 	transform-origin: 14% 100%;
-	translate: var(--ck-foliage-shift) 6%;
+	translate: var(--ck-foliage-shift) 0;
 	scale: var(--ck-foliage-scale);
 }
 
@@ -127,7 +126,7 @@ input:focus-visible {
 	margin-left: auto;
 	aspect-ratio: 24.8 / 41.8;
 	transform-origin: 86% 100%;
-	translate: calc(var(--ck-foliage-shift) * -1) 6%;
+	translate: calc(var(--ck-foliage-shift) * -1) 0;
 }
 
 .ck-foliage-art {
@@ -160,9 +159,9 @@ input:focus-visible {
 	flex: 1 1 auto;
 	padding:
 		max(2.5rem, env(safe-area-inset-top))
-		max(var(--ck-foliage-inset), env(safe-area-inset-right))
+		max(1.25rem, env(safe-area-inset-right))
 		1.5rem
-		max(var(--ck-foliage-inset), env(safe-area-inset-left));
+		max(1.25rem, env(safe-area-inset-left));
 	text-align: center;
 	flex-direction: column;
 	align-items: center;
@@ -365,13 +364,13 @@ input:focus-visible {
 .ck-content {
 	position: relative;
 	z-index: 1;
-	width: min(100%, 720px);
+	width: min(100% - 40px, 720px);
 	margin: 0 auto;
 	padding:
 		max(2.5rem, env(safe-area-inset-top))
-		max(var(--ck-foliage-inset), env(safe-area-inset-right))
+		max(1.25rem, env(safe-area-inset-right))
 		max(2.5rem, env(safe-area-inset-bottom))
-		max(var(--ck-foliage-inset), env(safe-area-inset-left));
+		max(1.25rem, env(safe-area-inset-left));
 	background: transparent;
 }
 
@@ -388,36 +387,42 @@ input:focus-visible {
 
 @media (max-width: 374px) {
 	:root {
-		--ck-foliage-side: clamp(3.1rem, 18vw, 4.75rem);
-		--ck-foliage-top: 48%;
-		--ck-foliage-height: 52%;
-		--ck-foliage-shift: -52%;
-		--ck-foliage-scale: 0.78;
-		--ck-foliage-opacity: 0.2;
+		--ck-foliage-side: clamp(4.1rem, 24vw, 5.5rem);
+		--ck-foliage-top: 38%;
+		--ck-foliage-shift: -28%;
+		--ck-foliage-scale: 0.86;
+		--ck-foliage-opacity: 0.18;
 	}
 }
 
 @media (min-width: 375px) and (max-width: 429px) {
 	:root {
-		--ck-foliage-side: clamp(3.4rem, 16.5vw, 5.25rem);
-		--ck-foliage-shift: -48%;
-		--ck-foliage-scale: 0.82;
+		--ck-foliage-side: clamp(4.5rem, 21vw, 6.25rem);
+		--ck-foliage-shift: -22%;
+		--ck-foliage-scale: 0.9;
 	}
 }
 
 @media (min-width: 430px) and (max-width: 767px) {
 	:root {
-		--ck-foliage-side: clamp(3.75rem, 15vw, 6.5rem);
-		--ck-foliage-top: 42%;
-		--ck-foliage-height: 58%;
-		--ck-foliage-shift: -42%;
-		--ck-foliage-scale: 0.88;
+		--ck-foliage-side: clamp(5rem, 18vw, 7.5rem);
+		--ck-foliage-top: 30%;
+		--ck-foliage-shift: -18%;
+		--ck-foliage-scale: 0.94;
+		--ck-foliage-opacity: 0.21;
 	}
 }
 
 @media (max-width: 700px) {
 	.ck-main {
 		width: 100%;
+		padding-right: max(1.35rem, calc(var(--ck-foliage-side) * 0.42), env(safe-area-inset-right));
+		padding-left: max(1.35rem, calc(var(--ck-foliage-side) * 0.42), env(safe-area-inset-left));
+	}
+
+	.ck-content {
+		padding-right: max(1.35rem, calc(var(--ck-foliage-side) * 0.42), env(safe-area-inset-right));
+		padding-left: max(1.35rem, calc(var(--ck-foliage-side) * 0.42), env(safe-area-inset-left));
 	}
 
 	.ck-brand {
@@ -480,21 +485,19 @@ input:focus-visible {
 
 @media (min-width: 768px) {
 	:root {
-		--ck-foliage-side: clamp(5.75rem, 17vw, 12.25rem);
-		--ck-foliage-top: 30%;
-		--ck-foliage-height: 70%;
-		--ck-foliage-shift: -30%;
-		--ck-foliage-scale: 0.98;
+		--ck-foliage-side: clamp(6.25rem, 18vw, 12.5rem);
+		--ck-foliage-top: 22%;
+		--ck-foliage-shift: -16%;
+		--ck-foliage-scale: 1;
 		--ck-foliage-opacity: 0.23;
 	}
 }
 
 @media (min-width: 1200px) {
 	:root {
-		--ck-foliage-side: min(13.5rem, 20vw);
-		--ck-foliage-top: 24%;
-		--ck-foliage-height: 76%;
-		--ck-foliage-shift: -22%;
+		--ck-foliage-side: min(14rem, 21vw);
+		--ck-foliage-top: 16%;
+		--ck-foliage-shift: -12%;
 		--ck-foliage-scale: 1;
 		--ck-foliage-opacity: 0.24;
 	}
