@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CASA_KOTTI_THEME_VERSION', '1.5.16' );
+define( 'CASA_KOTTI_THEME_VERSION', '1.5.17' );
 define( 'CASA_KOTTI_META_PIXEL_ID', '2121663005134221' );
 
 function casa_kotti_setup() {
@@ -205,6 +205,12 @@ function casa_kotti_has_valid_privacy_page() {
 	return $theme_page > 0
 		&& $theme_page === $core_page
 		&& 'publish' === get_post_status( $theme_page );
+}
+
+function casa_kotti_headline_html( $text ) {
+	$escaped = esc_html( (string) $text );
+	$marked  = preg_replace( '/\bnovo\b/iu', '<span class="ck-accent">$0</span>', $escaped, 1 );
+	return $marked ? $marked : $escaped;
 }
 
 function casa_kotti_meta_description() {

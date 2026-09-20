@@ -28,7 +28,7 @@ $has_form      = casa_kotti_setting( 'form_enabled', true )
 		</div>
 
 		<div class="ck-message">
-			<h1><?php echo esc_html( casa_kotti_setting( 'headline', 'Algo novo está prestes a ocupar o ar.' ) ); ?></h1>
+			<h1><?php echo casa_kotti_headline_html( casa_kotti_setting( 'headline', 'Algo novo está prestes a ocupar o ar.' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in casa_kotti_headline_html. ?></h1>
 			<p><?php echo nl2br( esc_html( casa_kotti_setting( 'support_text', "A primeira coleção Casa Kotti está chegando.\nCadastre-se para ser um dos primeiros a conhecer" ) ), false ); ?></p>
 		</div>
 
