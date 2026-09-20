@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CASA_KOTTI_THEME_VERSION', '1.5.13' );
+define( 'CASA_KOTTI_THEME_VERSION', '1.5.14' );
 define( 'CASA_KOTTI_META_PIXEL_ID', '2121663005134221' );
 
 function casa_kotti_setup() {
@@ -108,11 +108,11 @@ function casa_kotti_customize_register( $wp_customize ) {
 
 	$text_settings = array(
 		'tagline'             => array( 'Complemento da marca', 'Perfumaria para ambientes', 'sanitize_text_field' ),
-		'headline'            => array( 'Título principal', 'Em breve, um novo aroma para o seu cotidiano.', 'sanitize_text_field' ),
-		'support_text'        => array( 'Texto de apoio', 'Estamos preparando nossa primeira coleção. Deixe seu e-mail para saber quando ela chegar.', 'sanitize_textarea_field' ),
+		'headline'            => array( 'Título principal', 'Algo novo está prestes a ocupar o ar.', 'sanitize_text_field' ),
+		'support_text'        => array( 'Texto de apoio', "A primeira coleção Casa Kotti está chegando.\nCadastre-se para ser um dos primeiros a conhecer", 'sanitize_textarea_field' ),
 		'email_label'         => array( 'Rótulo do campo', 'Seu e-mail', 'sanitize_text_field' ),
-		'button_text'         => array( 'Texto do botão', 'Quero saber do lançamento', 'sanitize_text_field' ),
-		'consent_text'        => array( 'Texto de consentimento', 'Quero receber novidades sobre o lançamento da Casa Kotti por e-mail.', 'sanitize_textarea_field' ),
+		'button_text'         => array( 'Texto do botão', 'Quero conhecer primeiro', 'sanitize_text_field' ),
+		'consent_text'        => array( 'Texto de consentimento', 'Aceito receber novidades sobre o lançamento da Casa Kotti por e-mail.', 'sanitize_textarea_field' ),
 		'success_text'        => array( 'Mensagem de sucesso', 'Pronto! Vamos avisar você quando a Casa Kotti chegar.', 'sanitize_textarea_field' ),
 		'instagram_label'     => array( 'Rótulo do Instagram', 'Instagram', 'sanitize_text_field' ),
 		'contact_label'       => array( 'Rótulo do contato', 'Fale com a Casa Kotti', 'sanitize_text_field' ),
@@ -212,7 +212,7 @@ function casa_kotti_meta_description() {
 		return;
 	}
 
-	$description = casa_kotti_setting( 'support_text', 'Estamos preparando nossa primeira coleção. Deixe seu e-mail para saber quando ela chegar.' );
+	$description = casa_kotti_setting( 'support_text', "A primeira coleção Casa Kotti está chegando.\nCadastre-se para ser um dos primeiros a conhecer" );
 	printf( '<meta name="description" content="%s">' . "\n", esc_attr( wp_strip_all_tags( $description ) ) );
 }
 add_action( 'wp_head', 'casa_kotti_meta_description', 1 );
