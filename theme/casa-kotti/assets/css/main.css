@@ -474,11 +474,145 @@ input:focus-visible {
 	}
 }
 
+html:has(body.ck-screen),
+body.ck-screen {
+	background: #242424;
+}
+
+body.ck-screen .ck-page {
+	z-index: 1;
+}
+
+.background-kotti {
+	--ck-wall-0: #1f1f1f;
+	--ck-wall-1: #242424;
+	--ck-wall-2: #292826;
+	--ck-wall-3: #302e2b;
+	--ck-wall-light: rgba(215, 190, 160, 0.06);
+	--ck-wall-texture-opacity: 0.05;
+	--ck-leaf-opacity-primary: 0.22;
+	--ck-leaf-opacity-secondary: 0.1;
+	--ck-leaf-blur-primary: 1px;
+	--ck-leaf-blur-secondary: 2.5px;
+	--ck-leaf-duration-primary: 18s;
+	--ck-leaf-duration-secondary: 23s;
+	--ck-leaf-top: -5%;
+	--ck-leaf-left: -5%;
+	--ck-leaf-width: 48vw;
+	--ck-leaf-height: 62vh;
+	--ck-leaf-height: 62dvh;
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	pointer-events: none;
+	isolation: isolate;
+}
+
+.background-kotti > * {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.background-base {
+	background:
+		linear-gradient(
+			152deg,
+			var(--ck-wall-2) 0%,
+			var(--ck-wall-1) 38%,
+			var(--ck-wall-0) 72%,
+			#1c1c1c 100%
+		);
+}
+
+.background-warm-light {
+	background:
+		radial-gradient(ellipse 78% 64% at 6% -8%, var(--ck-wall-light), transparent 58%),
+		radial-gradient(ellipse 42% 36% at 16% 10%, rgba(215, 190, 160, 0.035), transparent 62%);
+}
+
+.background-texture {
+	opacity: var(--ck-wall-texture-opacity);
+	mix-blend-mode: overlay;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.16 0 0 0 0 0.15 0 0 0 0.32 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+	background-size: 220px 220px;
+}
+
+.background-leaf-shadow-primary,
+.background-leaf-shadow-secondary {
+	inset: auto;
+	top: var(--ck-leaf-top);
+	left: var(--ck-leaf-left);
+	width: var(--ck-leaf-width);
+	height: var(--ck-leaf-height);
+	background-color: transparent;
+	background-image: url("../casa-kotti-leaf-shadow.svg");
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-size: contain;
+	transform-origin: 14% 6%;
+}
+
+.background-leaf-shadow-primary {
+	opacity: var(--ck-leaf-opacity-primary);
+	filter: blur(var(--ck-leaf-blur-primary));
+	will-change: transform;
+	animation: ck-leaf-drift-primary var(--ck-leaf-duration-primary) ease-in-out infinite alternate;
+}
+
+.background-leaf-shadow-secondary {
+	top: calc(var(--ck-leaf-top) - 3%);
+	left: calc(var(--ck-leaf-left) - 3%);
+	width: calc(var(--ck-leaf-width) * 1.14);
+	height: calc(var(--ck-leaf-height) * 1.1);
+	opacity: var(--ck-leaf-opacity-secondary);
+	filter: blur(var(--ck-leaf-blur-secondary));
+	will-change: transform;
+	animation: ck-leaf-drift-secondary var(--ck-leaf-duration-secondary) ease-in-out infinite alternate;
+}
+
+@keyframes ck-leaf-drift-primary {
+	from {
+		transform: translate3d(-3px, -2px, 0) rotate(-0.55deg) scale(1);
+	}
+	to {
+		transform: translate3d(5px, 6px, 0) rotate(0.65deg) scale(1.008);
+	}
+}
+
+@keyframes ck-leaf-drift-secondary {
+	from {
+		transform: translate3d(4px, -3px, 0) rotate(0.45deg) scale(1.01);
+	}
+	to {
+		transform: translate3d(-4px, 7px, 0) rotate(-0.7deg) scale(1);
+	}
+}
+
+@media (max-width: 700px) {
+	.background-kotti {
+		--ck-leaf-top: -14%;
+		--ck-leaf-left: -22%;
+		--ck-leaf-width: 92vw;
+		--ck-leaf-height: 46vh;
+		--ck-leaf-height: 46dvh;
+		--ck-leaf-opacity-primary: 0.18;
+		--ck-leaf-opacity-secondary: 0.08;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	* {
 		scroll-behavior: auto !important;
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
+	}
+
+	.background-leaf-shadow-primary,
+	.background-leaf-shadow-secondary {
+		animation: none !important;
+		will-change: auto;
 	}
 }
