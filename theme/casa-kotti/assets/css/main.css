@@ -232,7 +232,8 @@ input:focus-visible {
 	border: 0;
 }
 
-.ck-form input[type="email"] {
+.ck-form input[type="email"],
+.ck-form input[name="email"] {
 	width: 100%;
 	min-height: 48px;
 	border: 1px solid var(--ck-line);
@@ -243,7 +244,8 @@ input:focus-visible {
 	font: inherit;
 }
 
-.ck-form input[type="email"]::placeholder {
+.ck-form input[type="email"]::placeholder,
+.ck-form input[name="email"]::placeholder {
 	color: var(--ck-muted);
 	opacity: 1;
 }
@@ -465,7 +467,8 @@ input:focus-visible {
 		min-height: 44px;
 	}
 
-	.ck-form input[type="email"] {
+	.ck-form input[type="email"],
+	.ck-form input[name="email"] {
 		min-height: 44px;
 	}
 

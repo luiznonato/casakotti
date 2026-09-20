@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Casa Kotti — Interesses
  * Description: Captação e gestão dos interessados no lançamento da Casa Kotti.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Casa Kotti
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CKI_VERSION', '1.0.1' );
+define( 'CKI_VERSION', '1.0.2' );
 define( 'CKI_FILE', __FILE__ );
 
 /**
@@ -80,12 +80,12 @@ function casa_kotti_render_interest_form( $args = array() ) {
 		<div class="ck-form__row">
 			<label>
 				<span class="ck-form__label"><?php echo esc_html( $args['label'] ); ?></span>
-				<input type="email" name="email" inputmode="email" autocomplete="email" required maxlength="190" placeholder="<?php echo esc_attr( $args['label'] ); ?>">
+				<input type="text" name="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" aria-required="true" maxlength="190" placeholder="<?php echo esc_attr( $args['label'] ); ?>">
 			</label>
 			<button type="submit"><?php echo esc_html( $args['button'] ); ?></button>
 		</div>
 		<label class="ck-form__consent">
-			<input type="checkbox" name="consent" value="1" required>
+			<input type="checkbox" name="consent" value="1" aria-required="true">
 			<span><?php echo esc_html( $args['consent'] ); ?></span>
 		</label>
 		<p class="ck-form__consent-error" hidden role="alert"><?php esc_html_e( 'É necessário aceitar para receber novidades.', 'casa-kotti-interesses' ); ?></p>

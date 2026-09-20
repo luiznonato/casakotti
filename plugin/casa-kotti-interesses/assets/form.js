@@ -10,7 +10,7 @@
 	}
 
 	document.querySelectorAll('.ck-form').forEach(function (form) {
-		var email = form.querySelector('input[type="email"]');
+		var email = form.querySelector('input[name="email"]');
 		var consent = form.querySelector('input[name="consent"]');
 		var consentBox = form.querySelector('.ck-form__consent');
 		var consentError = form.querySelector('.ck-form__consent-error');
@@ -49,7 +49,13 @@
 			announce('', '');
 			setConsentError(false);
 
-			if (!isValidEmail(email && email.value)) {
+			if (!email) {
+				return;
+			}
+
+			email.value = String(email.value || '').trim();
+
+			if (!isValidEmail(email.value)) {
 				announce((window.ckiForm && ckiForm.invalidEmail) || 'Digite um e-mail válido.', 'error');
 				if (email) {
 					email.focus();
