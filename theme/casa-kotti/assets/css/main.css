@@ -436,7 +436,7 @@ input:focus-visible {
 		grid-template-rows:
 			minmax(0, 1fr)
 			auto
-			minmax(0, 1fr)
+			clamp(36px, 5svh, 48px)
 			auto
 			clamp(20px, 3svh, 28px)
 			auto
