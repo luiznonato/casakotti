@@ -592,13 +592,13 @@ body.ck-screen .ck-page {
 
 @media (max-width: 700px) {
 	.background-kotti {
-		--ck-leaf-top: -14%;
-		--ck-leaf-left: -22%;
-		--ck-leaf-width: 92vw;
-		--ck-leaf-height: 46vh;
-		--ck-leaf-height: 46dvh;
-		--ck-leaf-opacity-primary: 0.18;
-		--ck-leaf-opacity-secondary: 0.08;
+		--ck-leaf-top: -8%;
+		--ck-leaf-left: -16%;
+		--ck-leaf-width: 88vw;
+		--ck-leaf-height: 42vh;
+		--ck-leaf-height: 42dvh;
+		--ck-leaf-opacity-primary: 0.24;
+		--ck-leaf-opacity-secondary: 0.1;
 	}
 }
 
