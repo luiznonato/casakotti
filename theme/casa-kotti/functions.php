@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CASA_KOTTI_THEME_VERSION', '1.5.25' );
+define( 'CASA_KOTTI_THEME_VERSION', '1.5.26' );
 define( 'CASA_KOTTI_META_PIXEL_ID', '2121663005134221' );
 
 function casa_kotti_setup() {
