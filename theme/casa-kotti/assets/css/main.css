@@ -565,8 +565,7 @@ body.ck-screen .ck-page {
 }
 
 .ck-page--screen .ck-message h1::after,
-.ck-page--screen .ck-interest::before,
-.ck-page--screen .ck-footer::before {
+.ck-page--screen .ck-message::after {
 	content: "";
 	display: block;
 	width: 32px;
@@ -579,20 +578,8 @@ body.ck-screen .ck-page {
 	margin: 0.75rem auto 0;
 }
 
-.ck-page--screen .ck-interest::before {
-	margin: 0 auto 1.15rem;
-}
-
-.ck-page--screen .ck-footer {
-	padding-top: 0.85rem;
-}
-
-.ck-page--screen .ck-footer::before {
-	position: absolute;
-	left: 50%;
-	top: 0;
-	margin: 0;
-	transform: translateX(-50%);
+.ck-page--screen .ck-message::after {
+	margin: 1.15rem auto 0;
 }
 
 .ck-message h1 .ck-accent {
@@ -605,8 +592,7 @@ body.ck-screen .ck-page {
 	}
 
 	.ck-page--screen .ck-message h1::after,
-	.ck-page--screen .ck-interest::before,
-	.ck-page--screen .ck-footer::before {
+	.ck-page--screen .ck-message::after {
 		width: 26px;
 	}
 
@@ -614,12 +600,8 @@ body.ck-screen .ck-page {
 		margin-top: 0.5rem;
 	}
 
-	.ck-page--screen .ck-interest::before {
-		margin-bottom: 0.55rem;
-	}
-
-	.ck-page--screen .ck-footer {
-		padding-top: 0.65rem;
+	.ck-page--screen .ck-message::after {
+		margin-top: 0.7rem;
 	}
 }
 
