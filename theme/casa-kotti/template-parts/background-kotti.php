@@ -5,7 +5,4 @@
  * @package Casa_Kotti
  */
 ?>
-<div class="background-kotti" aria-hidden="true">
-	<div class="background-base"></div>
-	<div class="background-texture"></div>
-</div>
+<div class="background-kotti" aria-hidden="true"></div>

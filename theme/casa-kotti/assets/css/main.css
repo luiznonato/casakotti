@@ -543,7 +543,7 @@ input:focus-visible {
 
 html:has(body.ck-screen),
 body.ck-screen {
-	background: #242424;
+	background-color: #242424;
 }
 
 body.ck-screen .ck-page {
@@ -551,38 +551,76 @@ body.ck-screen .ck-page {
 }
 
 .background-kotti {
-	--ck-wall-1: #242424;
-	--ck-wall-texture-opacity: 0.09;
 	position: fixed;
 	inset: 0;
 	z-index: 0;
 	overflow: hidden;
 	pointer-events: none;
-	isolation: isolate;
-	background-color: var(--ck-wall-1);
-}
-
-.background-kotti > * {
-	position: absolute;
-	inset: 0;
-	pointer-events: none;
-}
-
-.background-base {
-	background-color: var(--ck-wall-1);
-}
-
-.background-texture {
-	opacity: var(--ck-wall-texture-opacity);
-	mix-blend-mode: overlay;
-	background-image: url("../casa-kotti-wall-grain.svg");
-	background-repeat: repeat;
+	background-color: #242424;
+	background-image: url("../images/dark_charcoal_textured_wall.jpg");
+	background-size: cover;
 	background-position: center;
-	background-size: 280px 280px;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+
+.ck-page--screen .ck-message h1::after,
+.ck-page--screen .ck-interest::before,
+.ck-page--screen .ck-footer::before {
+	content: "";
+	display: block;
+	width: 32px;
+	height: 1px;
+	background: var(--ck-copper);
+	opacity: 0.85;
+}
+
+.ck-page--screen .ck-message h1::after {
+	margin: 0.75rem auto 0;
+}
+
+.ck-page--screen .ck-interest::before {
+	margin: 0 auto 1.15rem;
+}
+
+.ck-page--screen .ck-footer {
+	padding-top: 0.85rem;
+}
+
+.ck-page--screen .ck-footer::before {
+	position: absolute;
+	left: 50%;
+	top: 0;
+	margin: 0;
+	transform: translateX(-50%);
 }
 
 .ck-message h1 .ck-accent {
 	color: var(--ck-copper);
+}
+
+@media (max-width: 700px) {
+	.background-kotti {
+		background-attachment: scroll;
+	}
+
+	.ck-page--screen .ck-message h1::after,
+	.ck-page--screen .ck-interest::before,
+	.ck-page--screen .ck-footer::before {
+		width: 26px;
+	}
+
+	.ck-page--screen .ck-message h1::after {
+		margin-top: 0.5rem;
+	}
+
+	.ck-page--screen .ck-interest::before {
+		margin-bottom: 0.55rem;
+	}
+
+	.ck-page--screen .ck-footer {
+		padding-top: 0.65rem;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
