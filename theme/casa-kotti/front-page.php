@@ -28,8 +28,8 @@ $has_form      = casa_kotti_setting( 'form_enabled', true )
 		</div>
 
 		<div class="ck-message">
-			<h1><?php echo esc_html( casa_kotti_setting( 'headline', 'Em breve, um novo aroma para o seu cotidiano.' ) ); ?></h1>
-			<p><?php echo esc_html( casa_kotti_setting( 'support_text', 'Estamos preparando nossa primeira coleção. Deixe seu e-mail para saber quando ela chegar.' ) ); ?></p>
+			<h1><?php echo esc_html( casa_kotti_setting( 'headline', 'Algo novo está prestes a ocupar o ar.' ) ); ?></h1>
+			<p><?php echo nl2br( esc_html( casa_kotti_setting( 'support_text', "A primeira coleção Casa Kotti está chegando.\nCadastre-se para ser um dos primeiros a conhecer" ) ), false ); ?></p>
 		</div>
 
 		<div class="ck-interest">
@@ -37,8 +37,8 @@ $has_form      = casa_kotti_setting( 'form_enabled', true )
 				<?php
 				echo casa_kotti_render_interest_form( array( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped by the plugin renderer.
 					'label'   => casa_kotti_setting( 'email_label', 'Seu e-mail' ),
-					'button'  => casa_kotti_setting( 'button_text', 'Quero saber do lançamento' ),
-					'consent' => casa_kotti_setting( 'consent_text', 'Quero receber novidades sobre o lançamento da Casa Kotti por e-mail.' ),
+					'button'  => casa_kotti_setting( 'button_text', 'Quero conhecer primeiro' ),
+					'consent' => casa_kotti_setting( 'consent_text', 'Aceito receber novidades sobre o lançamento da Casa Kotti por e-mail.' ),
 					'success' => casa_kotti_setting( 'success_text', 'Pronto! Vamos avisar você quando a Casa Kotti chegar.' ),
 				) );
 				?>

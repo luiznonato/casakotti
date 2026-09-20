@@ -174,7 +174,21 @@ input:focus-visible {
 	line-height: 1.28;
 	letter-spacing: 0.045em;
 	text-transform: uppercase;
-	text-wrap: balance;
+	text-align: center;
+	overflow-wrap: break-word;
+	hyphens: none;
+}
+
+@media (min-width: 1280px) {
+	.ck-page--screen .ck-message h1 {
+		width: max-content;
+		max-width: min(calc(100vw - (2 * var(--ck-gutter))), 72rem);
+		white-space: nowrap;
+		overflow-wrap: normal;
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+	}
 }
 
 .ck-message > p {
@@ -252,10 +266,20 @@ input:focus-visible {
 	text-decoration: none;
 	text-transform: uppercase;
 	cursor: pointer;
-	transition: background-color 180ms ease, color 180ms ease;
+	transition: background-color 240ms ease, color 240ms ease, border-color 240ms ease;
 }
 
-.ck-form button:hover,
+.ck-form button:hover {
+	background: var(--ck-copper);
+	border-color: var(--ck-copper);
+	color: #ffffff;
+}
+
+.ck-form button:focus-visible {
+	outline: 2px solid var(--ck-copper);
+	outline-offset: 4px;
+}
+
 .ck-contact-fallback:hover {
 	background: transparent;
 	color: var(--ck-ink);
@@ -282,6 +306,26 @@ input:focus-visible {
 	height: 18px;
 	margin: 2px 0 0;
 	accent-color: var(--ck-ink);
+}
+
+.ck-form__consent.is-invalid {
+	color: var(--ck-error);
+	outline: 1px solid var(--ck-error);
+	outline-offset: 4px;
+}
+
+.ck-form__consent-error {
+	margin: 8px 0 0;
+	max-width: 100%;
+	color: var(--ck-error);
+	font-size: 0.76rem;
+	line-height: 1.4;
+	text-align: left;
+	overflow-wrap: break-word;
+}
+
+.ck-form__consent-error[hidden] {
+	display: none;
 }
 
 .ck-form__status {

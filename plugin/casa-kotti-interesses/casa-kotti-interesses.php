@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Casa Kotti — Interesses
  * Description: Captação e gestão dos interessados no lançamento da Casa Kotti.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Casa Kotti
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CKI_VERSION', '1.0.0' );
+define( 'CKI_VERSION', '1.0.1' );
 define( 'CKI_FILE', __FILE__ );
 
 /**
@@ -66,8 +66,8 @@ function casa_kotti_render_interest_form( $args = array() ) {
 
 	$args = wp_parse_args( $args, array(
 		'label'   => 'Seu e-mail',
-		'button'  => 'Quero saber do lançamento',
-		'consent' => 'Quero receber novidades sobre o lançamento da Casa Kotti por e-mail.',
+		'button'  => 'Quero conhecer primeiro',
+		'consent' => 'Aceito receber novidades sobre o lançamento da Casa Kotti por e-mail.',
 		'success' => 'Pronto! Vamos avisar você quando a Casa Kotti chegar.',
 	) );
 	$args = array_map( 'sanitize_text_field', $args );
@@ -88,6 +88,7 @@ function casa_kotti_render_interest_form( $args = array() ) {
 			<input type="checkbox" name="consent" value="1" required>
 			<span><?php echo esc_html( $args['consent'] ); ?></span>
 		</label>
+		<p class="ck-form__consent-error" hidden role="alert"><?php esc_html_e( 'É necessário aceitar para receber novidades.', 'casa-kotti-interesses' ); ?></p>
 		<div class="ck-honeypot" aria-hidden="true">
 			<label>Não preencha este campo <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
 		</div>
@@ -104,8 +105,8 @@ function casa_kotti_render_interest_form( $args = array() ) {
 function cki_shortcode( $atts ) {
 	return casa_kotti_render_interest_form( shortcode_atts( array(
 		'label'   => 'Seu e-mail',
-		'button'  => 'Quero saber do lançamento',
-		'consent' => 'Quero receber novidades sobre o lançamento da Casa Kotti por e-mail.',
+		'button'  => 'Quero conhecer primeiro',
+		'consent' => 'Aceito receber novidades sobre o lançamento da Casa Kotti por e-mail.',
 		'success' => 'Pronto! Vamos avisar você quando a Casa Kotti chegar.',
 	), $atts, 'casa_kotti_interest_form' ) );
 }
@@ -126,7 +127,7 @@ function cki_enqueue_assets() {
 	wp_localize_script( 'casa-kotti-interests', 'ckiForm', array(
 		'sending'        => __( 'Enviando…', 'casa-kotti-interesses' ),
 		'invalidEmail'   => __( 'Digite um e-mail válido.', 'casa-kotti-interesses' ),
-		'consentNeeded'  => __( 'Confirme o consentimento para continuar.', 'casa-kotti-interesses' ),
+		'consentNeeded'  => __( 'É necessário aceitar para receber novidades.', 'casa-kotti-interesses' ),
 		'genericError'   => __( 'Não foi possível cadastrar agora. Tente novamente.', 'casa-kotti-interesses' ),
 	) );
 }

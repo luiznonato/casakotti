@@ -21,22 +21,24 @@
 				<p class="ck-tagline">Perfumaria para ambientes</p>
 			</div>
 			<div class="ck-message">
-				<h1>Em breve, um novo aroma para o seu cotidiano.</h1>
-				<p>Estamos preparando nossa primeira coleção. Deixe seu e-mail para saber quando ela chegar.</p>
+				<h1>Algo novo está prestes a ocupar o ar.</h1>
+				<p>A primeira coleção Casa Kotti está chegando.<br>Cadastre-se para ser um dos primeiros a conhecer</p>
 			</div>
 			<div class="ck-interest">
-				<form class="ck-form" onsubmit="return false">
+				<form class="ck-form" action="#" method="post" data-success="Pronto! Vamos avisar você quando a Casa Kotti chegar." novalidate>
 					<div class="ck-form__row">
 						<label>
 							<span class="ck-form__label">Seu e-mail</span>
-							<input type="email" placeholder="Seu e-mail">
+							<input type="email" name="email" inputmode="email" autocomplete="email" required maxlength="190" placeholder="Seu e-mail">
 						</label>
-						<button type="submit">Quero saber do lançamento</button>
+						<button type="submit">Quero conhecer primeiro</button>
 					</div>
 					<label class="ck-form__consent">
-						<input type="checkbox">
-						<span>Quero receber novidades sobre o lançamento da Casa Kotti por e-mail.</span>
+						<input type="checkbox" name="consent" value="1" required>
+						<span>Aceito receber novidades sobre o lançamento da Casa Kotti por e-mail.</span>
 					</label>
+					<p class="ck-form__consent-error" hidden role="alert">É necessário aceitar para receber novidades.</p>
+					<p class="ck-form__status" role="status" aria-live="polite" aria-atomic="true"></p>
 				</form>
 			</div>
 		</main>
@@ -48,5 +50,14 @@
 			<p>&copy; 2026 Casa Kotti</p>
 		</footer>
 	</div>
+	<script>
+		window.ckiForm = {
+			sending: 'Enviando…',
+			invalidEmail: 'Digite um e-mail válido.',
+			consentNeeded: 'É necessário aceitar para receber novidades.',
+			genericError: 'Não foi possível cadastrar agora. Tente novamente.'
+		};
+	</script>
+	<script src="../plugin/casa-kotti-interesses/assets/form.js"></script>
 </body>
 </html>
