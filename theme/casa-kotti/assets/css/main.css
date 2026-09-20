@@ -341,6 +341,20 @@ input:focus-visible {
 	color: var(--ck-error);
 }
 
+.ck-form.is-sent .ck-form__row,
+.ck-form.is-sent .ck-form__consent,
+.ck-form.is-sent .ck-form__consent-error {
+	display: none !important;
+}
+
+.ck-form.is-sent .ck-form__status {
+	margin: 0;
+	min-height: 0;
+	color: var(--ck-muted);
+	font-size: 0.95rem;
+	line-height: 1.55;
+}
+
 .ck-honeypot {
 	position: absolute !important;
 	left: -10000px !important;
@@ -480,6 +494,12 @@ input:focus-visible {
 	.ck-form__status {
 		margin-top: 8px;
 		min-height: 1.2em;
+	}
+
+	.ck-form.is-sent .ck-form__status {
+		margin-top: 0;
+		font-size: 0.86rem;
+		line-height: 1.45;
 	}
 
 	.ck-footer {

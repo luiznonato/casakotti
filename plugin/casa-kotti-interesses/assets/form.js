@@ -108,7 +108,7 @@
 					});
 				})
 				.then(function () {
-					form.reset();
+					form.classList.add('is-sent');
 					setConsentError(false);
 					announce(form.dataset.success, 'success');
 				})
@@ -120,9 +120,12 @@
 					announce(message, 'error');
 				})
 				.finally(function () {
+					form.removeAttribute('aria-busy');
+					if (form.classList.contains('is-sent')) {
+						return;
+					}
 					button.disabled = false;
 					button.textContent = originalButtonText;
-					form.removeAttribute('aria-busy');
 				});
 		});
 	});
