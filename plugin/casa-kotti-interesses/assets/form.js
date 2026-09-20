@@ -80,6 +80,13 @@
 
 			var endpoint = form.getAttribute('action');
 			var payload = new FormData(form);
+			payload.append('viewport', Math.round(window.innerWidth) + 'x' + Math.round(window.innerHeight));
+			if (navigator.language) {
+				payload.append('locale', String(navigator.language).slice(0, 32));
+			}
+			if (window.location && window.location.search) {
+				payload.append('utm', String(window.location.search).slice(0, 255));
+			}
 			var fallback = (window.ckiForm && ckiForm.genericError) || 'Não foi possível cadastrar agora. Tente novamente.';
 
 			button.disabled = true;
