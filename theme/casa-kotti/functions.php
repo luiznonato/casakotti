@@ -9,7 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CASA_KOTTI_THEME_VERSION', '1.5.12' );
+define( 'CASA_KOTTI_THEME_VERSION', '1.5.13' );
+define( 'CASA_KOTTI_META_PIXEL_ID', '2121663005134221' );
 
 function casa_kotti_setup() {
 	add_theme_support( 'title-tag' );
@@ -32,6 +33,33 @@ function casa_kotti_enqueue_assets() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'casa_kotti_enqueue_assets' );
+
+/**
+ * Meta Pixel (Facebook) — site-wide PageView.
+ */
+function casa_kotti_meta_pixel() {
+	$pixel_id = CASA_KOTTI_META_PIXEL_ID;
+	?>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '<?php echo esc_js( $pixel_id ); ?>');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=<?php echo rawurlencode( $pixel_id ); ?>&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+	<?php
+}
+add_action( 'wp_head', 'casa_kotti_meta_pixel', 20 );
 
 function casa_kotti_body_class( $classes ) {
 	if ( is_front_page() ) {
