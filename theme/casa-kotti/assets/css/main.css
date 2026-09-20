@@ -461,9 +461,13 @@ input:focus-visible {
 	}
 
 	.ck-message > p {
-		margin-top: clamp(0.7rem, 3svh, 1.25rem);
+		margin-top: 0.45rem;
 		font-size: 0.86rem;
 		line-height: 1.45;
+	}
+
+	.ck-page--screen .ck-message > p {
+		transform: translateY(clamp(2rem, 7.5svh, 3.5rem));
 	}
 
 	.ck-interest {
