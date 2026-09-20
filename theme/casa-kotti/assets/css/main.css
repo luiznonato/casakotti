@@ -589,6 +589,7 @@ body.ck-screen .ck-page {
 @media (max-width: 700px) {
 	.background-kotti {
 		background-attachment: scroll;
+		background-position: center;
 	}
 
 	.ck-page--screen .ck-message h1::after,
