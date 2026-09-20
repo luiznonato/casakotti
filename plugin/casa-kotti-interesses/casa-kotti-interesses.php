@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Casa Kotti — Interesses
  * Description: Captação e gestão dos interessados no lançamento da Casa Kotti.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Casa Kotti
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CKI_VERSION', '1.0.2' );
+define( 'CKI_VERSION', '1.0.3' );
 define( 'CKI_FILE', __FILE__ );
 
 /**

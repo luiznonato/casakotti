@@ -78,33 +78,46 @@
 				return;
 			}
 
+			var endpoint = form.getAttribute('action');
+			var payload = new FormData(form);
+			var fallback = (window.ckiForm && ckiForm.genericError) || 'Não foi possível cadastrar agora. Tente novamente.';
+
 			button.disabled = true;
 			button.textContent = (window.ckiForm && ckiForm.sending) || 'Enviando…';
 			form.setAttribute('aria-busy', 'true');
 
-			fetch(form.action, {
+			fetch(endpoint, {
 				method: 'POST',
-				body: new FormData(form),
+				body: payload,
 				credentials: 'same-origin',
 				headers: { 'X-Requested-With': 'XMLHttpRequest' }
 			})
 				.then(function (response) {
-					return response.json().then(function (payload) {
-						if (!response.ok || !payload.success) {
-							var message = payload.data && payload.data.message;
-							throw new Error(message || ((window.ckiForm && ckiForm.genericError) || 'Não foi possível cadastrar agora. Tente novamente.'));
+					return response.text().then(function (text) {
+						var data;
+						try {
+							data = JSON.parse(text);
+						} catch (parseError) {
+							throw new Error(fallback);
 						}
-						return payload;
+						if (!response.ok || !data.success) {
+							var message = data && data.data && data.data.message;
+							throw new Error(message || fallback);
+						}
+						return data;
 					});
 				})
 				.then(function () {
 					form.reset();
 					setConsentError(false);
 					announce(form.dataset.success, 'success');
-					email.focus();
 				})
 				.catch(function (error) {
-					announce(error.message || ((window.ckiForm && ckiForm.genericError) || 'Não foi possível cadastrar agora. Tente novamente.'), 'error');
+					var message = error && error.message;
+					if (!message || /pattern|JSON|fetch|Network|Load failed|unexpected/i.test(message)) {
+						message = fallback;
+					}
+					announce(message, 'error');
 				})
 				.finally(function () {
 					button.disabled = false;
