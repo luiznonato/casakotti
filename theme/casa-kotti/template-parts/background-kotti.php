@@ -7,8 +7,5 @@
 ?>
 <div class="background-kotti" aria-hidden="true">
 	<div class="background-base"></div>
-	<div class="background-warm-light"></div>
 	<div class="background-texture"></div>
-	<div class="background-leaf-shadow-secondary"></div>
-	<div class="background-leaf-shadow-primary"></div>
 </div>
