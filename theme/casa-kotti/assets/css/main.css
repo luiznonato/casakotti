@@ -467,7 +467,7 @@ input:focus-visible {
 	}
 
 	.ck-page--screen .ck-message > p {
-		transform: translateY(clamp(1.75rem, 6.5svh, 3.15rem));
+		transform: translateY(clamp(2rem, 7.5svh, 3.5rem));
 	}
 
 	.ck-interest {
