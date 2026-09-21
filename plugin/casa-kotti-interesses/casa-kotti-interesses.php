@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Casa Kotti — Interesses
  * Description: Captação e gestão dos interessados no lançamento da Casa Kotti.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Casa Kotti
@@ -15,8 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CKI_VERSION', '1.0.5' );
+define( 'CKI_VERSION', '1.0.6' );
 define( 'CKI_FILE', __FILE__ );
+
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mocori-insights-adapter.php';
 
 /**
  * Create/update the dedicated subscriber table.
@@ -190,7 +192,7 @@ function casa_kotti_render_interest_form( $args = array() ) {
 	$consent_signature = hash_hmac( 'sha256', $args['consent'], wp_salt( 'auth' ) );
 	ob_start();
 	?>
-	<form class="ck-form" id="<?php echo esc_attr( $form_id ); ?>" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" method="post" data-success="<?php echo esc_attr( $args['success'] ); ?>" novalidate>
+	<form class="ck-form" id="<?php echo esc_attr( $form_id ); ?>" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" method="post" data-success="<?php echo esc_attr( $args['success'] ); ?>" data-mocori-insights-form="interest-launch" data-mocori-insights-form-name="Interesse no lançamento" data-mocori-insights-skip-submit="1" novalidate>
 		<div class="ck-form__row">
 			<label>
 				<span class="ck-form__label"><?php echo esc_html( $args['label'] ); ?></span>
@@ -329,7 +331,10 @@ function cki_register_interest() {
 		if ( ! $confirmed ) {
 			wp_send_json_error( array( 'message' => __( 'Não foi possível cadastrar agora. Tente novamente.', 'casa-kotti-interesses' ) ), 500 );
 		}
+		wp_send_json_success();
 	}
+
+	do_action( 'cki_interest_registered', (int) $wpdb->insert_id, $email );
 
 	wp_send_json_success();
 }
