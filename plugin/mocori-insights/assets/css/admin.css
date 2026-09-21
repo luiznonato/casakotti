@@ -1,0 +1,244 @@
+.mi-app {
+	--mi-ink: #161616;
+	--mi-muted: #6d6a64;
+	--mi-line: #e7e2da;
+	--mi-bg: #f4f1ec;
+	--mi-card: #fff;
+	display: grid;
+	grid-template-columns: 240px minmax(0, 1fr);
+	min-height: calc(100vh - 32px);
+	margin: 0 0 0 -20px;
+	background: var(--mi-bg);
+	color: var(--mi-ink);
+	font-family: "Avenir Next", "Segoe UI", sans-serif;
+}
+
+.mi-side {
+	padding: 28px 20px;
+	border-right: 1px solid var(--mi-line);
+	background: #fff;
+}
+
+.mi-brand {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	margin-bottom: 32px;
+}
+
+.mi-mark {
+	width: 36px;
+	height: 36px;
+	display: grid;
+	place-items: center;
+	border-radius: 10px;
+	background: var(--mi-accent, #1f3d34);
+	color: #fff;
+	font-weight: 600;
+}
+
+.mi-brand small {
+	display: block;
+	color: var(--mi-muted);
+}
+
+.mi-side nav {
+	display: grid;
+	gap: 4px;
+}
+
+.mi-side a {
+	padding: 8px 10px;
+	border-radius: 8px;
+	color: var(--mi-ink);
+	text-decoration: none;
+}
+
+.mi-side a.is-active,
+.mi-side a:hover {
+	background: var(--mi-bg);
+}
+
+.mi-foot {
+	margin-top: 40px;
+	color: var(--mi-muted);
+	font-size: 12px;
+}
+
+.mi-main {
+	padding: 28px 32px 48px;
+}
+
+.mi-top {
+	display: flex;
+	justify-content: space-between;
+	gap: 24px;
+	align-items: flex-start;
+	margin-bottom: 28px;
+}
+
+.mi-kicker {
+	margin: 0 0 4px;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	font-size: 11px;
+	color: var(--mi-muted);
+}
+
+.mi-top h1 {
+	margin: 0;
+	font-size: 28px;
+	font-weight: 500;
+}
+
+.mi-range {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.mi-range button,
+.mi-btn {
+	border: 1px solid var(--mi-line);
+	background: #fff;
+	border-radius: 999px;
+	padding: 8px 14px;
+	cursor: pointer;
+}
+
+.mi-range button.is-on,
+.mi-btn {
+	background: var(--mi-accent, #1f3d34);
+	color: #fff;
+	border-color: transparent;
+}
+
+.mi-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 12px;
+	margin-bottom: 20px;
+}
+
+.mi-cards article,
+.mi-panel {
+	background: var(--mi-card);
+	border: 1px solid var(--mi-line);
+	border-radius: 16px;
+	padding: 18px;
+}
+
+.mi-cards span,
+.mi-panel h2 {
+	color: var(--mi-muted);
+	font-size: 12px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.mi-cards strong {
+	display: block;
+	margin-top: 8px;
+	font-size: 28px;
+	font-weight: 500;
+}
+
+.mi-grid {
+	display: grid;
+	grid-template-columns: 1.4fr 1fr;
+	gap: 16px;
+}
+
+.mi-live strong {
+	font-size: 32px;
+}
+
+.mi-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.mi-table th,
+.mi-table td {
+	text-align: left;
+	padding: 10px 8px;
+	border-bottom: 1px solid var(--mi-line);
+	font-size: 13px;
+	vertical-align: top;
+}
+
+.mi-wide {
+	background: #fff;
+	border-radius: 16px;
+	overflow: hidden;
+}
+
+.mi-bars {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.mi-bars li {
+	display: grid;
+	grid-template-columns: 130px 1fr 40px;
+	gap: 8px;
+	align-items: center;
+	margin: 8px 0;
+}
+
+.mi-bars i {
+	height: 8px;
+	background: var(--mi-accent, #1f3d34);
+	border-radius: 99px;
+	display: block;
+}
+
+.mi-form fieldset {
+	border: 1px solid var(--mi-line);
+	border-radius: 16px;
+	padding: 16px;
+	margin: 0 0 16px;
+	background: #fff;
+}
+
+.mi-form label {
+	display: grid;
+	gap: 6px;
+	margin: 10px 0;
+}
+
+.mi-form input,
+.mi-form select {
+	max-width: 420px;
+	padding: 8px 10px;
+	border: 1px solid var(--mi-line);
+	border-radius: 8px;
+}
+
+.mi-danger {
+	color: #8a2b2b;
+}
+
+.mi-ok {
+	background: #eaf4ea;
+	padding: 10px 14px;
+	border-radius: 8px;
+}
+
+.mi-links {
+	display: grid;
+	gap: 8px;
+}
+
+@media (max-width: 960px) {
+	.mi-app {
+		grid-template-columns: 1fr;
+		margin: 0;
+	}
+	.mi-grid,
+	.mi-top {
+		grid-template-columns: 1fr;
+		display: grid;
+	}
+}

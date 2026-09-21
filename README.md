@@ -5,6 +5,7 @@ Tema WordPress e plugin independente para a página de pré-lançamento da Casa 
 ## Estrutura
 
 - `theme/casa-kotti/`: tema instalável.
+- `plugin/mocori-insights/`: plugin instalável **Mocori Insights** (produto Mocori, client-agnostic).
 - `plugin/casa-kotti-interesses/`: plugin instalável de captação e administração.
 - `plugin/casa-kotti-feedback/`: plugin instalável de avaliação da experiência (shortcode `[casa_kotti_feedback]`). Ver `plugin/casa-kotti-feedback/README.md`.
 - `preview/`: prévia estática apenas para revisão visual.
@@ -14,14 +15,15 @@ WordPress core, banco, uploads, credenciais e configurações do servidor não f
 
 ## Instalação
 
-1. Em **Plugins > Adicionar plugin > Enviar plugin**, envie `dist/casa-kotti-interesses.zip` e ative.
-2. Envie `dist/casa-kotti-feedback.zip` e ative **Casa Kotti — Avaliações** se for usar o questionário de experiência (`[casa_kotti_feedback]`). Detalhes em `plugin/casa-kotti-feedback/README.md`.
-3. Em **Aparência > Temas > Adicionar tema > Enviar tema**, envie `dist/casa-kotti.zip` e ative quando estiver pronto para substituir o tema atual.
-4. Crie uma página (por exemplo, “Início”) e selecione-a em **Configurações > Leitura** como página inicial estática.
-5. Crie e publique a política de privacidade aprovada. Selecione a mesma página:
+1. Em **Plugins > Adicionar plugin > Enviar plugin**, envie `dist/mocori-insights.zip` e ative **Mocori Insights** se for medir visitantes e conversões.
+2. Envie `dist/casa-kotti-interesses.zip` e ative.
+3. Envie `dist/casa-kotti-feedback.zip` e ative **Casa Kotti — Avaliações** se for usar o questionário de experiência (`[casa_kotti_feedback]`). Detalhes em `plugin/casa-kotti-feedback/README.md`.
+4. Em **Aparência > Temas > Adicionar tema > Enviar tema**, envie `dist/casa-kotti.zip` e ative quando estiver pronto para substituir o tema atual.
+5. Crie uma página (por exemplo, “Início”) e selecione-a em **Configurações > Leitura** como página inicial estática.
+6. Crie e publique a política de privacidade aprovada. Selecione a mesma página:
    - em **Configurações > Privacidade**; e
    - em **Aparência > Personalizar > Casa Kotti — Pré-lançamento**.
-6. Em **Aparência > Personalizar**, confirme o logo e configure textos, links, contato e formulário. O logo oficial já acompanha o tema; um logo configurado no WordPress continua tendo prioridade.
+7. Em **Aparência > Personalizar**, confirme o logo e configure textos, links, contato e formulário. O logo oficial já acompanha o tema; um logo configurado no WordPress continua tendo prioridade.
 
 O formulário permanece oculto e não aceita cadastros até que uma página de privacidade publicada esteja corretamente selecionada. Se houver e-mail de contato, ele aparece como alternativa. Instagram e demais links opcionais ficam ocultos enquanto estiverem vazios.
 
@@ -47,10 +49,11 @@ O trecho sugerido pelo plugin para a política é apenas um ponto factual sobre 
 Para gerar novamente os pacotes:
 
 ```bash
-rm -f dist/casa-kotti.zip dist/casa-kotti-interesses.zip dist/casa-kotti-feedback.zip
+rm -f dist/casa-kotti.zip dist/casa-kotti-interesses.zip dist/casa-kotti-feedback.zip dist/mocori-insights.zip
 (cd theme && zip -qr ../dist/casa-kotti.zip casa-kotti)
 (cd plugin && zip -qr ../dist/casa-kotti-interesses.zip casa-kotti-interesses)
 (cd plugin && zip -qr ../dist/casa-kotti-feedback.zip casa-kotti-feedback)
+(cd plugin && zip -qr ../dist/mocori-insights.zip mocori-insights -x 'mocori-insights/tests/*')
 ```
 
 ## Prévia local
